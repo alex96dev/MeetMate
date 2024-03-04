@@ -12,7 +12,9 @@ export default function HomePage() {
   return (
     <div>
       <h1>Easy Meet Up with Friends</h1>
-
+      <Link href="/create">
+        <button>+</button>
+      </Link>
       {activities.map((activity) => (
         <Link key={activity._id} href={`/${activity._id}`}>
           <ActivityCard

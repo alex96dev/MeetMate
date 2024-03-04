@@ -42,7 +42,6 @@ const StyledDetailsCard = styled.div`
   border-style: solid;
   flex-direction: column;
   align-items: center;
-  /* margin-left: 100px; */
   margin: 15px auto;
   padding: 10px;
   width: 600px;
