@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import Link from "next/link";
 
 export default function DetailsCard() {
   const router = useRouter();
@@ -24,10 +25,14 @@ export default function DetailsCard() {
         <li>date: {activities.date}</li>
         <li>time: {activities.time}</li>
         <li>location: {activities.location}</li>
-        <li>category: {activities.category}</li>
-        <li>description: {activities.description}</li>
+        {activities.category !== "" && <li>category: {activities.category}</li>}
       </ul>
-      <StyledCloseButton>Close</StyledCloseButton>
+      {activities.description !== "" && (
+        <p>description: {activities.description}</p>
+      )}
+      <Link href="/">
+        <StyledCloseButton>Close</StyledCloseButton>
+      </Link>
     </StyledDetailsCard>
   );
 }
@@ -35,9 +40,14 @@ export default function DetailsCard() {
 const StyledDetailsCard = styled.div`
   display: flex;
   border-style: solid;
+  flex-direction: column;
+  align-items: center;
+  /* margin-left: 100px; */
+  margin: 15px auto;
+  padding: 10px;
+  width: 600px;
   justify-content: space-evenly;
   border-radius: 15px;
-  margin: 15px;
 `;
 
 const StyledCloseButton = styled.button``;
