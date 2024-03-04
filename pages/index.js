@@ -1,6 +1,5 @@
-import ActivityCard from "@/components";
+import ActivityCard from "@/components/ActivityCard";
 import useSWR from "swr";
-// import activities from "@/lib/db";
 
 export default function HomePage() {
   const { data: activities, isLoading } = useSWR("/api/activities");
