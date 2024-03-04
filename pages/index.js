@@ -1,10 +1,9 @@
 import ActivityCard from "@/components";
 import useSWR from "swr";
-import Activity from "@/db/models/Activity";
 // import activities from "@/lib/db";
 
 export default function HomePage() {
-  const { activities, isLoading } = useSWR("/api/activities");
+  const { data: activities, isLoading } = useSWR("/api/activities");
 
   console.log(activities);
   if (isLoading) return <div>loading...</div>;

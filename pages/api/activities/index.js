@@ -1,5 +1,5 @@
-import dbConnect from "../../../db/connect";
-import Activity from "../../../db/models/Activity";
+import dbConnect from "@/db/connect";
+import Activity from "@/db/models/Activity";
 
 export default async function handler(request, response) {
   await dbConnect();
