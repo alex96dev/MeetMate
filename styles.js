@@ -11,4 +11,13 @@ export default createGlobalStyle`
     margin: 0;
     font-family: system-ui;
   }
+li{
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+color: black;
+}
+
 `;

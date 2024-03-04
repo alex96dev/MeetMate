@@ -1,5 +1,6 @@
 import ActivityCard from "@/components/ActivityCard";
 import useSWR from "swr";
+import Link from "next/link";
 
 export default function HomePage() {
   const { data: activities, isLoading } = useSWR("/api/activities");
@@ -11,13 +12,15 @@ export default function HomePage() {
   return (
     <div>
       <h1>Easy Meet Up with Friends</h1>
+
       {activities.map((activity) => (
-        <ActivityCard
-          key={activity.id}
-          name={activity.name}
-          date={activity.date}
-          time={activity.time}
-        />
+        <Link key={activity._id} href={`/${activity._id}`}>
+          <ActivityCard
+            name={activity.name}
+            date={activity.date}
+            time={activity.time}
+          />
+        </Link>
       ))}
     </div>
   );
