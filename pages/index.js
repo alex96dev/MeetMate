@@ -4,7 +4,7 @@ import Activity from "@/db/models/Activity";
 // import activities from "@/lib/db";
 
 export default function HomePage() {
-  const { data: activities, isLoading } = useSWR("/api/activities");
+  const { activities, isLoading } = useSWR("/api/activities");
 
   console.log(activities);
   if (isLoading) return <div>loading...</div>;
