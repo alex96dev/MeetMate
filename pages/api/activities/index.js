@@ -7,6 +7,19 @@ export default async function handler(request, response) {
   if (request.method === "GET") {
     const activities = await Activity.find();
     return response.status(200).json(activities);
+  }
+
+  if (request.method === "POST") {
+    try {
+      const activityData = request.body;
+      console.log("Received activity data:", activityData); // Konsolenausgabe der empfangenen Request-Daten
+      await Activity.create(activityData);
+
+      response.status(201).json({ status: "Activity created" });
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({ error: error.message });
+    }
   } else {
     return response.status(405).json({ message: "Method not allowed" });
   }

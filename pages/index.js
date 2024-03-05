@@ -5,7 +5,6 @@ import Link from "next/link";
 export default function HomePage() {
   const { data: activities, isLoading } = useSWR("/api/activities");
 
-  console.log(activities);
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
 
