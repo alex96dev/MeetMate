@@ -1,33 +1,9 @@
 import styled from "styled-components";
 import Link from "next/link";
-import useSWR from "swr";
-import { useRouter } from "next/router";
 
-export default function CardForm() {
-  const { mutate } = useSWR("/api/activities");
-  const router = useRouter();
-
-  async function handleSubmit(event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const activityData = Object.fromEntries(formData);
-    console.log(activityData);
-    const response = await fetch("/api/activities", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(activityData),
-    });
-    if (response.ok) {
-      mutate();
-      event.target.reset();
-      router.push("/");
-    }
-  }
-
+export default function CardForm({ onSubmit }) {
   return (
-    <StyledCardForm onSubmit={handleSubmit}>
+    <StyledCardForm onSubmit={onSubmit}>
       <h1>Create Activity</h1>
 
       <label htmlFor="author">Author: </label>
@@ -42,16 +18,13 @@ export default function CardForm() {
       <StyledInputField type="text" id="location" name="location" required />
       <label htmlFor="category">Category: </label>
       <select type="text" id="category" name="category">
-        {/* <option value="" disabled selected>
-          --Please choose on option--
-        </option> */}
         <option></option>
         <option value="Sports">Sports</option>
         <option value="Culture">Culture</option>
         <option value="Food">Food</option>
       </select>
       <label htmlFor="description">Description: </label>
-      <textarea
+      <StyledTextArea
         cols="45"
         rows="8"
         type="text"
@@ -64,7 +37,6 @@ export default function CardForm() {
           String.fromCharCode(10) +
           "- Add hashtags like #indoor #creative ..."
         }
-        style={{ resize: "none" }}
       />
       <StyledBottonBox>
         <StyledSaveButton type="submit">Save</StyledSaveButton>
@@ -99,4 +71,8 @@ const StyledInputField = styled.input`
 const StyledBottonBox = styled.div`
   display: flex;
   gap: 1rem;
+`;
+
+const StyledTextArea = styled.textarea`
+  resize: "none";
 `;

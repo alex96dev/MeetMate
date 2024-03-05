@@ -12,7 +12,6 @@ export default async function handler(request, response) {
   if (request.method === "POST") {
     try {
       const activityData = request.body;
-      console.log("Received activity data:", activityData); // Konsolenausgabe der empfangenen Request-Daten
       await Activity.create(activityData);
 
       response.status(201).json({ status: "Activity created" });
