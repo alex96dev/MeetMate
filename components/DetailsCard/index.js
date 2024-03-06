@@ -13,6 +13,7 @@ export default function DetailsCard() {
     data: activities,
     isLoading,
     mutate,
+    error,
   } = useSWR(`/api/activities/${id}`);
 
   const [isEditMode, setIsEditMode] = useState(false);
@@ -20,9 +21,9 @@ export default function DetailsCard() {
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
-
-  if (!activities) {
-    return;
+  if (!activities || error) {
+    return router.replace("/");
+    console.log("hello");
   }
 
   async function handleEditActivity(event) {
@@ -49,7 +50,7 @@ export default function DetailsCard() {
       method: "DELETE",
     });
     if (response.ok) {
-      router.push("/");
+      router.replace("/");
     }
   }
 
@@ -78,7 +79,16 @@ export default function DetailsCard() {
           {" "}
           {isEditMode ? "Cancel Edit" : "Edit Activity"}
         </StyledEditButton>
-        <StyledDeleteButton onClick={handleDelete}>Delete</StyledDeleteButton>
+        <StyledDeleteButton
+          onClick={() => {
+            if (window.confirm("Do you really want to delete this activity?")) {
+              handleDelete();
+            }
+          }}
+          // onClick={handleDelete}
+        >
+          Delete
+        </StyledDeleteButton>
       </StyledButtonBox>
       {isEditMode && <CardForm onSubmit={handleEditActivity} />}
     </StyledDetailsCard>
@@ -107,3 +117,16 @@ const StyledButtonBox = styled.div`
 const StyledCloseButton = styled.button``;
 
 const StyledEditButton = styled.button``;
+
+// response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+
+// window.location.reload(true)
+
+{
+  /* <script type="text/javascript">
+history.pushState(null, null, '<?php echo $_SERVER["REQUEST_URI"]; ?>');
+window.addEventListener('popstate', function(event) {
+    window.location.assign("http://www.yoururl.com/");
+});
+</script> */
+}
