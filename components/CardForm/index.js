@@ -7,15 +7,45 @@ export default function CardForm({ onSubmit }) {
       <h1>Create Activity</h1>
 
       <label htmlFor="author">Author: </label>
-      <StyledInputField type="text" id="author" name="author" required />
+      <StyledInputField
+        type="text"
+        id="author"
+        name="author"
+        autocomplete="off"
+        required
+      />
       <label htmlFor="name">Name of Activity: </label>
-      <StyledInputField type="text" id="name" name="name" required />
+      <StyledInputField
+        type="text"
+        id="name"
+        name="name"
+        autocomplete="off"
+        required
+      />
       <label htmlFor="date">Date: </label>
-      <StyledInputField type="date" id="date" name="date" required />
+      <StyledInputField
+        type="date"
+        id="date"
+        name="date"
+        autocomplete="off"
+        required
+      />
       <label htmlFor="time">Time: </label>
-      <StyledInputField type="time" id="time" name="time" required />
+      <StyledInputField
+        type="time"
+        id="time"
+        name="time"
+        autocomplete="off"
+        required
+      />
       <label htmlFor="location">Location: </label>
-      <StyledInputField type="text" id="location" name="location" required />
+      <StyledInputField
+        type="text"
+        id="location"
+        name="location"
+        autocomplete="off"
+        required
+      />
       <label htmlFor="category">Category: </label>
       <select type="text" id="category" name="category">
         <option></option>
@@ -25,6 +55,7 @@ export default function CardForm({ onSubmit }) {
       </select>
       <label htmlFor="description">Description: </label>
       <StyledTextArea
+        autocomplete="off"
         cols="45"
         rows="8"
         type="text"

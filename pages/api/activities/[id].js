@@ -5,8 +5,6 @@ export default async function handler(request, response) {
   await dbConnect();
   const { id } = request.query;
 
-  // const product = products.find((product) => product.id === id);
-
   if (request.method === "GET") {
     const activity = await Activity.findById(id);
 
@@ -15,5 +13,13 @@ export default async function handler(request, response) {
     }
 
     response.status(200).json(activity);
+  }
+
+  if (request.method === "PUT") {
+    const activityData = request.body;
+
+    await Activity.findByIdAndUpdate(id, activityData);
+
+    return response.status(200).json({ status: `Activity ${id} updated!` });
   }
 }
