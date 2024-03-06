@@ -44,6 +44,15 @@ export default function DetailsCard() {
     }
   }
 
+  async function handleDelete() {
+    const response = await fetch(`/api/activities/${id}`, {
+      method: "DELETE",
+    });
+    if (response.ok) {
+      router.push("/");
+    }
+  }
+
   return (
     <StyledDetailsCard>
       <h1>{activities.name}</h1>
@@ -62,7 +71,6 @@ export default function DetailsCard() {
           <StyledCloseButton>Close</StyledCloseButton>
         </Link>
         <StyledEditButton
-          type="button"
           onClick={() => {
             setIsEditMode(!isEditMode);
           }}
@@ -70,11 +78,14 @@ export default function DetailsCard() {
           {" "}
           {isEditMode ? "Cancel Edit" : "Edit Activity"}
         </StyledEditButton>
+        <StyledDeleteButton onClick={handleDelete}>Delete</StyledDeleteButton>
       </StyledButtonBox>
       {isEditMode && <CardForm onSubmit={handleEditActivity} />}
     </StyledDetailsCard>
   );
 }
+
+const StyledDeleteButton = styled.button``;
 
 const StyledDetailsCard = styled.div`
   display: flex;

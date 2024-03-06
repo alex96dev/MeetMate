@@ -21,5 +21,10 @@ export default async function handler(request, response) {
     await Activity.findByIdAndUpdate(id, activityData);
 
     return response.status(200).json({ status: `Activity ${id} updated!` });
+  } else if (request.method === "DELETE") {
+    await Activity.findByIdAndDelete(id);
+    response
+      .status(200)
+      .json({ status: `Activity ${id} successfully deleted.` });
   }
 }
