@@ -22,8 +22,7 @@ export default function DetailsCard() {
     return <h1>Loading...</h1>;
   }
   if (!activities || error) {
-    return router.replace("/");
-    console.log("hello");
+    router.replace("/");
   }
 
   async function handleEditActivity(event) {
@@ -85,7 +84,6 @@ export default function DetailsCard() {
               handleDelete();
             }
           }}
-          // onClick={handleDelete}
         >
           Delete
         </StyledDeleteButton>
@@ -117,16 +115,3 @@ const StyledButtonBox = styled.div`
 const StyledCloseButton = styled.button``;
 
 const StyledEditButton = styled.button``;
-
-// response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-
-// window.location.reload(true)
-
-{
-  /* <script type="text/javascript">
-history.pushState(null, null, '<?php echo $_SERVER["REQUEST_URI"]; ?>');
-window.addEventListener('popstate', function(event) {
-    window.location.assign("http://www.yoururl.com/");
-});
-</script> */
-}
