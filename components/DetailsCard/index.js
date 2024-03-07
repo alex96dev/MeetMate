@@ -13,6 +13,7 @@ export default function DetailsCard() {
     data: activities,
     isLoading,
     mutate,
+    error,
   } = useSWR(`/api/activities/${id}`);
 
   const [isEditMode, setIsEditMode] = useState(false);
@@ -20,9 +21,8 @@ export default function DetailsCard() {
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
-
-  if (!activities) {
-    return;
+  if (!activities || error) {
+    router.replace("/");
   }
 
   async function handleEditActivity(event) {
@@ -44,6 +44,15 @@ export default function DetailsCard() {
     }
   }
 
+  async function handleDelete() {
+    const response = await fetch(`/api/activities/${id}`, {
+      method: "DELETE",
+    });
+    if (response.ok) {
+      router.replace("/");
+    }
+  }
+
   return (
     <StyledDetailsCard>
       <h1>{activities.name}</h1>
@@ -62,7 +71,6 @@ export default function DetailsCard() {
           <StyledCloseButton>Close</StyledCloseButton>
         </Link>
         <StyledEditButton
-          type="button"
           onClick={() => {
             setIsEditMode(!isEditMode);
           }}
@@ -70,11 +78,22 @@ export default function DetailsCard() {
           {" "}
           {isEditMode ? "Cancel Edit" : "Edit Activity"}
         </StyledEditButton>
+        <StyledDeleteButton
+          onClick={() => {
+            if (window.confirm("Do you really want to delete this activity?")) {
+              handleDelete();
+            }
+          }}
+        >
+          Delete
+        </StyledDeleteButton>
       </StyledButtonBox>
       {isEditMode && <CardForm onSubmit={handleEditActivity} />}
     </StyledDetailsCard>
   );
 }
+
+const StyledDeleteButton = styled.button``;
 
 const StyledDetailsCard = styled.div`
   display: flex;
