@@ -15,15 +15,16 @@ Activity Sharing: Enables users to share proposed activities and time slots with
 
 (Read) Activity Overview: User can see all activities with short infos in a list. (Name activity, date, location)
                             
-                Activity Detail Page:  User can see more detailed information about the activity. 
-                                                    Including: Creator 
-                                                                     Date
-                                                                     Time: Beginning and end of activity
-                                                                     Location
-                                                                     Category: e.g., sports, nature, indoors, creative,...
-                                                                     Description of activity
-                                                                     Min. and Max. number of people
-                                                                     Tags: #outdoor #indoor #lowbudget #nobudget 
+Activity Detail Page:  User can see more detailed information about the activity. 
+Including: 
+- Creator
+- Date
+- Time: Beginning and end of activity
+- Location
+- Category: e.g., sports, nature, indoors, creative,...
+- Description of activity
+- Min. and Max. number of people
+- Tags: #outdoor #indoor #lowbudget #nobudget 
 
 (Update) Edit Activity Details: Users have the ability to edit the details of the activity or the proposed time slots as plans evolve or more information becomes available.
    
