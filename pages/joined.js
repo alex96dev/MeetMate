@@ -10,22 +10,24 @@ export default function HomePage() {
 
   return (
     <div>
-      <h1>Easy Meet Up with Friends</h1>
+      <h1>Joined</h1>
       <Link href="/create">
         <button>+</button>
       </Link>
-      <Link href="/joined">
-        <button>Joined</button>
+      <Link href="/">
+        <button>back</button>
       </Link>
-      {activities.map((activity) => (
-        <Link key={activity._id} href={`/${activity._id}`}>
-          <ActivityCard
-            name={activity.name}
-            date={activity.date}
-            time={activity.time}
-          />
-        </Link>
-      ))}
+      {activities.map((activity) =>
+        activity.joined ? (
+          <Link key={activity._id} href={`/${activity._id}`}>
+            <ActivityCard
+              name={activity.name}
+              date={activity.date}
+              time={activity.time}
+            />
+          </Link>
+        ) : null
+      )}
     </div>
   );
 }
