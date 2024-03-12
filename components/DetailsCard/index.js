@@ -3,11 +3,35 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import Link from "next/link";
 import CardForm from "../CardForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function DetailsCard() {
   const router = useRouter();
   const { id } = router.query;
+  const [joined, setJoined] = useState({});
+  const [joinButtonColor, setJoinButtonColor] = useState("green");
+  const [JoinButtonText, setJoinButtonText] = useState("Join");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/activities/${id}`);
+        const json = await response.json();
+        setJoined(json);
+        if (json.joined === true) {
+          setJoinButtonText("Disjoin");
+          setJoinButtonColor("red");
+        } else {
+          setJoinButtonText("Join");
+          setJoinButtonColor("green");
+        }
+      } catch (error) {
+        console.error("Error fetching activity:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const {
     data: activities,
@@ -56,6 +80,27 @@ export default function DetailsCard() {
     }
   }
 
+  async function handleJoin() {
+    joinButtonColor === "green"
+      ? setJoinButtonColor("red")
+      : setJoinButtonColor("green");
+    JoinButtonText === "Join"
+      ? setJoinButtonText("Disjoin")
+      : setJoinButtonText("Join");
+    joined.joined = !joined.joined;
+
+    const response = await fetch(`/api/activities/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.parse(JSON.stringify(`{"joined": ${joined.joined}}`)),
+    });
+    if (response.ok) {
+      mutate();
+    }
+  }
+
   return (
     <StyledDetailsCard>
       <h1>{activities.name}</h1>
@@ -69,6 +114,9 @@ export default function DetailsCard() {
       {activities.description !== "" && (
         <p>description: {activities.description}</p>
       )}
+      <StyledJoinButton backgroundcolor={joinButtonColor} onClick={handleJoin}>
+        {JoinButtonText}
+      </StyledJoinButton>
       <StyledButtonBox>
         <Link href="/">
           <StyledCloseButton>Close</StyledCloseButton>
@@ -102,6 +150,10 @@ export default function DetailsCard() {
 }
 
 const StyledDeleteButton = styled.button``;
+const StyledJoinButton = styled.button`
+  width: 250px;
+  background-color: ${(props) => props.backgroundcolor || "green"};
+`;
 
 const StyledDetailsCard = styled.div`
   display: flex;
