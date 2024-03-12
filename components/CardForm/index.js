@@ -62,6 +62,7 @@ export default function CardForm({ onSubmit, existingActivityData }) {
         <option value="Sports">Sports</option>
         <option value="Culture">Culture</option>
         <option value="Food">Food</option>
+        <option value="Outdoor">Outdoor</option>
       </select>
       <label htmlFor="description">Description: </label>
       <StyledTextArea
