@@ -18,6 +18,13 @@ export default function DetailsCard() {
         const response = await fetch(`/api/activities/${id}`);
         const json = await response.json();
         setJoined(json);
+        if (json.joined === true) {
+          setJoinButtonText("Disjoin");
+          setJoinButtonColor("red");
+        } else {
+          setJoinButtonText("Join");
+          setJoinButtonColor("green");
+        }
       } catch (error) {
         console.error("Error fetching activity:", error);
       }
