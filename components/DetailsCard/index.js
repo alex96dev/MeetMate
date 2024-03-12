@@ -104,6 +104,7 @@ export default function DetailsCard() {
   return (
     <StyledDetailsCard>
       <h1>{activities.name}</h1>
+      <StyledJoinedmark>{joined.joined && <p>XX</p>}</StyledJoinedmark>
       <ul>
         <li>author: {activities.author}</li>
         <li>date: {activities.date}</li>
@@ -157,6 +158,7 @@ const StyledJoinButton = styled.button`
 
 const StyledDetailsCard = styled.div`
   display: flex;
+  position: relative;
   border-style: solid;
   flex-direction: column;
   align-items: center;
@@ -175,3 +177,9 @@ const StyledButtonBox = styled.div`
 const StyledCloseButton = styled.button``;
 
 const StyledEditButton = styled.button``;
+
+const StyledJoinedmark = styled.div`
+  position: absolute;
+  top: 0;
+  left: 1rem;
+`;

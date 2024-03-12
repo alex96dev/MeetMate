@@ -23,6 +23,7 @@ export default function HomePage() {
             name={activity.name}
             date={activity.date}
             time={activity.time}
+            joined={activity.joined}
           />
         </Link>
       ))}
