@@ -27,8 +27,11 @@ export default function DetailsCard() {
 
   async function handleEditActivity(event) {
     event.preventDefault();
-    const formData = new FormData(event.target);
-    const activityData = Object.fromEntries(formData);
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    const activityData = Object.fromEntries(formData.entries());
 
     const response = await fetch(`/api/activities/${id}`, {
       method: "PUT",
@@ -88,7 +91,12 @@ export default function DetailsCard() {
           Delete
         </StyledDeleteButton>
       </StyledButtonBox>
-      {isEditMode && <CardForm onSubmit={handleEditActivity} />}
+      {isEditMode && (
+        <CardForm
+          onSubmit={handleEditActivity}
+          existingActivityData={activities}
+        />
+      )}
     </StyledDetailsCard>
   );
 }

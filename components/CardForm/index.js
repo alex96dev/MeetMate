@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Link from "next/link";
 
-export default function CardForm({ onSubmit }) {
+export default function CardForm({ onSubmit, existingActivityData }) {
   return (
     <StyledCardForm onSubmit={onSubmit}>
       <h1>Create Activity</h1>
@@ -12,6 +12,7 @@ export default function CardForm({ onSubmit }) {
         id="author"
         name="author"
         autocomplete="off"
+        defaultValue={existingActivityData?.author || ""}
         required
       />
       <label htmlFor="name">Name of Activity: </label>
@@ -20,6 +21,7 @@ export default function CardForm({ onSubmit }) {
         id="name"
         name="name"
         autocomplete="off"
+        defaultValue={existingActivityData?.name || ""}
         required
       />
       <label htmlFor="date">Date: </label>
@@ -28,6 +30,7 @@ export default function CardForm({ onSubmit }) {
         id="date"
         name="date"
         autocomplete="off"
+        defaultValue={existingActivityData?.date || ""}
         required
       />
       <label htmlFor="time">Time: </label>
@@ -36,6 +39,7 @@ export default function CardForm({ onSubmit }) {
         id="time"
         name="time"
         autocomplete="off"
+        defaultValue={existingActivityData?.time || ""}
         required
       />
       <label htmlFor="location">Location: </label>
@@ -44,14 +48,21 @@ export default function CardForm({ onSubmit }) {
         id="location"
         name="location"
         autocomplete="off"
+        defaultValue={existingActivityData?.location || ""}
         required
       />
       <label htmlFor="category">Category: </label>
-      <select type="text" id="category" name="category">
-        <option></option>
+      <select
+        type="text"
+        id="category"
+        name="category"
+        defaultValue={existingActivityData?.category || ""}
+      >
+        <option value="">--Choose category--</option>
         <option value="Sports">Sports</option>
         <option value="Culture">Culture</option>
         <option value="Food">Food</option>
+        <option value="Outdoor">Outdoor</option>
       </select>
       <label htmlFor="description">Description: </label>
       <StyledTextArea
@@ -61,6 +72,7 @@ export default function CardForm({ onSubmit }) {
         type="text"
         id="description"
         name="description"
+        defaultValue={existingActivityData?.description || ""}
         placeholder={
           "Describe your activity..." +
           String.fromCharCode(10) +
