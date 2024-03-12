@@ -14,6 +14,9 @@ export default function HomePage() {
       <Link href="/create">
         <button>+</button>
       </Link>
+      <button onClick={() => window.open('/calendar', '_blank')}>
+        Calendar
+      </button>
       <Link href="/joined">
         <button>Joined</button>
       </Link>
