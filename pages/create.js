@@ -10,6 +10,7 @@ export default function Create() {
     event.preventDefault();
     const formData = new FormData(event.target);
     const activityData = Object.fromEntries(formData);
+    activityData.joined = false;
     const response = await fetch("/api/activities", {
       method: "POST",
       headers: {
