@@ -26,6 +26,7 @@ export default function HomePage() {
             name={activity.name}
             date={activity.date}
             time={activity.time}
+            category={activity.category}
           />
         </Link>
       ))}
