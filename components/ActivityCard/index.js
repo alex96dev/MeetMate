@@ -1,8 +1,9 @@
+import { theme } from "@/styles";
 import styled from "styled-components";
 
-export default function ActivityCard({ name, date, time, joined }) {
+export default function ActivityCard({ name, date, time, category }) {
   return (
-    <StyledActivityCard>
+    <StyledActivityCard category={category}>
       <h2>{name}</h2>
       <section>
         <p>{date}</p>
@@ -17,9 +18,29 @@ const StyledActivityCard = styled.div`
   display: flex;
   position: relative;
   border-style: solid;
+
   justify-content: space-evenly;
-  border-radius: 15px;
-  margin: 15px;
+  padding: ${theme.spacing.small};
+  border-style: solid;
+  border-width: ${theme.borderWidth.medium};
+  border-radius: ${theme.borderRadius.medium};
+  height: ${theme.box.height};
+  box-shadow: ${theme.box.shadow};
+  margin: ${theme.spacing.medium};
+  background-color: ${({ category }) => {
+    switch (category) {
+      case "Sports":
+        return theme.secondaryColors.sports;
+      case "Culture":
+        return theme.secondaryColors.culture;
+      case "Food":
+        return theme.secondaryColors.food;
+      case "Outdoor":
+        return theme.secondaryColors.outdoor;
+      default:
+        return theme.secondaryColors.default;
+    }
+  }};
 `;
 
 const StyledJoinMark = styled.p`
