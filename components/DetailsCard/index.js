@@ -20,9 +20,10 @@ export default function DetailsCard() {
         const response = await fetch(`/api/activities/${id}`);
         const json = await response.json();
         setJoinState((prevState) => ({
-          ...prevState,
-          isJoined: json.joined,
-        }));
+           setJoinState((prevState) => {
+        const joinButtonColor = json.joined ? "red" : "green";
+        const joinButtonText = json.joined ? "Disjoin" : "Join";
+
         if (json.joined === true) {
           setJoinState((prevState) => ({
             ...prevState,
