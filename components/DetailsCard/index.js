@@ -98,30 +98,17 @@ export default function DetailsCard() {
   }
 
   async function handleJoin() {
-    const updatedIsJoined = !joinState.isJoined;
-    updatedIsJoined
-      ? setJoinState((prevState) => ({
-          ...prevState,
-          joinButtonColor: "red",
-        }))
-      : setJoinState((prevState) => ({
-          ...prevState,
-          joinButtonColor: "green",
-        }));
-    updatedIsJoined
-      ? setJoinState((prevState) => ({
-          ...prevState,
-          joinButtonText: "Disjoin",
-        }))
-      : setJoinState((prevState) => ({
-          ...prevState,
-          joinButtonText: "Join",
-        }));
-
-    setJoinState((prevState) => ({
+setJoinState((prevState) => {
+    const isJoined = !prevState.isJoined;
+    const joinButtonColor = prevState.joinButtonColor === "green" ? "red" : "green";
+    const joinButtonText = isJoined ? "Disjoin" : "Join";
+    return {
       ...prevState,
-      isJoined: !prevState.isJoined,
-    }));
+      isJoined,
+      joinButtonColor,
+      joinButtonText,
+    };
+  });
 
     const response = await fetch(`/api/activities/${id}`, {
       method: "PUT",
