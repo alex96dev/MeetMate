@@ -15,9 +15,11 @@ export const theme = {
     text: "Noto Serif Thai Condensed, serif",
   },
   fontSizes: {
-    small: "18px",
-    medium: "24px",
-    large: "32px",
+    xs: "0.5rem",
+    small: "1rem",
+    medium: "1.5rem",
+    large: "2rem",
+    xl: "2.5rem",
   },
   spacing: {
     small: "0.5rem",
@@ -27,7 +29,7 @@ export const theme = {
   },
   box: {
     shadow: "5px 5px 0 #262524",
-    height: "100px",
+    height: "6rem",
   },
   borderRadius: {
     small: "5px",
@@ -38,6 +40,11 @@ export const theme = {
     thin: "1px",
     medium: "2px",
     thick: "4px",
+  },
+  button: {
+    small: "2rem",
+    medium: "4rem",
+    large: "8rem",
   },
 };
 
@@ -59,12 +66,30 @@ h1, h2, h3, h4{
   font-family: ${theme.fonts.heading};
 }
 
+h1{
+font-size: ${theme.fontSizes.xl}
+}
+
 h2{ 
   font-size: ${theme.fontSizes.medium}
 }
 
+h4{
+  font-size: ${theme.fontSizes.small}
+}
+
 li{
   list-style: none;
+  font-size: ${theme.fontSizes.medium}
+
+}
+
+p{
+font-size: ${theme.fontSizes.medium}
+}
+
+button{
+height: ${theme.button.small};
 }
 
 a {
