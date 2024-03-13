@@ -8,23 +8,26 @@ import { useState, useEffect } from "react";
 export default function DetailsCard() {
   const router = useRouter();
   const { id } = router.query;
-  const [joined, setJoined] = useState({});
-  const [joinButtonColor, setJoinButtonColor] = useState("green");
-  const [JoinButtonText, setJoinButtonText] = useState("Join");
+  const [joinState, setJoinState] = useState({
+    isJoined: false,
+    joinButtonColor: "green",
+    joinButtonText: "Join",
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(`/api/activities/${id}`);
         const json = await response.json();
-        setJoined(json);
-        if (json.joined === true) {
-          setJoinButtonText("Disjoin");
-          setJoinButtonColor("red");
-        } else {
-          setJoinButtonText("Join");
-          setJoinButtonColor("green");
-        }
+        const joinButtonColor = json.joined ? "red" : "green";
+        const joinButtonText = json.joined ? "Disjoin" : "Join";
+
+        setJoinState((prevState) => ({
+          ...prevState,
+          isJoined: json.joined,
+          joinButtonColor,
+          joinButtonText,
+        }));
       } catch (error) {
         console.error("Error fetching activity:", error);
       }
@@ -81,20 +84,20 @@ export default function DetailsCard() {
   }
 
   async function handleJoin() {
-    joinButtonColor === "green"
-      ? setJoinButtonColor("red")
-      : setJoinButtonColor("green");
-    JoinButtonText === "Join"
-      ? setJoinButtonText("Disjoin")
-      : setJoinButtonText("Join");
-    joined.joined = !joined.joined;
+    const updatedIsJoined = !joinState.isJoined;
+    setJoinState((prevState) => ({
+      ...prevState,
+      isJoined: updatedIsJoined,
+      joinButtonColor: updatedIsJoined ? "red" : "green",
+      joinButtonText: updatedIsJoined ? "Disjoin" : "Join",
+    }));
 
     const response = await fetch(`/api/activities/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.parse(JSON.stringify(`{"joined": ${joined.joined}}`)),
+      body: JSON.stringify({ joined: updatedIsJoined }),
     });
     if (response.ok) {
       mutate();
@@ -104,6 +107,7 @@ export default function DetailsCard() {
   return (
     <StyledDetailsCard>
       <h1>{activities.name}</h1>
+      <StyledJoinedmark>{joinState.isJoined && <p>XX</p>}</StyledJoinedmark>
       <ul>
         <li>author: {activities.author}</li>
         <li>date: {activities.date}</li>
@@ -114,8 +118,11 @@ export default function DetailsCard() {
       {activities.description !== "" && (
         <p>description: {activities.description}</p>
       )}
-      <StyledJoinButton backgroundcolor={joinButtonColor} onClick={handleJoin}>
-        {JoinButtonText}
+      <StyledJoinButton
+        backgroundcolor={joinState.joinButtonColor}
+        onClick={handleJoin}
+      >
+        {joinState.joinButtonText}
       </StyledJoinButton>
       <StyledButtonBox>
         <Link href="/">
@@ -157,6 +164,7 @@ const StyledJoinButton = styled.button`
 
 const StyledDetailsCard = styled.div`
   display: flex;
+  position: relative;
   border-style: solid;
   flex-direction: column;
   align-items: center;
@@ -175,3 +183,9 @@ const StyledButtonBox = styled.div`
 const StyledCloseButton = styled.button``;
 
 const StyledEditButton = styled.button``;
+
+const StyledJoinedmark = styled.div`
+  position: absolute;
+  top: 0;
+  left: 1rem;
+`;

@@ -1,13 +1,14 @@
 import { theme } from "@/styles";
 import styled from "styled-components";
 
-export default function ActivityCard({ name, date, time, category }) {
+export default function ActivityCard({ name, date, time, joined, category }) {
   return (
     <StyledActivityCard category={category}>
       <h2>{name}</h2>
       <section>
-        <h4>{date}</h4>
-        <h4>{time}</h4>
+        <p>{date}</p>
+        <p>{time}</p>
+        {joined && <StyledJoinMark>XX</StyledJoinMark>}
       </section>
     </StyledActivityCard>
   );
@@ -15,6 +16,9 @@ export default function ActivityCard({ name, date, time, category }) {
 
 const StyledActivityCard = styled.div`
   display: flex;
+  position: relative;
+  border-style: solid;
+
   justify-content: space-evenly;
   padding: ${theme.spacing.small};
   border-style: solid;
@@ -37,4 +41,10 @@ const StyledActivityCard = styled.div`
         return theme.secondaryColors.default;
     }
   }};
+`;
+
+const StyledJoinMark = styled.p`
+  position: absolute;
+  top: 0;
+  left: 1rem;
 `;
