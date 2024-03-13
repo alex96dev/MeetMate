@@ -27,15 +27,6 @@ export default function DetailsCard() {
         if (json.joined === true) {
           setJoinState((prevState) => ({
             ...prevState,
-            joinButtonText: "Disjoin",
-          }));
-          setJoinState((prevState) => ({
-            ...prevState,
-            joinButtonColor: "red",
-          }));
-        } else {
-          setJoinState((prevState) => ({
-            ...prevState,
             joinButtonText: "Join",
           }));
           setJoinState((prevState) => ({
