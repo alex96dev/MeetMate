@@ -25,15 +25,13 @@ export default function DetailsCard() {
         const joinButtonText = json.joined ? "Disjoin" : "Join";
 
         if (json.joined === true) {
-          setJoinState((prevState) => ({
-            ...prevState,
-            joinButtonText: "Join",
-          }));
-          setJoinState((prevState) => ({
-            ...prevState,
-            joinButtonColor: "green",
-          }));
-        }
+      return {
+          ...prevState,
+          isJoined: json.joined,
+          joinButtonColor,
+          joinButtonText,
+        };
+      });
       } catch (error) {
         console.error("Error fetching activity:", error);
       }
