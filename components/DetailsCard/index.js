@@ -19,19 +19,15 @@ export default function DetailsCard() {
       try {
         const response = await fetch(`/api/activities/${id}`);
         const json = await response.json();
-        setJoinState((prevState) => ({
-           setJoinState((prevState) => {
         const joinButtonColor = json.joined ? "red" : "green";
         const joinButtonText = json.joined ? "Disjoin" : "Join";
 
-        if (json.joined === true) {
-      return {
+        setJoinState((prevState) => ({
           ...prevState,
           isJoined: json.joined,
           joinButtonColor,
           joinButtonText,
-        };
-      });
+        }));
       } catch (error) {
         console.error("Error fetching activity:", error);
       }
@@ -88,17 +84,13 @@ export default function DetailsCard() {
   }
 
   async function handleJoin() {
-setJoinState((prevState) => {
-    const isJoined = !prevState.isJoined;
-    const joinButtonColor = prevState.joinButtonColor === "green" ? "red" : "green";
-    const joinButtonText = isJoined ? "Disjoin" : "Join";
-    return {
+    const updatedIsJoined = !joinState.isJoined;
+    setJoinState((prevState) => ({
       ...prevState,
-      isJoined,
-      joinButtonColor,
-      joinButtonText,
-    };
-  });
+      isJoined: updatedIsJoined,
+      joinButtonColor: updatedIsJoined ? "red" : "green",
+      joinButtonText: updatedIsJoined ? "Disjoin" : "Join",
+    }));
 
     const response = await fetch(`/api/activities/${id}`, {
       method: "PUT",
@@ -108,10 +100,6 @@ setJoinState((prevState) => {
       body: JSON.stringify({ joined: updatedIsJoined }),
     });
     if (response.ok) {
-      setJoinState((prevState) => ({
-        ...prevState,
-        isJoined: updatedIsJoined,
-      }));
       mutate();
     }
   }

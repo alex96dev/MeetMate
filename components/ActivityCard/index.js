@@ -1,7 +1,7 @@
 import { theme } from "@/styles";
 import styled from "styled-components";
 
-export default function ActivityCard({ name, date, time, category }) {
+export default function ActivityCard({ name, date, time, joined, category }) {
   return (
     <StyledActivityCard category={category}>
       <h2>{name}</h2>
