@@ -29,8 +29,10 @@ export const theme = {
   },
   box: {
     shadow: "5px 5px 0 #262524",
+    hover: "7px 5px 0 #262524",
     height: "6rem",
   },
+
   borderRadius: {
     small: "5px",
     medium: "10px",
@@ -43,8 +45,9 @@ export const theme = {
   },
   button: {
     small: "2rem",
-    medium: "4rem",
-    large: "8rem",
+    medium: "2.5rem",
+    large: "3rem",
+    xl: "8rem",
   },
 };
 
@@ -67,7 +70,9 @@ h1, h2, h3, h4{
 }
 
 h1{
-font-size: ${theme.fontSizes.xl}
+font-size: ${theme.fontSizes.large};
+margin: ${theme.spacing.medium};
+margin-left: ${theme.spacing.small};
 }
 
 h2{ 
@@ -85,11 +90,22 @@ li{
 }
 
 p{
-font-size: ${theme.fontSizes.medium}
+font-size: ${theme.fontSizes.small}
 }
 
 button{
-height: ${theme.button.small};
+height: ${theme.button.medium};
+background-color: ${theme.primaryColor};
+border-color: ${theme.textColor};
+border-radius: ${theme.borderRadius.medium};
+border-width: ${theme.borderWidth.thin};
+border-style: solid;
+box-shadow: ${theme.box.shadow};
+}
+
+button:hover{
+box-shadow: ${theme.box.hover};
+border-width: ${theme.borderWidth.medium};
 }
 
 a {
