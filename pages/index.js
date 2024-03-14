@@ -45,6 +45,9 @@ const StyledHeadlineBox = styled.div`
 `;
 
 const StyledCardSection = styled.section`
-  margin-left: ${theme.spacing.large};
-  margin-right: ${theme.spacing.large};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  margin-bottom: 6rem;
 `;
