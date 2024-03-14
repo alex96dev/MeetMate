@@ -26,6 +26,9 @@ const StyledActivityCard = styled.div`
   border-radius: ${theme.borderRadius.medium};
   height: ${theme.box.height};
   box-shadow: ${theme.box.shadow};
+  &:hover {
+    box-shadow: ${theme.box.hover};
+  }
   margin-bottom: ${theme.spacing.medium};
   background-color: ${({ category }) => {
     switch (category) {
