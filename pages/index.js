@@ -41,6 +41,7 @@ const StyledHeadlineBox = styled.div`
   justify-content: center;
   align-items: center;
   margin: 0;
+  margin-top: ${theme.spacing.medium};
 `;
 
 const StyledCardSection = styled.section`
