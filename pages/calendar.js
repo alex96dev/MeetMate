@@ -34,5 +34,6 @@ const CalendarPage = () => {
 export default CalendarPage;
 
 const StyledRenderTileContent = styled.div`
-color: red;
+color: black;
+background-color: white; 
   `;
