@@ -2,7 +2,7 @@ import ActivityCard from "@/components/ActivityCard";
 import useSWR from "swr";
 import Link from "next/link";
 
-export default function HomePage() {
+export default function Joined() {
   const { data: activities, isLoading } = useSWR("/api/activities");
 
   if (isLoading) return <div>loading...</div>;

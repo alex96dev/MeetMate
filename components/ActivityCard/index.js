@@ -18,7 +18,7 @@ const StyledActivityCard = styled.div`
   display: flex;
   position: relative;
   border-style: solid;
-
+  width: ${theme.box.width};
   justify-content: space-evenly;
   padding: ${theme.spacing.small};
   border-style: solid;
@@ -26,7 +26,10 @@ const StyledActivityCard = styled.div`
   border-radius: ${theme.borderRadius.medium};
   height: ${theme.box.height};
   box-shadow: ${theme.box.shadow};
-  margin: ${theme.spacing.medium};
+  &:hover {
+    box-shadow: ${theme.box.hover};
+  }
+  margin-bottom: ${theme.spacing.medium};
   background-color: ${({ category }) => {
     switch (category) {
       case "Sports":
