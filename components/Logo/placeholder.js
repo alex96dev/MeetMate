@@ -16,7 +16,7 @@ const PlaceholderLogo = () => {
     xml:space="preserve"
   >
     <path
-      fill="#FCFCFC"
+	fill="#FCFCFC"
       opacity="1.000000"
       stroke="none"
       d="
@@ -73,7 +73,7 @@ z"
     />
     <path
       fill="#FEFEFE"
-      opacity="1.000000"
+      opacity="0"
       stroke="none"
       d="
 M51.015175,142.976883 
