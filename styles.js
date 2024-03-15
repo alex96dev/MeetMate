@@ -3,6 +3,9 @@ import { createGlobalStyle } from "styled-components";
 export const theme = {
   primaryColor: "#efe8d8",
   textColor: "#262524",
+  alertColor: "#dea0a0",
+  confirmColor: "#b4c9ab",
+
   secondaryColors: {
     sports: "#86b2b1",
     culture: "#c16b6b",
@@ -15,13 +18,14 @@ export const theme = {
     text: "Noto Serif Thai Condensed, serif",
   },
   fontSizes: {
-    xs: "0.5rem",
+    xs: "0.8rem",
     small: "1rem",
     medium: "1.5rem",
     large: "2rem",
     xl: "2.5rem",
   },
   spacing: {
+    xs: "0.3rem",
     small: "0.5rem",
     medium: "1rem",
     large: "1.5rem",

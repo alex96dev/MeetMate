@@ -4,13 +4,14 @@ import useSWR from "swr";
 import Link from "next/link";
 import CardForm from "../CardForm";
 import { useState, useEffect } from "react";
+import { theme } from "@/styles";
 
 export default function DetailsCard() {
   const router = useRouter();
   const { id } = router.query;
   const [joinState, setJoinState] = useState({
     isJoined: false,
-    joinButtonColor: "green",
+    joinButtonColor: `${theme.secondaryColors}`,
     joinButtonText: "Join",
   });
 
@@ -19,7 +20,9 @@ export default function DetailsCard() {
       try {
         const response = await fetch(`/api/activities/${id}`);
         const json = await response.json();
-        const joinButtonColor = json.joined ? "red" : "green";
+        const joinButtonColor = json.joined
+          ? `${theme.alertColor}`
+          : `${theme.secondaryColors}`;
         const joinButtonText = json.joined ? "Disjoin" : "Join";
 
         setJoinState((prevState) => ({
@@ -88,7 +91,9 @@ export default function DetailsCard() {
     setJoinState((prevState) => ({
       ...prevState,
       isJoined: updatedIsJoined,
-      joinButtonColor: updatedIsJoined ? "red" : "green",
+      joinButtonColor: updatedIsJoined
+        ? `${theme.alertColor}`
+        : `${theme.secondaryColors}`,
       joinButtonText: updatedIsJoined ? "Disjoin" : "Join",
     }));
 
@@ -106,86 +111,161 @@ export default function DetailsCard() {
 
   return (
     <StyledDetailsCard>
-      <h1>{activities.name}</h1>
-      <StyledJoinedmark>{joinState.isJoined && <p>XX</p>}</StyledJoinedmark>
-      <ul>
-        <li>author: {activities.author}</li>
-        <li>date: {activities.date}</li>
-        <li>time: {activities.time}</li>
-        <li>location: {activities.location}</li>
-        {activities.category !== "" && <li>category: {activities.category}</li>}
-      </ul>
-      {activities.description !== "" && (
-        <p>description: {activities.description}</p>
-      )}
-      <StyledJoinButton
-        backgroundcolor={joinState.joinButtonColor}
-        onClick={handleJoin}
-      >
-        {joinState.joinButtonText}
-      </StyledJoinButton>
-      <StyledButtonBox>
-        <Link href="/">
-          <StyledCloseButton>Close</StyledCloseButton>
-        </Link>
-        <StyledEditButton
-          onClick={() => {
-            setIsEditMode(!isEditMode);
-          }}
+      <StyledAcitivityNameBox category={activities.category}>
+        <StyledJoinedmark>{joinState.isJoined && <p>XX</p>}</StyledJoinedmark>
+        <StyledActivityName>{activities.name}</StyledActivityName>
+      </StyledAcitivityNameBox>
+      <StyledInformationBox>
+        <StyledUl>
+          <StyledListBoldItem>Author: {activities.author}</StyledListBoldItem>
+          <StyledListBoldItem>Date: {activities.date}</StyledListBoldItem>
+          <StyledListBoldItem>Time: {activities.time}</StyledListBoldItem>
+          <StyledListBoldItem>
+            Location: {activities.location}
+          </StyledListBoldItem>
+          {activities.category !== "" && (
+            <StyledListItem>Category: {activities.category}</StyledListItem>
+          )}
+          <StyledListItem>Description:</StyledListItem>
+        </StyledUl>
+        {activities.description !== "" && (
+          <StyledDescription>{activities.description}</StyledDescription>
+        )}
+        <StyledJoinButton
+          backgroundcolor={joinState.joinButtonColor}
+          onClick={handleJoin}
         >
-          {" "}
-          {isEditMode ? "Cancel Edit" : "Edit Activity"}
-        </StyledEditButton>
-        <StyledDeleteButton
-          onClick={() => {
-            if (window.confirm("Do you really want to delete this activity?")) {
-              handleDelete();
-            }
-          }}
-        >
-          Delete
-        </StyledDeleteButton>
-      </StyledButtonBox>
-      {isEditMode && (
-        <CardForm
-          onSubmit={handleEditActivity}
-          existingActivityData={activities}
-        />
-      )}
+          {joinState.joinButtonText}
+        </StyledJoinButton>
+        <StyledButtonBox>
+          <Link href="/">
+            <StyledCloseButton>Close</StyledCloseButton>
+          </Link>
+          <StyledEditButton
+            onClick={() => {
+              setIsEditMode(!isEditMode);
+            }}
+          >
+            {" "}
+            {isEditMode ? "Cancel Edit" : "Edit Activity"}
+          </StyledEditButton>
+          <StyledDeleteButton
+            onClick={() => {
+              if (
+                window.confirm("Do you really want to delete this activity?")
+              ) {
+                handleDelete();
+              }
+            }}
+          >
+            Delete
+          </StyledDeleteButton>
+        </StyledButtonBox>
+        {isEditMode && (
+          <CardForm
+            onSubmit={handleEditActivity}
+            existingActivityData={activities}
+          />
+        )}
+      </StyledInformationBox>
     </StyledDetailsCard>
   );
 }
 
-const StyledDeleteButton = styled.button``;
-const StyledJoinButton = styled.button`
-  width: 250px;
-  background-color: ${(props) => props.backgroundcolor || "green"};
-`;
-
 const StyledDetailsCard = styled.div`
   display: flex;
-  position: relative;
-  border-style: solid;
+
   flex-direction: column;
   align-items: center;
-  margin: 15px auto;
-  padding: 10px;
-  width: 600px;
+  margin: ${theme.spacing.xl} auto;
   justify-content: space-evenly;
-  border-radius: 15px;
 `;
 
-const StyledButtonBox = styled.div`
+const StyledInformationBox = styled.section`
   display: flex;
-  gap: 2rem;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  border-style: solid;
+  border-radius: ${theme.borderRadius.medium};
+  border-width: ${theme.borderWidth.medium};
+  box-shadow: ${theme.box.shadow};
+  width: ${theme.box.width};
+  margin-top: ${theme.spacing.xl};
+  padding-top: ${theme.spacing.large};
 `;
 
-const StyledCloseButton = styled.button``;
+const StyledListBoldItem = styled.li`
+  font-size: ${theme.fontSizes.small};
+  font-family: ${theme.fonts.heading};
+  padding-bottom: ${theme.spacing.small};
+`;
 
-const StyledEditButton = styled.button``;
+const StyledListItem = styled.li`
+  font-size: ${theme.fontSizes.small};
+  font-family: ${theme.fonts.text};
+  padding-bottom: ${theme.spacing.small};
+`;
 
 const StyledJoinedmark = styled.div`
   position: absolute;
   top: 0;
   left: 1rem;
 `;
+const StyledAcitivityNameBox = styled.div`
+  display: flex;
+  position: relative;
+  justify-content: center;
+  border-style: solid;
+  border-width: ${theme.borderWidth.medium};
+  border-radius: ${theme.borderRadius.medium};
+  box-shadow: ${theme.box.shadow};
+  width: ${theme.box.width};
+
+  background-color: ${({ category }) => {
+    switch (category) {
+      case "Sports":
+        return theme.secondaryColors.sports;
+      case "Culture":
+        return theme.secondaryColors.culture;
+      case "Food":
+        return theme.secondaryColors.food;
+      case "Outdoor":
+        return theme.secondaryColors.outdoor;
+      default:
+        return theme.secondaryColors.default;
+    }
+  }};
+`;
+
+const StyledActivityName = styled.h2`
+  font-size: ${theme.fontSizes.large};
+`;
+
+const StyledDescription = styled.p`
+  font-size: ${theme.fontSizes.small};
+  font-family: ${theme.fonts.heading};
+  margin: 0;
+  margin-top: ${theme.spacing.medium};
+  margin-bottom: ${theme.spacing.xl};
+`;
+
+const StyledUl = styled.ul`
+  margin: 0;
+`;
+
+const StyledButtonBox = styled.div`
+  display: flex;
+  gap: 2rem;
+  padding: ${theme.spacing.medium};
+`;
+
+const StyledDeleteButton = styled.button``;
+
+const StyledJoinButton = styled.button`
+  width: 250px;
+  background-color: ${(props) => props.backgroundcolor || "green"};
+`;
+const StyledCloseButton = styled.button``;
+
+const StyledEditButton = styled.button``;
