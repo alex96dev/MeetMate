@@ -21,6 +21,8 @@ export default function CardForm({ onSubmit, existingActivityData }) {
         id="name"
         name="name"
         autocomplete="off"
+        minLength="3"
+        maxLength="8"
         defaultValue={existingActivityData?.name || ""}
         required
       />
@@ -98,7 +100,7 @@ const StyledCardForm = styled.form`
   align-items: center;
   margin: 15px auto;
   padding: 10px;
-  width: 600px;
+  width: 90%;
   gap: 0.5rem;
   justify-content: space-evenly;
   border-radius: 15px;

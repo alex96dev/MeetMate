@@ -21,16 +21,17 @@ export const theme = {
     large: "2rem",
     xl: "2.5rem",
   },
+
   spacing: {
-    small: "0.5rem",
-    medium: "1rem",
-    large: "1.5rem",
+    small: "0.6rem",
+    medium: "1.2rem",
+    large: "1.8rem",
     xl: "2rem",
   },
   box: {
     shadow: "5px 5px 0 #262524",
     hover: "3px 3px 0 #262524",
-    height: "5.5rem",
+    height: "4.8rem",
     width: "20rem",
   },
 
