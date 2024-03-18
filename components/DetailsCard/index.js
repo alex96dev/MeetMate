@@ -5,13 +5,15 @@ import Link from "next/link";
 import CardForm from "../CardForm";
 import { useState, useEffect } from "react";
 import { theme } from "@/styles";
+import PlaceholderLogo from "../../Icons/Placeholder";
+import DeleteIcon from "@/Icons/DeleteIcon";
+import EditIcon from "@/Icons/EditIcon";
 
 export default function DetailsCard() {
   const router = useRouter();
   const { id } = router.query;
   const [joinState, setJoinState] = useState({
     isJoined: false,
-    joinButtonColor: `${theme.secondaryColors}`,
     joinButtonText: "Join",
   });
 
@@ -20,16 +22,10 @@ export default function DetailsCard() {
       try {
         const response = await fetch(`/api/activities/${id}`);
         const json = await response.json();
-        const joinButtonColor = json.joined
-          ? `${theme.alertColor}`
-          : `${theme.secondaryColors}`;
-        const joinButtonText = json.joined ? "Disjoin" : "Join";
 
         setJoinState((prevState) => ({
           ...prevState,
           isJoined: json.joined,
-          joinButtonColor,
-          joinButtonText,
         }));
       } catch (error) {
         console.error("Error fetching activity:", error);
@@ -91,10 +87,6 @@ export default function DetailsCard() {
     setJoinState((prevState) => ({
       ...prevState,
       isJoined: updatedIsJoined,
-      joinButtonColor: updatedIsJoined
-        ? `${theme.alertColor}`
-        : `${theme.secondaryColors}`,
-      joinButtonText: updatedIsJoined ? "Disjoin" : "Join",
     }));
 
     const response = await fetch(`/api/activities/${id}`, {
@@ -111,44 +103,52 @@ export default function DetailsCard() {
 
   return (
     <StyledDetailsCard>
+      <StyledHeadlineBox>
+        <StyledPlaceholderLogo />
+        <StyledAppName> MeetMate</StyledAppName>
+      </StyledHeadlineBox>
+      <StyledPageTitle>Join your friend!</StyledPageTitle>
       <StyledAcitivityNameBox category={activities.category}>
-        <StyledJoinedmark>{joinState.isJoined && <p>XX</p>}</StyledJoinedmark>
+        <Link href="/">
+          <StyledCloseButton category={activities.category}>
+            x
+          </StyledCloseButton>
+        </Link>
+        <StyledJoinedmark>{joinState.isJoined && <h2>XX</h2>}</StyledJoinedmark>
         <StyledActivityName>{activities.name}</StyledActivityName>
       </StyledAcitivityNameBox>
       <StyledInformationBox>
         <StyledUl>
-          <StyledListBoldItem>Author: {activities.author}</StyledListBoldItem>
-          <StyledListBoldItem>Date: {activities.date}</StyledListBoldItem>
-          <StyledListBoldItem>Time: {activities.time}</StyledListBoldItem>
-          <StyledListBoldItem>
-            Location: {activities.location}
-          </StyledListBoldItem>
+          <StyledInfoLabel>Author: </StyledInfoLabel>
+          <StyledInfo>{activities.author}</StyledInfo>
+
+          <StyledInfoLabel>Date:</StyledInfoLabel>
+          <StyledInfo>{activities.date}</StyledInfo>
+          <StyledInfoLabel>Time:</StyledInfoLabel>
+          <StyledInfo>{activities.time}</StyledInfo>
+          <StyledInfoLabel>Location:</StyledInfoLabel>
+          <StyledInfo>{activities.location}</StyledInfo>
+          <StyledInfoLabel>Category: </StyledInfoLabel>
           {activities.category !== "" && (
-            <StyledListItem>Category: {activities.category}</StyledListItem>
+            <StyledInfo>{activities.category}</StyledInfo>
           )}
-          <StyledListItem>Description:</StyledListItem>
+          <StyledInfoLabel>Description:</StyledInfoLabel>
         </StyledUl>
         {activities.description !== "" && (
           <StyledDescription>{activities.description}</StyledDescription>
         )}
-        <StyledJoinButton
-          backgroundcolor={joinState.joinButtonColor}
-          onClick={handleJoin}
-        >
-          {joinState.joinButtonText}
-        </StyledJoinButton>
         <StyledButtonBox>
-          <Link href="/">
-            <StyledCloseButton>Close</StyledCloseButton>
-          </Link>
           <StyledEditButton
             onClick={() => {
               setIsEditMode(!isEditMode);
             }}
           >
             {" "}
-            {isEditMode ? "Cancel Edit" : "Edit Activity"}
+            {isEditMode ? "Cancel" : <EditIcon />}
           </StyledEditButton>
+          <StyledJoinButton isJoined={joinState.isJoined} onClick={handleJoin}>
+            {joinState.isJoined ? "Disjoin" : "XX Join"}
+          </StyledJoinButton>
           <StyledDeleteButton
             onClick={() => {
               if (
@@ -158,7 +158,7 @@ export default function DetailsCard() {
               }
             }}
           >
-            Delete
+            <DeleteIcon />
           </StyledDeleteButton>
         </StyledButtonBox>
         {isEditMode && (
@@ -174,11 +174,34 @@ export default function DetailsCard() {
 
 const StyledDetailsCard = styled.div`
   display: flex;
-
   flex-direction: column;
+  margin: ${theme.spacing.small} auto;
+  max-width: ${theme.box.width};
+`;
+
+const StyledHeadlineBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
   align-items: center;
-  margin: ${theme.spacing.xl} auto;
-  justify-content: space-evenly;
+  gap: ${theme.spacing.xs};
+  margin-top: ${theme.spacing.small};
+`;
+
+const StyledAppName = styled.h1`
+  font-size: ${theme.fontSizes.small};
+  margin: 0;
+  padding-top: 0.1rem;
+`;
+
+const StyledPageTitle = styled.h1`
+  margin: ${theme.spacing.medium} auto;
+  font-size: ${theme.fontSizes.ml};
+`;
+
+const StyledPlaceholderLogo = styled(PlaceholderLogo)`
+  width: 1.2rem;
+  height: 1.2rem;
 `;
 
 const StyledInformationBox = styled.section`
@@ -195,23 +218,14 @@ const StyledInformationBox = styled.section`
   padding-top: ${theme.spacing.large};
 `;
 
-const StyledListBoldItem = styled.li`
-  font-size: ${theme.fontSizes.small};
-  font-family: ${theme.fonts.heading};
-  padding-bottom: ${theme.spacing.small};
-`;
-
-const StyledListItem = styled.li`
-  font-size: ${theme.fontSizes.small};
-  font-family: ${theme.fonts.text};
-  padding-bottom: ${theme.spacing.small};
-`;
-
 const StyledJoinedmark = styled.div`
   position: absolute;
-  top: 0;
-  left: 1rem;
+  top: -0.5rem;
+  left: 0.9rem;
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.large};
 `;
+
 const StyledAcitivityNameBox = styled.div`
   display: flex;
   position: relative;
@@ -238,6 +252,40 @@ const StyledAcitivityNameBox = styled.div`
   }};
 `;
 
+const StyledCloseButton = styled.button`
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  font-size: ${theme.fontSizes.small};
+  top: -0.8rem;
+  right: -0.8rem;
+  height: ${theme.button.xs};
+  width: ${theme.button.xs};
+  border-width: ${theme.borderWidth.thin};
+  border-radius: 50%;
+  box-shadow: 2px 2px 0 #262524;
+  ${theme.primaryColor};
+  z-index: 99;
+  &:hover {
+    box-shadow: none;
+  }
+  background-color: ${({ category }) => {
+    switch (category) {
+      case "Sports":
+        return theme.secondaryColors.sports;
+      case "Culture":
+        return theme.secondaryColors.culture;
+      case "Food":
+        return theme.secondaryColors.food;
+      case "Outdoor":
+        return theme.secondaryColors.outdoor;
+      default:
+        return theme.secondaryColors.default;
+    }
+  }};
+`;
+
 const StyledActivityName = styled.h2`
   font-size: ${theme.fontSizes.large};
 `;
@@ -245,13 +293,38 @@ const StyledActivityName = styled.h2`
 const StyledDescription = styled.p`
   font-size: ${theme.fontSizes.small};
   font-family: ${theme.fonts.heading};
-  margin: 0;
+  width: 80%;
   margin-top: ${theme.spacing.medium};
   margin-bottom: ${theme.spacing.xl};
+  letter-spacing: 0.009rem;
+  line-height: 1.4;
 `;
 
 const StyledUl = styled.ul`
-  margin: 0;
+  margin: auto;
+  padding: 0;
+  width: 80%;
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  gap: ${theme.spacing.medium};
+`;
+
+const StyledInfoLabel = styled.li`
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  font-size: ${theme.fontSizes.small};
+  font-family: ${theme.fonts.heading};
+`;
+
+const StyledInfo = styled.li`
+  display: flex;
+  justify-content: start;
+  flex-wrap: wrap;
+  font-size: ${theme.fontSizes.small};
+  font-family: ${theme.fonts.heading};
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  max-width: 10rem;
 `;
 
 const StyledButtonBox = styled.div`
@@ -260,12 +333,16 @@ const StyledButtonBox = styled.div`
   padding: ${theme.spacing.medium};
 `;
 
-const StyledDeleteButton = styled.button``;
+const StyledDeleteButton = styled.button`
+  width: ${theme.button.medium};
+`;
 
 const StyledJoinButton = styled.button`
-  width: 250px;
-  background-color: ${(props) => props.backgroundcolor || "green"};
+  width: ${theme.button.lx};
+  background-color: ${(props) =>
+    props.isJoined ? `${theme.alertColor}` : `${theme.confirmColor}`};
 `;
-const StyledCloseButton = styled.button``;
 
-const StyledEditButton = styled.button``;
+const StyledEditButton = styled.button`
+  width: ${theme.button.medium};
+`;
