@@ -25,7 +25,7 @@ export default function HomePage() {
   };
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
-  let displayedActivities = searchTerm ? filteredActivities : activities;
+  const displayedActivities = searchTerm ? filteredActivities : activities;
   return (
     <>
       <StyledHeadlineBox>
