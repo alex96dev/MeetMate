@@ -36,6 +36,15 @@ const StyledNavigation = styled.nav`
     left: 50%;
     transform: translate(-50%);
     width: ${theme.line.width};
+    @media screen and (min-width: 600px) {
+      width: ${theme.box.width.split("r")[0] * 1.4 * 1.075 + "rem"};
+    }
+    @media screen and (min-width: 900px) {
+      width: ${theme.box.width.split("r")[0] * 1.6 * 1.075 + "rem"};
+    }
+    @media screen and (min-width: 1200px) {
+      width: ${theme.box.width.split("r")[0] * 1.8 * 1.075 + "rem"};
+    }
     height: ${theme.borderWidth.thin};
     background-color: ${theme.textColor};
   }
@@ -44,17 +53,54 @@ const StyledNavigation = styled.nav`
 const StyledNavButtonBox = styled.div`
   display: flex;
   width: ${theme.box.width};
+  @media screen and (min-width: 600px) {
+    width: ${theme.box.width.split("r")[0] * 1.4 + "rem"};
+  }
+  @media screen and (min-width: 900px) {
+    width: ${theme.box.width.split("r")[0] * 1.6 + "rem"};
+  }
+  @media screen and (min-width: 1200px) {
+    width: ${theme.box.width.split("r")[0] * 1.8 + "rem"};
+  }
   justify-content: space-between;
-  padding-top: ${theme.spacing.large};
-  padding-bottom: ${theme.spacing.large};
+  padding-top: ${theme.spacing.medium};
+  padding-bottom: ${theme.spacing.medium};
 `;
 
 const StyledSideButton = styled.button`
   height: ${theme.button.large};
   width: ${theme.button.large};
+  @media screen and (min-width: 600px) {
+    height: ${theme.button.large.split("r")[0] * 1.4 + "rem"};
+    width: ${theme.button.large.split("r")[0] * 1.4 + "rem"};
+    font-size: ${theme.fontSizes.small};
+  }
+  @media screen and (min-width: 900px) {
+    height: ${theme.button.large.split("r")[0] * 1.6 + "rem"};
+    width: ${theme.button.large.split("r")[0] * 1.6 + "rem"};
+    font-size: ${theme.fontSizes.medium};
+  }
+  @media screen and (min-width: 1200px) {
+    height: ${theme.button.large.split("r")[0] * 1.8 + "rem"};
+    width: ${theme.button.large.split("r")[0] * 1.8 + "rem"};
+  }
 `;
 
 const StyledCenterButton = styled.button`
   height: ${theme.button.large};
   width: ${theme.button.xl};
+  @media screen and (min-width: 600px) {
+    height: ${theme.button.large.split("r")[0] * 1.4 + "rem"};
+    width: ${theme.button.xl.split("r")[0] * 1.4 + "rem"};
+    font-size: ${theme.fontSizes.small};
+  }
+  @media screen and (min-width: 900px) {
+    height: ${theme.button.large.split("r")[0] * 1.6 + "rem"};
+    width: ${theme.button.xl.split("r")[0] * 1.6 + "rem"};
+    font-size: ${theme.fontSizes.medium};
+  }
+  @media screen and (min-width: 1200px) {
+    height: ${theme.button.large.split("r")[0] * 1.8 + "rem"};
+    width: ${theme.button.xl.split("r")[0] * 1.8 + "rem"};
+  }
 `;

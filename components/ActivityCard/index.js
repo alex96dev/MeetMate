@@ -4,12 +4,16 @@ import styled from "styled-components";
 export default function ActivityCard({ name, date, time, joined, category }) {
   return (
     <StyledActivityCard category={category}>
-      <h2>{name}</h2>
-      <section>
-        <p>{date}</p>
-        <p>{time}</p>
+      <StyledDivLeft>
         {joined && <StyledJoinMark>XX</StyledJoinMark>}
-      </section>
+        <StyledActivityName>{name}</StyledActivityName>
+      </StyledDivLeft>
+      <StyledDivRight>
+        <StyledSection>
+          <StyledPElement>{date}</StyledPElement>
+          <StyledPElement>{time}</StyledPElement>
+        </StyledSection>
+      </StyledDivRight>
     </StyledActivityCard>
   );
 }
@@ -20,7 +24,6 @@ const StyledActivityCard = styled.div`
   border-style: solid;
   width: ${theme.box.width};
   justify-content: space-evenly;
-  padding: ${theme.spacing.small};
   border-style: solid;
   border-width: ${theme.borderWidth.medium};
   border-radius: ${theme.borderRadius.medium};
@@ -44,10 +47,103 @@ const StyledActivityCard = styled.div`
         return theme.secondaryColors.default;
     }
   }};
+  @media screen and (min-width: 600px) {
+    width: ${theme.box.width.split("r")[0] * 1.4 + "rem"};
+    height: ${theme.box.height.split("r")[0] * 1.2 + "rem"};
+  }
+  @media screen and (min-width: 900px) {
+    width: ${theme.box.width.split("r")[0] * 1.6 + "rem"};
+    height: ${theme.box.height.split("r")[0] * 1.4 + "rem"};
+  }
+  @media screen and (min-width: 1200px) {
+    width: ${theme.box.width.split("r")[0] * 1.8 + "rem"};
+    height: ${theme.box.height.split("r")[0] * 1.6 + "rem"};
+  }
 `;
 
 const StyledJoinMark = styled.p`
   position: absolute;
   top: 0;
-  left: 1rem;
+  @media screen and (min-width: 600px) {
+    font-size: ${theme.fontSizes.small.split("r")[0] * 1.2 + "rem"};
+  }
+  @media screen and (min-width: 900px) {
+    font-size: ${theme.fontSizes.small.split("r")[0] * 1.4 + "rem"};
+  }
+  @media screen and (min-width: 1200px) {
+    font-size: ${theme.fontSizes.small.split("r")[0] * 1.6 + "rem"};
+  }
+  left: 0.3rem;
+  margin-top: 0;
+  margin-left: 0;
+`;
+
+const StyledDivLeft = styled.div`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12rem;
+  @media screen and (min-width: 600px) {
+    width: 19rem;
+  }
+  @media screen and (min-width: 900px) {
+    width: 21rem;
+  }
+  @media screen and (min-width: 1200px) {
+    width: 24rem;
+  }
+  align-items: center;
+  left: 0;
+`;
+const StyledDivRight = styled.div`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8rem;
+  @media screen and (min-width: 600px) {
+    width: 9rem;
+  }
+  @media screen and (min-width: 900px) {
+    width: 11rem;
+  }
+  @media screen and (min-width: 1200px) {
+    width: 12rem;
+  }
+  height: 85%;
+  padding-left: 15px;
+  border-left: solid;
+  right: 0;
+  border-width: ${theme.borderWidth.thin};
+`;
+
+const StyledSection = styled.section`
+  top: 50%;
+  transform: translateY(-50%);
+  position: relative;
+`;
+
+const StyledPElement = styled.p`
+  margin: 0 0 10px 0;
+  @media screen and (min-width: 600px) {
+    font-size: ${theme.fontSizes.small.split("r")[0] * 1.2 + "rem"};
+  }
+  @media screen and (min-width: 900px) {
+    font-size: ${theme.fontSizes.small.split("r")[0] * 1.4 + "rem"};
+  }
+  @media screen and (min-width: 1200px) {
+    font-size: ${theme.fontSizes.small.split("r")[0] * 1.6 + "rem"};
+  }
+`;
+
+const StyledActivityName = styled.h2`
+  text-align: center;
+  @media screen and (min-width: 600px) {
+    font-size: ${theme.fontSizes.medium.split("r")[0] * 1.2 + "rem"};
+  }
+  @media screen and (min-width: 900px) {
+    font-size: ${theme.fontSizes.medium.split("r")[0] * 1.4 + "rem"};
+  }
+  @media screen and (min-width: 1200px) {
+    font-size: ${theme.fontSizes.medium.split("r")[0] * 1.6 + "rem"};
+  }
 `;

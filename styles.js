@@ -25,6 +25,7 @@ export const theme = {
     large: "2rem",
     xl: "2.5rem",
   },
+
   spacing: {
     xs: "0.3rem",
     small: "0.6rem",

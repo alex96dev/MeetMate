@@ -16,7 +16,7 @@ export default function HomePage() {
     <>
       <StyledHeadlineBox>
         <PlaceholderLogo />
-        <h1>MeetMate</h1>
+        <StyledHeadline>MeetMate</StyledHeadline>
       </StyledHeadlineBox>
       <StyledCardSection>
         {activities.map((activity) => (
@@ -50,4 +50,25 @@ const StyledCardSection = styled.section`
   align-items: center;
   margin: 0;
   margin-bottom: 6rem;
+  @media screen and (min-width: 600px) {
+    margin-bottom: 6.5rem;
+  }
+  @media screen and (min-width: 900px) {
+    margin-bottom: 7rem;
+  }
+  @media screen and (min-width: 1200px) {
+    margin-bottom: 7.5rem;
+  }
+`;
+
+const StyledHeadline = styled.h1`
+  @media screen and (min-width: 600px) {
+    font-size: ${theme.fontSizes.large.split("r")[0] * 1.2 + "rem"};
+  }
+  @media screen and (min-width: 900px) {
+    font-size: ${theme.fontSizes.large.split("r")[0] * 1.4 + "rem"};
+  }
+  @media screen and (min-width: 1200px) {
+    font-size: ${theme.fontSizes.large.split("r")[0] * 1.6 + "rem"};
+  }
 `;
