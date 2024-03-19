@@ -2,7 +2,7 @@ import ActivityCard from "@/components/ActivityCard";
 import useSWR from "swr";
 import Link from "next/link";
 import styled from "styled-components";
-import PlaceholderLogo from "@/components/Logo/placeholder";
+import PlaceholderLogo from "@/Icons/Placeholder";
 import Navigation from "@/components/Navigation";
 import { theme } from "@/styles";
 
