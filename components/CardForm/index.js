@@ -1,7 +1,9 @@
 import styled from "styled-components";
-import Link from "next/link";
+import BackIcon from "@/Icons/BackIcon";
+import SaveIcon from "@/Icons/SaveIcon";
+import { theme } from "@/styles";
 
-export default function CardForm({ onSubmit, existingActivityData }) {
+export default function CardForm({ onSubmit, onCancel, existingActivityData }) {
   return (
     <StyledCardForm onSubmit={onSubmit}>
       <h1>Create Activity</h1>
@@ -22,7 +24,7 @@ export default function CardForm({ onSubmit, existingActivityData }) {
         name="name"
         autocomplete="off"
         minLength="3"
-        maxLength="8"
+        maxLength="20"
         defaultValue={existingActivityData?.name || ""}
         required
       />
@@ -83,12 +85,14 @@ export default function CardForm({ onSubmit, existingActivityData }) {
           "- Add hashtags like #indoor #creative ..."
         }
       />
-      <StyledBottonBox>
-        <StyledSaveButton type="submit">Save</StyledSaveButton>
-        <Link href="/">
-          <StyledCancelButton type="button">Cancel</StyledCancelButton>
-        </Link>
-      </StyledBottonBox>
+      <StyledButtonBox>
+        <StyledButton type="button" onClick={onCancel}>
+          <BackIcon />
+        </StyledButton>
+        <StyledButton type="submit">
+          <SaveIcon />
+        </StyledButton>
+      </StyledButtonBox>
     </StyledCardForm>
   );
 }
@@ -106,14 +110,16 @@ const StyledCardForm = styled.form`
   border-radius: 15px;
 `;
 
-const StyledSaveButton = styled.button``;
-const StyledCancelButton = styled.button``;
+const StyledButton = styled.button`
+  height: ${theme.button.medium};
+  width: ${theme.button.medium};
+`;
 
 const StyledInputField = styled.input`
   min-width: 200px;
 `;
 
-const StyledBottonBox = styled.div`
+const StyledButtonBox = styled.div`
   display: flex;
   gap: 1rem;
 `;

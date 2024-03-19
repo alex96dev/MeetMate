@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import Link from "next/link";
 import CardForm from "../CardForm";
 import { useState, useEffect } from "react";
 import { theme } from "@/styles";
@@ -51,9 +50,17 @@ export default function DetailsCard() {
     router.replace("/");
   }
 
+  const handleEditClick = () => {
+    setIsEditMode(true);
+  };
+
+  const handleCancel = () => {
+    setIsEditMode(false);
+  };
+
   async function handleEditActivity(event) {
     event.preventDefault();
-
+    setIsEditMode(true);
     const form = event.target;
     const formData = new FormData(form);
 
@@ -139,18 +146,14 @@ export default function DetailsCard() {
           <StyledDescription>{activities.description}</StyledDescription>
         )}
         <StyledButtonBox>
-          <StyledEditButton
-            onClick={() => {
-              setIsEditMode(!isEditMode);
-            }}
-          >
+          <StyledButton onClick={handleEditClick}>
             {" "}
             {isEditMode ? "Cancel" : <EditIcon />}
-          </StyledEditButton>
+          </StyledButton>
           <StyledJoinButton isJoined={joinState.isJoined} onClick={handleJoin}>
             {joinState.isJoined ? "Disjoin" : "XX Join"}
           </StyledJoinButton>
-          <StyledDeleteButton
+          <StyledButton
             onClick={() => {
               if (
                 window.confirm("Do you really want to delete this activity?")
@@ -160,13 +163,17 @@ export default function DetailsCard() {
             }}
           >
             <DeleteIcon />
-          </StyledDeleteButton>
+          </StyledButton>
         </StyledButtonBox>
         {isEditMode && (
-          <CardForm
-            onSubmit={handleEditActivity}
-            existingActivityData={activities}
-          />
+          <Overlay>
+            <CardForm
+              onCancel={handleCancel}
+              onSubmit={handleEditActivity}
+              existingActivityData={activities}
+              sourcePage="details"
+            />
+          </Overlay>
         )}
       </StyledInformationBox>
     </StyledDetailsCard>
@@ -187,6 +194,18 @@ const getCategoryColor = (category, theme) => {
       return theme.secondaryColors.default;
   }
 };
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const StyledDetailsCard = styled.div`
   display: flex;
@@ -324,7 +343,7 @@ const StyledButtonBox = styled.div`
   padding: ${theme.spacing.medium};
 `;
 
-const StyledEditButton = styled.button`
+const StyledButton = styled.button`
   width: ${theme.button.medium};
 `;
 
@@ -332,8 +351,4 @@ const StyledJoinButton = styled.button`
   width: ${theme.button.lx};
   background-color: ${(props) =>
     props.isJoined ? `${theme.alertColor}` : `${theme.confirmColor}`};
-`;
-
-const StyledDeleteButton = styled.button`
-  width: ${theme.button.medium};
 `;

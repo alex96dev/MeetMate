@@ -24,5 +24,5 @@ export default function Create() {
       router.push("/");
     }
   }
-  return <CardForm onSubmit={handleSubmit} />;
+  return <CardForm onSubmit={handleSubmit} onCancel={() => router.push("/")} />;
 }
