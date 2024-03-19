@@ -5,7 +5,7 @@ import Link from "next/link";
 import CardForm from "../CardForm";
 import { useState, useEffect } from "react";
 import { theme } from "@/styles";
-import PlaceholderLogo from "../../Icons/Placeholder";
+import PlaceholderLogo from "@/Icons/Placeholder";
 import DeleteIcon from "@/Icons/DeleteIcon";
 import EditIcon from "@/Icons/EditIcon";
 
@@ -33,7 +33,7 @@ export default function DetailsCard() {
     };
 
     fetchData();
-  }, []);
+  }, [id]);
 
   const {
     data: activities,
@@ -109,15 +109,16 @@ export default function DetailsCard() {
       </StyledHeadlineBox>
       <StyledPageTitle>Join your friend!</StyledPageTitle>
       <StyledAcitivityNameBox category={activities.category}>
-        <Link href="/">
-          <StyledCloseButton category={activities.category}>
-            x
-          </StyledCloseButton>
-        </Link>
         <StyledJoinedmark>{joinState.isJoined && <h2>XX</h2>}</StyledJoinedmark>
         <StyledActivityName>{activities.name}</StyledActivityName>
       </StyledAcitivityNameBox>
       <StyledInformationBox>
+        <StyledCloseButton
+          onClick={() => (window.location.href = "/")}
+          category={activities.category}
+        >
+          x
+        </StyledCloseButton>
         <StyledUl>
           <StyledInfoLabel>Author: </StyledInfoLabel>
           <StyledInfo>{activities.author}</StyledInfo>
@@ -172,6 +173,21 @@ export default function DetailsCard() {
   );
 }
 
+const getCategoryColor = (category, theme) => {
+  switch (category) {
+    case "Sports":
+      return theme.secondaryColors.sports;
+    case "Culture":
+      return theme.secondaryColors.culture;
+    case "Food":
+      return theme.secondaryColors.food;
+    case "Outdoor":
+      return theme.secondaryColors.outdoor;
+    default:
+      return theme.secondaryColors.default;
+  }
+};
+
 const StyledDetailsCard = styled.div`
   display: flex;
   flex-direction: column;
@@ -188,6 +204,11 @@ const StyledHeadlineBox = styled.div`
   margin-top: ${theme.spacing.small};
 `;
 
+const StyledPlaceholderLogo = styled(PlaceholderLogo)`
+  width: 1.2rem;
+  height: 1.2rem;
+`;
+
 const StyledAppName = styled.h1`
   font-size: ${theme.fontSizes.small};
   margin: 0;
@@ -199,9 +220,28 @@ const StyledPageTitle = styled.h1`
   font-size: ${theme.fontSizes.ml};
 `;
 
-const StyledPlaceholderLogo = styled(PlaceholderLogo)`
-  width: 1.2rem;
-  height: 1.2rem;
+const StyledAcitivityNameBox = styled.div`
+  display: flex;
+  position: relative;
+  justify-content: center;
+  border-style: solid;
+  border-width: ${theme.borderWidth.medium};
+  border-radius: ${theme.borderRadius.medium};
+  box-shadow: ${theme.box.shadow};
+  width: ${theme.box.width};
+  background-color: ${({ category }) => getCategoryColor(category, theme)};
+`;
+
+const StyledJoinedmark = styled.div`
+  position: absolute;
+  top: -1rem;
+  left: 0.6rem;
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.large};
+`;
+
+const StyledActivityName = styled.h2`
+  font-size: ${theme.fontSizes.large};
 `;
 
 const StyledInformationBox = styled.section`
@@ -218,86 +258,27 @@ const StyledInformationBox = styled.section`
   padding-top: ${theme.spacing.large};
 `;
 
-const StyledJoinedmark = styled.div`
-  position: absolute;
-  top: -0.5rem;
-  left: 0.9rem;
-  font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes.large};
-`;
-
-const StyledAcitivityNameBox = styled.div`
-  display: flex;
-  position: relative;
-  justify-content: center;
-  border-style: solid;
-  border-width: ${theme.borderWidth.medium};
-  border-radius: ${theme.borderRadius.medium};
-  box-shadow: ${theme.box.shadow};
-  width: ${theme.box.width};
-
-  background-color: ${({ category }) => {
-    switch (category) {
-      case "Sports":
-        return theme.secondaryColors.sports;
-      case "Culture":
-        return theme.secondaryColors.culture;
-      case "Food":
-        return theme.secondaryColors.food;
-      case "Outdoor":
-        return theme.secondaryColors.outdoor;
-      default:
-        return theme.secondaryColors.default;
-    }
-  }};
-`;
-
 const StyledCloseButton = styled.button`
   display: flex;
   position: absolute;
   justify-content: center;
   align-items: center;
   font-size: ${theme.fontSizes.small};
-  top: -0.8rem;
-  right: -0.8rem;
+  top: 0.5rem;
+  right: 0.5rem;
   height: ${theme.button.xs};
   width: ${theme.button.xs};
-  border-width: ${theme.borderWidth.thin};
-  border-radius: 50%;
-  box-shadow: 2px 2px 0 #262524;
-  ${theme.primaryColor};
+  border-width: ${theme.borderWidth.medium};
+  border-radius: 5px;
+  box-shadow: none;
   z-index: 99;
-  &:hover {
+  &:hover,
+  &:active {
     box-shadow: none;
+    background-color: ${theme.primaryColor};
+    color: ${theme.textColor};
   }
-  background-color: ${({ category }) => {
-    switch (category) {
-      case "Sports":
-        return theme.secondaryColors.sports;
-      case "Culture":
-        return theme.secondaryColors.culture;
-      case "Food":
-        return theme.secondaryColors.food;
-      case "Outdoor":
-        return theme.secondaryColors.outdoor;
-      default:
-        return theme.secondaryColors.default;
-    }
-  }};
-`;
-
-const StyledActivityName = styled.h2`
-  font-size: ${theme.fontSizes.large};
-`;
-
-const StyledDescription = styled.p`
-  font-size: ${theme.fontSizes.small};
-  font-family: ${theme.fonts.heading};
-  width: 80%;
-  margin-top: ${theme.spacing.medium};
-  margin-bottom: ${theme.spacing.xl};
-  letter-spacing: 0.009rem;
-  line-height: 1.4;
+  background-color: ${({ category }) => getCategoryColor(category, theme)};
 `;
 
 const StyledUl = styled.ul`
@@ -327,13 +308,23 @@ const StyledInfo = styled.li`
   max-width: 10rem;
 `;
 
+const StyledDescription = styled.p`
+  font-size: ${theme.fontSizes.small};
+  font-family: ${theme.fonts.heading};
+  width: 80%;
+  margin-top: ${theme.spacing.medium};
+  margin-bottom: ${theme.spacing.xl};
+  letter-spacing: 0.009rem;
+  line-height: 1.4;
+`;
+
 const StyledButtonBox = styled.div`
   display: flex;
   gap: 2rem;
   padding: ${theme.spacing.medium};
 `;
 
-const StyledDeleteButton = styled.button`
+const StyledEditButton = styled.button`
   width: ${theme.button.medium};
 `;
 
@@ -343,6 +334,6 @@ const StyledJoinButton = styled.button`
     props.isJoined ? `${theme.alertColor}` : `${theme.confirmColor}`};
 `;
 
-const StyledEditButton = styled.button`
+const StyledDeleteButton = styled.button`
   width: ${theme.button.medium};
 `;
