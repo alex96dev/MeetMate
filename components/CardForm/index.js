@@ -3,8 +3,14 @@ import styled from "styled-components";
 import BackIcon from "@/Icons/BackIcon";
 import SaveIcon from "@/Icons/SaveIcon";
 import { theme } from "@/styles";
+import Logo from "@/Icons/Logo";
 
-export default function CardForm({ onSubmit, onCancel, existingActivityData }) {
+export default function CardForm({
+  onSubmit,
+  onCancel,
+  existingActivityData,
+  pageTitle,
+}) {
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -21,7 +27,13 @@ export default function CardForm({ onSubmit, onCancel, existingActivityData }) {
 
   return (
     <StyledCardForm onSubmit={onSubmit}>
-      <StyledHeadline>Create your activity</StyledHeadline>
+      <StyledHeadlineBox>
+        <StyledLogoWrapper>
+          <Logo />
+        </StyledLogoWrapper>
+        <StyledAppName> MeetMate</StyledAppName>
+      </StyledHeadlineBox>
+      {pageTitle && <StyledPageTitle>{pageTitle}</StyledPageTitle>}
       <StyledActivityNameBox selectedCategory={selectedCategory}>
         <label htmlFor="name" />
         <StyledActivityNameInput
@@ -108,9 +120,7 @@ export default function CardForm({ onSubmit, onCancel, existingActivityData }) {
           <StyledButton type="button" onClick={onCancel}>
             <BackIcon />
           </StyledButton>
-          <StyledButton type="submit">
-            <SaveIcon />
-          </StyledButton>
+          <StyledButton type="submit">+{/* <SaveIcon /> */}</StyledButton>
         </StyledButtonBox>
       </StyledInputBox>
     </StyledCardForm>
@@ -124,6 +134,31 @@ const categoryColors = {
   Outdoor: `${theme.secondaryColors.outdoor}`,
 };
 
+const StyledHeadlineBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: ${theme.spacing.xs};
+  margin-top: ${theme.spacing.small};
+  width: ${theme.box.width};
+`;
+
+const StyledLogoWrapper = styled.div`
+  width: ${theme.button.xs};
+  height: ${theme.button.xs};
+`;
+
+const StyledAppName = styled.h1`
+  font-size: ${theme.fontSizes.small};
+  margin: 0;
+  padding-top: 0.3rem;
+`;
+
+const StyledPageTitle = styled.h1`
+  font-size: ${theme.fontSizes.ml};
+`;
+
 const StyledCardForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -133,10 +168,6 @@ const StyledCardForm = styled.form`
   width: ${theme.box.width};
   gap: 0.5rem;
   justify-content: space-evenly;
-`;
-
-const StyledHeadline = styled.h1`
-  font-size: ${theme.fontSizes.medium};
 `;
 
 const StyledActivityNameBox = styled.div`
@@ -235,6 +266,7 @@ const StyledTextArea = styled.textarea`
   border-radius: ${theme.borderRadius.small};
   border-width: ${theme.borderWidth.medium};
   box-shadow: ${theme.box.shadowSmall};
+  background-color: ${theme.primaryColor};
   &::placeholder {
     font-family: ${theme.fonts.text};
     font-size: ${theme.fontSizes.small};

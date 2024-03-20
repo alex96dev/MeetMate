@@ -5,12 +5,23 @@ import styled from "styled-components";
 import Logo from "@/Icons/Logo";
 import Navigation from "@/components/Navigation";
 import { theme } from "@/styles";
+import { useState } from "react";
+import CardForm from "@/components/CardForm";
 
 export default function HomePage() {
+  const [isCreateMode, setIsCreateMode] = useState(false);
   const { data: activities, isLoading } = useSWR("/api/activities");
 
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
+
+  const handleCreateClick = () => {
+    setIsCreateMode(true);
+  };
+
+  const handleCloseClick = () => {
+    setIsCreateMode(false);
+  };
 
   return (
     <>
@@ -33,10 +44,28 @@ export default function HomePage() {
           </Link>
         ))}
       </StyledCardSection>
-      <Navigation />
+
+      <Navigation onCreateClick={handleCreateClick} />
+      {isCreateMode && (
+        <Overlay>
+          <CardForm
+            pageTitle="Create your activity!"
+            onCancel={handleCloseClick}
+          />
+        </Overlay>
+      )}
     </>
   );
 }
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: ${theme.primaryColor};
+`;
 
 const StyledHeadlineBox = styled.div`
   display: flex;

@@ -7,6 +7,7 @@ import { theme } from "@/styles";
 import Logo from "@/Icons/Logo";
 import DeleteIcon from "@/Icons/DeleteIcon";
 import EditIcon from "@/Icons/EditIcon";
+import SaveIcon from "@/Icons/SaveIcon";
 
 export default function DetailsCard() {
   const router = useRouter();
@@ -111,7 +112,9 @@ export default function DetailsCard() {
   return (
     <StyledDetailsCard>
       <StyledHeadlineBox>
-        <StyledLogo />
+        <StyledLogoWrapper>
+          <Logo />
+        </StyledLogoWrapper>
         <StyledAppName> MeetMate</StyledAppName>
       </StyledHeadlineBox>
       <StyledPageTitle>Join your friend!</StyledPageTitle>
@@ -172,6 +175,7 @@ export default function DetailsCard() {
               onSubmit={handleEditActivity}
               existingActivityData={activities}
               sourcePage="details"
+              pageTitle="Join your friend!"
             />
           </Overlay>
         )}
@@ -201,15 +205,10 @@ const Overlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background-color: ${theme.primaryColor};
 `;
 
 const StyledDetailsCard = styled.div`
-  display: flex;
-  flex-direction: column;
   margin: ${theme.spacing.small} auto;
   max-width: ${theme.box.width};
 `;
@@ -223,15 +222,15 @@ const StyledHeadlineBox = styled.div`
   margin-top: ${theme.spacing.small};
 `;
 
-const StyledLogo = styled(Logo)`
-  width: 1.2rem;
-  height: 1.2rem;
+const StyledLogoWrapper = styled.div`
+  width: ${theme.button.xs};
+  height: ${theme.button.xs};
 `;
 
 const StyledAppName = styled.h1`
   font-size: ${theme.fontSizes.small};
   margin: 0;
-  padding-top: 0.1rem;
+  padding-top: 0.3rem;
 `;
 
 const StyledPageTitle = styled.h1`
@@ -290,7 +289,6 @@ const StyledCloseButton = styled.button`
   border-width: ${theme.borderWidth.medium};
   border-radius: 5px;
   box-shadow: none;
-  z-index: 99;
   &:hover,
   &:active {
     box-shadow: none;
