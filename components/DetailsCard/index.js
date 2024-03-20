@@ -4,7 +4,7 @@ import useSWR from "swr";
 import CardForm from "../CardForm";
 import { useState, useEffect } from "react";
 import { theme } from "@/styles";
-import PlaceholderLogo from "@/Icons/Placeholder";
+import Logo from "@/Icons/Logo";
 import DeleteIcon from "@/Icons/DeleteIcon";
 import EditIcon from "@/Icons/EditIcon";
 
@@ -111,7 +111,7 @@ export default function DetailsCard() {
   return (
     <StyledDetailsCard>
       <StyledHeadlineBox>
-        <StyledPlaceholderLogo />
+        <StyledLogo />
         <StyledAppName> MeetMate</StyledAppName>
       </StyledHeadlineBox>
       <StyledPageTitle>Join your friend!</StyledPageTitle>
@@ -223,7 +223,7 @@ const StyledHeadlineBox = styled.div`
   margin-top: ${theme.spacing.small};
 `;
 
-const StyledPlaceholderLogo = styled(PlaceholderLogo)`
+const StyledLogo = styled(Logo)`
   width: 1.2rem;
   height: 1.2rem;
 `;
@@ -301,12 +301,12 @@ const StyledCloseButton = styled.button`
 `;
 
 const StyledUl = styled.ul`
-  margin: auto;
-  padding: 0;
-  width: 80%;
   display: grid;
   grid-template-columns: repeat(2, max-content);
   gap: ${theme.spacing.medium};
+  margin: auto;
+  padding: 0;
+  width: 80%;
 `;
 
 const StyledInfoLabel = styled.li`

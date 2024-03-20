@@ -2,7 +2,7 @@ import ActivityCard from "@/components/ActivityCard";
 import useSWR from "swr";
 import Link from "next/link";
 import styled from "styled-components";
-import PlaceholderLogo from "@/Icons/Placeholder";
+import Logo from "@/Icons/Logo";
 import Navigation from "@/components/Navigation";
 import { theme } from "@/styles";
 
@@ -15,7 +15,9 @@ export default function HomePage() {
   return (
     <>
       <StyledHeadlineBox>
-        <PlaceholderLogo />
+        <StyledLogoWrapper>
+          <Logo />
+        </StyledLogoWrapper>
         <StyledHeadline>MeetMate</StyledHeadline>
       </StyledHeadlineBox>
       <StyledCardSection>
@@ -44,6 +46,23 @@ const StyledHeadlineBox = styled.div`
   margin-top: ${theme.spacing.medium};
 `;
 
+const StyledLogoWrapper = styled.div`
+  width: ${theme.button.small};
+  height: ${theme.button.small};
+`;
+
+const StyledHeadline = styled.h1`
+  @media screen and (min-width: 600px) {
+    font-size: ${theme.fontSizes.large.split("r")[0] * 1.2 + "rem"};
+  }
+  @media screen and (min-width: 900px) {
+    font-size: ${theme.fontSizes.large.split("r")[0] * 1.4 + "rem"};
+  }
+  @media screen and (min-width: 1200px) {
+    font-size: ${theme.fontSizes.large.split("r")[0] * 1.6 + "rem"};
+  }
+`;
+
 const StyledCardSection = styled.section`
   display: flex;
   flex-direction: column;
@@ -58,17 +77,5 @@ const StyledCardSection = styled.section`
   }
   @media screen and (min-width: 1200px) {
     margin-bottom: 7.5rem;
-  }
-`;
-
-const StyledHeadline = styled.h1`
-  @media screen and (min-width: 600px) {
-    font-size: ${theme.fontSizes.large.split("r")[0] * 1.2 + "rem"};
-  }
-  @media screen and (min-width: 900px) {
-    font-size: ${theme.fontSizes.large.split("r")[0] * 1.4 + "rem"};
-  }
-  @media screen and (min-width: 1200px) {
-    font-size: ${theme.fontSizes.large.split("r")[0] * 1.6 + "rem"};
   }
 `;
