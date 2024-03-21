@@ -7,7 +7,9 @@ import PlaceholderLogo from "@/Icons/Placeholder";
 import Navigation from "@/components/Navigation";
 import { theme } from "@/styles";
 import SearchBar from "/components/SearchBar";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
+import LoginPage from "./loginpage";
+import LogoutIcon from "@/Icons/Logout";
 
 export default function HomePage() {
   const { data: session } = useSession();
@@ -33,10 +35,12 @@ export default function HomePage() {
     return (
       <>
         Signed in as {session.user.email} <br />
-        <button onClick={() => signOut()}>Sign out</button>
         <StyledHeadlineBox>
           <PlaceholderLogo />
           <StyledHeadline>MeetMate</StyledHeadline>
+          <StyledLogoutButton onClick={() => signOut()}>
+            <LogoutIcon />
+          </StyledLogoutButton>
         </StyledHeadlineBox>
         <SearchBar onSearch={handleSearch} />
         <StyledCardSection>
@@ -73,50 +77,9 @@ export default function HomePage() {
   }
   return (
     <>
-      Not signed in <br />
-      <button onClick={() => signIn()}>Sign in</button>
+      <LoginPage />
     </>
   );
-
-  // return (
-  //   <>
-  //     <StyledHeadlineBox>
-  //       <LoginButton />
-  //       <PlaceholderLogo />
-  //       <StyledHeadline>MeetMate</StyledHeadline>
-  //     </StyledHeadlineBox>
-  //     <SearchBar onSearch={handleSearch} />
-  //     <StyledCardSection>
-  //       {searchTerm === "" &&
-  //         activities.length > 0 &&
-  //         activities.map((activity) => (
-  //           <Link key={activity._id} href={`/${activity._id}`}>
-  //             <ActivityCard
-  //               name={activity.name}
-  //               date={activity.date}
-  //               time={activity.time}
-  //               joined={activity.joined}
-  //               category={activity.category}
-  //             />
-  //           </Link>
-  //         ))}
-  //       {displayedActivities.length > 0
-  //         ? displayedActivities.map((activity) => (
-  //             <Link key={activity._id} href={`/${activity._id}`}>
-  //               <ActivityCard
-  //                 name={activity.name}
-  //                 date={activity.date}
-  //                 time={activity.time}
-  //                 joined={activity.joined}
-  //                 category={activity.category}
-  //               />
-  //             </Link>
-  //           ))
-  //         : searchTerm !== "" && <div>No results found</div>}
-  //     </StyledCardSection>
-  //     <Navigation />
-  //   </>
-  // );
 }
 
 const StyledHeadlineBox = styled.div`
@@ -154,4 +117,9 @@ const StyledHeadline = styled.h1`
   @media screen and (min-width: 1200px) {
     font-size: ${theme.fontSizes.large.split("r")[0] * 1.6 + "rem"};
   }
+`;
+
+const StyledLogoutButton = styled.button`
+  position: relative;
+  left: ${theme.spacing.xl};
 `;

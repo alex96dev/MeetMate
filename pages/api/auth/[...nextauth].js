@@ -6,11 +6,7 @@ import { MongoDBAdapter } from "@auth/mongodb-adapter";
 
 import clientPromise from "@/db/mongodb";
 
-import dbConnect from "@/db/connect";
-
-import User from "@/db/models/User";
-
-export default NextAuth({
+export const authOptions = {
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID,
@@ -20,20 +16,6 @@ export default NextAuth({
   ],
 
   adapter: MongoDBAdapter(clientPromise),
+};
 
-  //   callbacks: {
-  //     async session({ session, user }) {
-  //       dbConnect();
-
-  //       const currentUser = await User.findById(user.id);
-
-  //       if (currentUser.favoritePonies == null) {
-  //         currentUser.favoritePonies = [];
-
-  //         currentUser.save();
-  //       }
-
-  //       return { ...session, user: { ...session.user, id: user.id } };
-  //     },
-  //   },
-});
+export default NextAuth(authOptions);
