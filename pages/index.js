@@ -7,8 +7,12 @@ import PlaceholderLogo from "@/Icons/Placeholder";
 import Navigation from "@/components/Navigation";
 import { theme } from "@/styles";
 import SearchBar from "/components/SearchBar";
+import { useSession, signOut } from "next-auth/react";
+import LoginPage from "./loginpage";
+import LogoutIcon from "@/Icons/Logout";
 
 export default function HomePage() {
+  const { data: session } = useSession();
   const { data: activities, isLoading } = useSWR("/api/activities");
   const [filteredActivities, setFilteredActivities] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,29 +30,23 @@ export default function HomePage() {
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
   const displayedActivities = searchTerm ? filteredActivities : activities;
-  return (
-    <>
-      <StyledHeadlineBox>
-        <PlaceholderLogo />
-        <StyledHeadline>MeetMate</StyledHeadline>
-      </StyledHeadlineBox>
-      <SearchBar onSearch={handleSearch} />
-      <StyledCardSection>
-        {searchTerm === "" &&
-          activities.length > 0 &&
-          activities.map((activity) => (
-            <Link key={activity._id} href={`/${activity._id}`}>
-              <ActivityCard
-                name={activity.name}
-                date={activity.date}
-                time={activity.time}
-                joined={activity.joined}
-                category={activity.category}
-              />
-            </Link>
-          ))}
-        {displayedActivities.length > 0
-          ? displayedActivities.map((activity) => (
+
+  if (session) {
+    return (
+      <>
+        Signed in as {session.user.email} <br />
+        <StyledHeadlineBox>
+          <PlaceholderLogo />
+          <StyledHeadline>MeetMate</StyledHeadline>
+          <StyledLogoutButton onClick={() => signOut()}>
+            <LogoutIcon />
+          </StyledLogoutButton>
+        </StyledHeadlineBox>
+        <SearchBar onSearch={handleSearch} />
+        <StyledCardSection>
+          {searchTerm === "" &&
+            activities.length > 0 &&
+            activities.map((activity) => (
               <Link key={activity._id} href={`/${activity._id}`}>
                 <ActivityCard
                   name={activity.name}
@@ -58,10 +56,28 @@ export default function HomePage() {
                   category={activity.category}
                 />
               </Link>
-            ))
-          : searchTerm !== "" && <div>No results found</div>}
-      </StyledCardSection>
-      <Navigation />
+            ))}
+          {displayedActivities.length > 0
+            ? displayedActivities.map((activity) => (
+                <Link key={activity._id} href={`/${activity._id}`}>
+                  <ActivityCard
+                    name={activity.name}
+                    date={activity.date}
+                    time={activity.time}
+                    joined={activity.joined}
+                    category={activity.category}
+                  />
+                </Link>
+              ))
+            : searchTerm !== "" && <div>No results found</div>}
+        </StyledCardSection>
+        <Navigation />
+      </>
+    );
+  }
+  return (
+    <>
+      <LoginPage />
     </>
   );
 }
@@ -101,4 +117,9 @@ const StyledHeadline = styled.h1`
   @media screen and (min-width: 1200px) {
     font-size: ${theme.fontSizes.large.split("r")[0] * 1.6 + "rem"};
   }
+`;
+
+const StyledLogoutButton = styled.button`
+  position: relative;
+  left: ${theme.spacing.xl};
 `;
