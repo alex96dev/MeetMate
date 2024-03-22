@@ -10,7 +10,7 @@ export default function Navigation({ onCreateClick }) {
         </StyledSideButton>
         <StyledCenterButton onClick={onCreateClick}>create</StyledCenterButton>
         <StyledSideButton onClick={() => (window.location.href = "/calendar")}>
-          <span class="material-symbols-outlined">calendar_month</span>
+          <span className="material-symbols-outlined">calendar_month</span>
         </StyledSideButton>
       </StyledNavButtonBox>
     </StyledNavigation>

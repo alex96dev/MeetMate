@@ -2,10 +2,14 @@ import GlobalStyle from "../styles";
 import { SWRConfig } from "swr";
 import { StyleSheetManager } from "styled-components";
 import { useState } from "react";
+import { SessionProvider } from "next-auth/react";
 
 const fetcher = (url) => fetch(url).then((response) => response.json());
 
-export default function App({ Component, pageProps }) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   const [isEditMode, setIsEditMode] = useState(false);
 
   return (
@@ -23,6 +27,9 @@ export default function App({ Component, pageProps }) {
             {...pageProps}
           />
         </StyleSheetManager>
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+        </SessionProvider>
       </SWRConfig>
     </>
   );
