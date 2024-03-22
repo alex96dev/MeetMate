@@ -25,6 +25,7 @@ export default function HomePage() {
         console.log(result);
 
         const mainTemp = result.current.temp_c;
+        const 
 
         // const mainValue = ((result.main.temp - 32) * (5 / 9)).toFixed(0) + "°C";
         // console.log(mainValue);
