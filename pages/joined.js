@@ -1,12 +1,22 @@
 import ActivityCard from "@/components/ActivityCard";
 import useSWR from "swr";
 import Link from "next/link";
+import { useAuthentication } from "./api/useAuthentication";
 
 export default function Joined() {
   const { data: activities, isLoading } = useSWR("/api/activities");
+  const { authenticated, loading } = useAuthentication();
 
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!authenticated) {
+    return <p>You must be signed in to view this page.</p>;
+  }
 
   return (
     <div>

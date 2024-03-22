@@ -8,8 +8,13 @@ import { theme } from "@/styles";
 import SearchBar from "/components/SearchBar";
 import Filter from "@/components/Filter/Index";
 import ActivityCard from "@/components/ActivityCard";
+import { useSession, signOut } from "next-auth/react";
+import LoginPage from "./loginpage";
+import LogoutIcon from "@/Icons/Logout";
+
 
 export default function HomePage() {
+  const { data: session } = useSession();
   const { data: activities, isLoading } = useSWR("/api/activities");
   const [searchTerm, setSearchTerm] = useState("");
   const [authorFilter, setAuthorFilter] = useState("");
@@ -62,9 +67,13 @@ export default function HomePage() {
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
 
-  return (
-    <>
-      <StyledHeadlineBox>
+  const displayedActivities = searchTerm ? filteredActivities : activities;
+
+  if (session) {
+    return (
+      <>
+        Signed in as {session.user.email} <br />
+       <StyledHeadlineBox>
         <PlaceholderLogo />
         <StyledHeadline>MeetMate</StyledHeadline>
       </StyledHeadlineBox>
@@ -93,6 +102,12 @@ export default function HomePage() {
         )}
       </StyledCardSection>
       <Navigation />
+      </>
+    );
+  }
+  return (
+    <>
+      <LoginPage />
     </>
   );
 }
@@ -144,4 +159,9 @@ const StyledHeadline = styled.h1`
   @media screen and (min-width: 1200px) {
     font-size: ${theme.fontSizes.large.split("r")[0] * 1.6 + "rem"};
   }
+`;
+
+const StyledLogoutButton = styled.button`
+  position: relative;
+  left: ${theme.spacing.xl};
 `;
