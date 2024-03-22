@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { theme } from "@/styles";
 
@@ -22,16 +22,14 @@ export default function Filter({ onSubmit, showFilterWindow }) {
   };
 
   return (
-    <StyledFilterForm show={showFilterWindow} onSubmit={handleSubmit}>
+    <StyledFilterForm $show={showFilterWindow} onSubmit={handleSubmit}>
       <StyledFilterBox>
         <h2>Filter</h2>
-        <StyledCloseButton onClick={() => (window.location.href = "/")}>
-          x
-        </StyledCloseButton>
         <StyledUl>
-          <StyledFilterLabel>Author: </StyledFilterLabel>
+          <StyledFilterLabel htmlFor="author">Author: </StyledFilterLabel>
           <StyledFilterInput
             type="search"
+            id="author"
             placeholder="Search..."
             value={author}
             onChange={handleAuthorChange}
@@ -39,8 +37,8 @@ export default function Filter({ onSubmit, showFilterWindow }) {
           <StyledFilterLabel>Category:</StyledFilterLabel>
           <select
             id="category"
-            onChange={handleCategoryChange}
             value={category}
+            onChange={handleCategoryChange}
           >
             <option value="">all categories</option>
             <option value="Sports">Sports</option>
@@ -48,12 +46,6 @@ export default function Filter({ onSubmit, showFilterWindow }) {
             <option value="Food">Food</option>
             <option value="Outdoor">Outdoor</option>
           </select>
-          <StyledFilterLabel>Weekday:</StyledFilterLabel>
-          <div>-- coming soon --</div>
-          <StyledFilterLabel>Time:</StyledFilterLabel>
-          <div>-- coming soon --</div>
-          <StyledFilterLabel>Day:</StyledFilterLabel>
-          <div>-- coming soon --</div>
         </StyledUl>
         <StyledFilterButton type="submit">ok</StyledFilterButton>
       </StyledFilterBox>
@@ -69,9 +61,9 @@ const StyledFilterForm = styled.form`
   padding-left: 5px;
   overflow: hidden;
 
-  transition: max-height 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: max-height 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
 
-  max-height: ${(props) => (props.show ? "500px" : "0")};
+  max-height: ${(props) => (props.$show ? "500px" : "0")};
 `;
 
 const StyledFilterBox = styled.section`
@@ -85,30 +77,8 @@ const StyledFilterBox = styled.section`
   box-shadow: ${theme.box.shadow};
   width: ${theme.box.width};
   background-color: ${theme.primaryColor};
-  padding-top: ${theme.spacing.large};
+  padding-top: ${theme.spacing.small};
   margin-bottom: calc(${theme.spacing.small} + 5px);
-`;
-
-const StyledCloseButton = styled.button`
-  display: flex;
-  position: absolute;
-  justify-content: center;
-  align-items: center;
-  font-size: ${theme.fontSizes.small};
-  top: 0.5rem;
-  right: 0.5rem;
-  height: ${theme.button.xs};
-  width: ${theme.button.xs};
-  border-width: ${theme.borderWidth.medium};
-  border-radius: 5px;
-  box-shadow: none;
-  z-index: 99;
-  &:hover,
-  &:active {
-    box-shadow: none;
-    background-color: ${theme.primaryColor};
-    color: ${theme.textColor};
-  }
 `;
 
 const StyledUl = styled.ul`

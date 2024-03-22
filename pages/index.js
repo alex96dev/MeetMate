@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import styled from "styled-components";
@@ -11,7 +11,6 @@ import ActivityCard from "@/components/ActivityCard";
 
 export default function HomePage() {
   const { data: activities, isLoading } = useSWR("/api/activities");
-  const [filteredActivities, setFilteredActivities] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [authorFilter, setAuthorFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -26,7 +25,7 @@ export default function HomePage() {
     setCategoryFilter(category);
   };
 
-  useEffect(() => {
+  function getFilteredActivities() {
     if (!isLoading && activities) {
       let filtered = activities;
 
@@ -44,9 +43,11 @@ export default function HomePage() {
         );
       }
 
-      setFilteredActivities(filtered);
+      return filtered;
     }
-  }, [authorFilter, categoryFilter, activities, isLoading]);
+  }
+
+  const filteredActivities = getFilteredActivities();
 
   const displayedActivities = searchTerm
     ? filteredActivities.filter((activity) =>
@@ -113,7 +114,7 @@ const StyledSearchFilterBox = styled.div`
   gap: ${theme.spacing.medium};
   margin: 0 auto;
   width: 20rem;
-  margin-bottom: ${theme.spacing.medium};
+  margin-bottom: ${theme.spacing.small};
 `;
 
 const StyledCardSection = styled.section`
