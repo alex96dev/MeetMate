@@ -21,15 +21,14 @@ export default function App({
             prop !== "category" && prop !== "isJoined"
           }
         >
-          <Component
-            isEditMode={isEditMode}
-            setIsEditMode={setIsEditMode}
-            {...pageProps}
-          />
+          <SessionProvider session={session}>
+            <Component
+              isEditMode={isEditMode}
+              setIsEditMode={setIsEditMode}
+              {...pageProps}
+            />
+          </SessionProvider>
         </StyleSheetManager>
-        <SessionProvider session={session}>
-          <Component {...pageProps} />
-        </SessionProvider>
       </SWRConfig>
     </>
   );
