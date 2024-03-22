@@ -1,5 +1,4 @@
-import ActivityCard from "@/components/ActivityCard";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import styled from "styled-components";
@@ -7,36 +6,77 @@ import PlaceholderLogo from "@/Icons/Placeholder";
 import Navigation from "@/components/Navigation";
 import { theme } from "@/styles";
 import SearchBar from "/components/SearchBar";
+import Filter from "@/components/Filter/Index";
+import ActivityCard from "@/components/ActivityCard";
 
 export default function HomePage() {
   const { data: activities, isLoading } = useSWR("/api/activities");
   const [filteredActivities, setFilteredActivities] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [authorFilter, setAuthorFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [showFilterWindow, setShowFilterWindow] = useState(false);
+
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
-    if (!searchTerm) {
-      setFilteredActivities([]);
-      return;
-    }
-    const filtered = activities.filter((activity) =>
-      activity.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredActivities(filtered);
   };
+
+  const handleFilter = ({ author, category }) => {
+    setAuthorFilter(author);
+    setCategoryFilter(category);
+  };
+
+  useEffect(() => {
+    if (!isLoading && activities) {
+      let filtered = activities;
+
+      if (authorFilter) {
+        filtered = filtered.filter(
+          (activity) =>
+            activity.author.toLowerCase() === authorFilter.toLowerCase()
+        );
+      }
+
+      if (categoryFilter) {
+        filtered = filtered.filter(
+          (activity) =>
+            activity.category.toLowerCase() === categoryFilter.toLowerCase()
+        );
+      }
+
+      setFilteredActivities(filtered);
+    }
+  }, [authorFilter, categoryFilter, activities, isLoading]);
+
+  const displayedActivities = searchTerm
+    ? filteredActivities.filter((activity) =>
+        activity.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : filteredActivities;
+
+  const toggleFilterWindow = () => {
+    setShowFilterWindow(!showFilterWindow);
+  };
+
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
-  const displayedActivities = searchTerm ? filteredActivities : activities;
+
   return (
     <>
       <StyledHeadlineBox>
         <PlaceholderLogo />
         <StyledHeadline>MeetMate</StyledHeadline>
       </StyledHeadlineBox>
-      <SearchBar onSearch={handleSearch} />
+      <StyledSearchFilterBox>
+        <SearchBar onSearch={handleSearch} />
+        <StyledFilterButton onClick={toggleFilterWindow}>
+          Filter
+        </StyledFilterButton>
+      </StyledSearchFilterBox>
+      <Filter onSubmit={handleFilter} showFilterWindow={showFilterWindow} />
       <StyledCardSection>
-        {searchTerm === "" &&
-          activities.length > 0 &&
-          activities.map((activity) => (
+        {displayedActivities.length > 0 ? (
+          displayedActivities.map((activity) => (
             <Link key={activity._id} href={`/${activity._id}`}>
               <ActivityCard
                 name={activity.name}
@@ -46,25 +86,19 @@ export default function HomePage() {
                 category={activity.category}
               />
             </Link>
-          ))}
-        {displayedActivities.length > 0
-          ? displayedActivities.map((activity) => (
-              <Link key={activity._id} href={`/${activity._id}`}>
-                <ActivityCard
-                  name={activity.name}
-                  date={activity.date}
-                  time={activity.time}
-                  joined={activity.joined}
-                  category={activity.category}
-                />
-              </Link>
-            ))
-          : searchTerm !== "" && <div>No results found</div>}
+          ))
+        ) : (
+          <div>No results found</div>
+        )}
       </StyledCardSection>
       <Navigation />
     </>
   );
 }
+
+const StyledFilterButton = styled.button`
+  height: 2.4rem;
+`;
 
 const StyledHeadlineBox = styled.div`
   display: flex;
@@ -72,6 +106,14 @@ const StyledHeadlineBox = styled.div`
   align-items: center;
   margin: 0;
   margin-top: ${theme.spacing.medium};
+`;
+
+const StyledSearchFilterBox = styled.div`
+  display: flex;
+  gap: ${theme.spacing.medium};
+  margin: 0 auto;
+  width: 20rem;
+  margin-bottom: ${theme.spacing.medium};
 `;
 
 const StyledCardSection = styled.section`
