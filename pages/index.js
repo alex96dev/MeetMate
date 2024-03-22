@@ -1,5 +1,5 @@
 import ActivityCard from "@/components/ActivityCard";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import styled from "styled-components";
@@ -11,7 +11,32 @@ import SearchBar from "/components/SearchBar";
 export default function HomePage() {
   const { data: activities, isLoading } = useSWR("/api/activities");
   const [filteredActivities, setFilteredActivities] = useState([]);
+  const [weather, setWeather] = useState("no data");
   const [searchTerm, setSearchTerm] = useState("");
+  const [city, setCity] = useState("Berlin");
+
+  useEffect(() => {
+    async function fetchData() {
+      const url = `http://api.weatherapi.com/v1/current.json?key=27d7a8c529bf4b43af9113412242203&q=${city}&aqi=no`;
+
+      try {
+        const response = await fetch(url);
+        const result = await response.json();
+        console.log(result);
+
+        const mainTemp = result.current.temp_c;
+
+        // const mainValue = ((result.main.temp - 32) * (5 / 9)).toFixed(0) + "°C";
+        // console.log(mainValue);
+        console.log(mainTemp);
+        setWeather(mainTemp);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData();
+  }, []);
+
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
     if (!searchTerm) {
@@ -26,13 +51,21 @@ export default function HomePage() {
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
   const displayedActivities = searchTerm ? filteredActivities : activities;
+
   return (
     <>
       <StyledHeadlineBox>
         <PlaceholderLogo />
         <StyledHeadline>MeetMate</StyledHeadline>
       </StyledHeadlineBox>
-      <SearchBar onSearch={handleSearch} />
+      <StyledSearchBarContainer>
+        <StyledSearchBar onSearch={handleSearch} />
+      </StyledSearchBarContainer>
+      <StyledWeather>
+        {weather.condition.text === "light rain"
+          ? `light rain ${weather}°C`
+          : `${weather}°C`}
+      </StyledWeather>
       <StyledCardSection>
         {searchTerm === "" &&
           activities.length > 0 &&
@@ -80,6 +113,7 @@ const StyledCardSection = styled.section`
   align-items: center;
   margin: 0;
   margin-bottom: 6rem;
+  position: relative;
   @media screen and (min-width: 600px) {
     margin-bottom: 6.5rem;
   }
@@ -101,4 +135,21 @@ const StyledHeadline = styled.h1`
   @media screen and (min-width: 1200px) {
     font-size: ${theme.fontSizes.large.split("r")[0] * 1.6 + "rem"};
   }
+`;
+
+const StyledWeather = styled.div`
+  text-align: center;
+  position: relative;
+  right: 240px;
+  margin: 10px;
+  font-size: ${theme.fontSizes.medium};
+  font-family: ${theme.fonts.heading};
+`;
+
+const StyledSearchBar = styled(SearchBar)`
+  /* position: relative; */
+`;
+
+const StyledSearchBarContainer = styled.div`
+  position: relative;
 `;
