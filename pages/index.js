@@ -12,7 +12,6 @@ import { useSession, signOut } from "next-auth/react";
 import LoginPage from "./loginpage";
 import LogoutIcon from "@/Icons/Logout";
 
-
 export default function HomePage() {
   const { data: session } = useSession();
   const { data: activities, isLoading } = useSWR("/api/activities");
@@ -67,41 +66,44 @@ export default function HomePage() {
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
 
-  const displayedActivities = searchTerm ? filteredActivities : activities;
+  // const displayedActivities = searchTerm ? filteredActivities : activities;
 
   if (session) {
     return (
       <>
         Signed in as {session.user.email} <br />
-       <StyledHeadlineBox>
-        <PlaceholderLogo />
-        <StyledHeadline>MeetMate</StyledHeadline>
-      </StyledHeadlineBox>
-      <StyledSearchFilterBox>
-        <SearchBar onSearch={handleSearch} />
-        <StyledFilterButton onClick={toggleFilterWindow}>
-          Filter
-        </StyledFilterButton>
-      </StyledSearchFilterBox>
-      <Filter onSubmit={handleFilter} showFilterWindow={showFilterWindow} />
-      <StyledCardSection>
-        {displayedActivities.length > 0 ? (
-          displayedActivities.map((activity) => (
-            <Link key={activity._id} href={`/${activity._id}`}>
-              <ActivityCard
-                name={activity.name}
-                date={activity.date}
-                time={activity.time}
-                joined={activity.joined}
-                category={activity.category}
-              />
-            </Link>
-          ))
-        ) : (
-          <div>No results found</div>
-        )}
-      </StyledCardSection>
-      <Navigation />
+        <StyledHeadlineBox>
+          <PlaceholderLogo />
+          <StyledHeadline>MeetMate</StyledHeadline>
+          <StyledLogoutButton onClick={() => signOut()}>
+            <LogoutIcon />
+          </StyledLogoutButton>
+        </StyledHeadlineBox>
+        <StyledSearchFilterBox>
+          <SearchBar onSearch={handleSearch} />
+          <StyledFilterButton onClick={toggleFilterWindow}>
+            Filter
+          </StyledFilterButton>
+        </StyledSearchFilterBox>
+        <Filter onSubmit={handleFilter} showFilterWindow={showFilterWindow} />
+        <StyledCardSection>
+          {displayedActivities.length > 0 ? (
+            displayedActivities.map((activity) => (
+              <Link key={activity._id} href={`/${activity._id}`}>
+                <ActivityCard
+                  name={activity.name}
+                  date={activity.date}
+                  time={activity.time}
+                  joined={activity.joined}
+                  category={activity.category}
+                />
+              </Link>
+            ))
+          ) : (
+            <div>No results found</div>
+          )}
+        </StyledCardSection>
+        <Navigation />
       </>
     );
   }
@@ -111,6 +113,11 @@ export default function HomePage() {
     </>
   );
 }
+
+const StyledLogoutButton = styled.button`
+  position: relative;
+  left: ${theme.spacing.xl};
+`;
 
 const StyledFilterButton = styled.button`
   height: 2.4rem;
@@ -159,9 +166,4 @@ const StyledHeadline = styled.h1`
   @media screen and (min-width: 1200px) {
     font-size: ${theme.fontSizes.large.split("r")[0] * 1.6 + "rem"};
   }
-`;
-
-const StyledLogoutButton = styled.button`
-  position: relative;
-  left: ${theme.spacing.xl};
 `;
