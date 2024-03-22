@@ -23,7 +23,6 @@ export default function ActivityCard({ name, date, time, joined, category }) {
     <StyledActivityCard category={category}>
       <StyledDivLeft>
         {joined && <StyledJoinMark>XX</StyledJoinMark>}
-        {/* <StyledActivityName>{name}</StyledActivityName> */}
         <StyledActivityName ref={activityNameRef}>{name}</StyledActivityName>
       </StyledDivLeft>
       <StyledDivRight>
