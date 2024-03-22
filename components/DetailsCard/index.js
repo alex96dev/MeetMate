@@ -12,6 +12,7 @@ import BackIcon from "@/Icons/BackIcon";
 export default function DetailsCard({ isEditMode, setIsEditMode }) {
   const router = useRouter();
   const { id } = router.query;
+  const endpoint = `/api/activities/${id}`;
 
   const [joinState, setJoinState] = useState({
     isJoined: false,
@@ -22,16 +23,16 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
     const fetchData = async () => {
       try {
         if (id) {
-          const response = await fetch(`/api/activities/${id}`);
+          const response = await fetch(endpoint);
           if (!response.ok) {
             console.error("Error fetching activity:", response.statusText);
             return;
           }
-          const json = await response.json();
+          const activityData = await response.json();
 
           setJoinState((prevState) => ({
             ...prevState,
-            isJoined: json.joined,
+            isJoined: activityData.joined,
           }));
         }
       } catch (error) {
@@ -42,12 +43,7 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
     fetchData();
   }, [id]);
 
-  const {
-    data: activities,
-    isLoading,
-    mutate,
-    error,
-  } = useSWR(`/api/activities/${id}`);
+  const { data: activities, isLoading, mutate, error } = useSWR(endpoint);
 
   if (isLoading) {
     return <h1>Loading...</h1>;
@@ -68,7 +64,7 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
 
     const activityData = Object.fromEntries(formData.entries());
 
-    const response = await fetch(`/api/activities/${id}`, {
+    const response = await fetch(endpoint, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -76,14 +72,14 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
       body: JSON.stringify(activityData),
     });
     if (response.ok) {
-      mutate(`/api/activities/${id}`);
+      mutate(endpoint);
       setIsEditMode(false);
       event.target.reset();
     }
   }
 
   async function handleDelete() {
-    const response = await fetch(`/api/activities/${id}`, {
+    const response = await fetch(endpoint, {
       method: "DELETE",
     });
     if (response.ok) {
@@ -98,7 +94,7 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
       isJoined: updatedIsJoined,
     }));
 
-    const response = await fetch(`/api/activities/${id}`, {
+    const response = await fetch(endpoint, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
