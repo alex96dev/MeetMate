@@ -8,7 +8,7 @@ import { theme } from "@/styles";
 import { useState } from "react";
 import CardForm from "@/components/CardForm";
 
-export default function HomePage() {
+export default function HomePage({ onSubmit, setIsEditMode }) {
   const [isCreateMode, setIsCreateMode] = useState(false);
   const { data: activities, isLoading } = useSWR("/api/activities");
 
@@ -45,12 +45,16 @@ export default function HomePage() {
         ))}
       </StyledCardSection>
 
-      <Navigation onCreateClick={handleCreateClick} />
+      {!isCreateMode && <Navigation onCreateClick={handleCreateClick} />}
       {isCreateMode && (
         <Overlay>
           <CardForm
             pageTitle="Create your activity!"
             onCancel={handleCloseClick}
+            setIsCreateMode={setIsCreateMode}
+            setIsEditMode={setIsEditMode}
+            isEditMode={false}
+            onSubmit={onSubmit}
           />
         </Overlay>
       )}
@@ -62,9 +66,11 @@ const Overlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
+  padding-bottom: ${theme.spacing.large};
   width: 100%;
   height: 100%;
   background-color: ${theme.primaryColor};
+  overflow-y: auto;
 `;
 
 const StyledHeadlineBox = styled.div`
@@ -76,8 +82,8 @@ const StyledHeadlineBox = styled.div`
 `;
 
 const StyledLogoWrapper = styled.div`
-  width: ${theme.button.small};
-  height: ${theme.button.small};
+  width: 1.7rem;
+  height: 1.7rem;
 `;
 
 const StyledHeadline = styled.h1`

@@ -7,11 +7,12 @@ import { theme } from "@/styles";
 import Logo from "@/Icons/Logo";
 import DeleteIcon from "@/Icons/DeleteIcon";
 import EditIcon from "@/Icons/EditIcon";
-import SaveIcon from "@/Icons/SaveIcon";
+import BackIcon from "@/Icons/BackIcon";
 
-export default function DetailsCard() {
+export default function DetailsCard({ isEditMode, setIsEditMode }) {
   const router = useRouter();
   const { id } = router.query;
+
   const [joinState, setJoinState] = useState({
     isJoined: false,
     joinButtonText: "Join",
@@ -20,13 +21,19 @@ export default function DetailsCard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/activities/${id}`);
-        const json = await response.json();
+        if (id) {
+          const response = await fetch(`/api/activities/${id}`);
+          if (!response.ok) {
+            console.error("Error fetching activity:", response.statusText);
+            return;
+          }
+          const json = await response.json();
 
-        setJoinState((prevState) => ({
-          ...prevState,
-          isJoined: json.joined,
-        }));
+          setJoinState((prevState) => ({
+            ...prevState,
+            isJoined: json.joined,
+          }));
+        }
       } catch (error) {
         console.error("Error fetching activity:", error);
       }
@@ -42,22 +49,16 @@ export default function DetailsCard() {
     error,
   } = useSWR(`/api/activities/${id}`);
 
-  const [isEditMode, setIsEditMode] = useState(false);
-
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
   if (!activities || error) {
-    router.replace("/");
+    return <p>Ups! Something went wrong...</p>;
   }
 
-  const handleEditClick = () => {
+  function handleEditClick() {
     setIsEditMode(true);
-  };
-
-  const handleCancel = () => {
-    setIsEditMode(false);
-  };
+  }
 
   async function handleEditActivity(event) {
     event.preventDefault();
@@ -75,7 +76,7 @@ export default function DetailsCard() {
       body: JSON.stringify(activityData),
     });
     if (response.ok) {
-      mutate();
+      mutate(`/api/activities/${id}`);
       setIsEditMode(false);
       event.target.reset();
     }
@@ -117,18 +118,12 @@ export default function DetailsCard() {
         </StyledLogoWrapper>
         <StyledAppName> MeetMate</StyledAppName>
       </StyledHeadlineBox>
-      <StyledPageTitle>Join your friend!</StyledPageTitle>
+      <StyledPageDetailTitle>Join your friend!</StyledPageDetailTitle>
       <StyledAcitivityNameBox category={activities.category}>
         <StyledJoinedmark>{joinState.isJoined && <h2>XX</h2>}</StyledJoinedmark>
         <StyledActivityName>{activities.name}</StyledActivityName>
       </StyledAcitivityNameBox>
       <StyledInformationBox>
-        <StyledCloseButton
-          onClick={() => (window.location.href = "/")}
-          category={activities.category}
-        >
-          x
-        </StyledCloseButton>
         <StyledUl>
           <StyledInfoLabel>Author: </StyledInfoLabel>
           <StyledInfo>{activities.author}</StyledInfo>
@@ -148,14 +143,17 @@ export default function DetailsCard() {
         {activities.description !== "" && (
           <StyledDescription>{activities.description}</StyledDescription>
         )}
+        <StyledJoinButton isJoined={joinState.isJoined} onClick={handleJoin}>
+          {joinState.isJoined ? "Disjoin" : "XX Join"}
+        </StyledJoinButton>
         <StyledButtonBox>
+          <StyledButton onClick={() => (window.location.href = "/")}>
+            <BackIcon />
+          </StyledButton>
           <StyledButton onClick={handleEditClick}>
             {" "}
             {isEditMode ? "Cancel" : <EditIcon />}
           </StyledButton>
-          <StyledJoinButton isJoined={joinState.isJoined} onClick={handleJoin}>
-            {joinState.isJoined ? "Disjoin" : "XX Join"}
-          </StyledJoinButton>
           <StyledButton
             onClick={() => {
               if (
@@ -171,7 +169,9 @@ export default function DetailsCard() {
         {isEditMode && (
           <Overlay>
             <CardForm
-              onCancel={handleCancel}
+              onCancel={() => setIsEditMode(false)}
+              setIsEditMode={setIsEditMode}
+              isEditMode={true}
               onSubmit={handleEditActivity}
               existingActivityData={activities}
               sourcePage="details"
@@ -201,16 +201,20 @@ const getCategoryColor = (category, theme) => {
 
 const Overlay = styled.div`
   position: fixed;
+  margin-top: 0;
   top: 0;
   left: 0;
+  padding-bottom: ${theme.spacing.medium};
   width: 100%;
   height: 100%;
   background-color: ${theme.primaryColor};
+  overflow-y: auto;
 `;
 
 const StyledDetailsCard = styled.div`
   margin: ${theme.spacing.small} auto;
   max-width: ${theme.box.width};
+  padding-bottom: ${theme.spacing.medium};
 `;
 
 const StyledHeadlineBox = styled.div`
@@ -219,7 +223,6 @@ const StyledHeadlineBox = styled.div`
   justify-content: flex-start;
   align-items: center;
   gap: ${theme.spacing.xs};
-  margin-top: ${theme.spacing.small};
 `;
 
 const StyledLogoWrapper = styled.div`
@@ -233,9 +236,10 @@ const StyledAppName = styled.h1`
   padding-top: 0.3rem;
 `;
 
-const StyledPageTitle = styled.h1`
-  margin: ${theme.spacing.medium} auto;
+const StyledPageDetailTitle = styled.h1`
   font-size: ${theme.fontSizes.ml};
+  text-align: center;
+  margin: ${theme.spacing.small};
 `;
 
 const StyledAcitivityNameBox = styled.div`
@@ -247,6 +251,7 @@ const StyledAcitivityNameBox = styled.div`
   border-radius: ${theme.borderRadius.medium};
   box-shadow: ${theme.box.shadow};
   width: ${theme.box.width};
+  height: ${theme.box.height};
   background-color: ${({ category }) => getCategoryColor(category, theme)};
 `;
 
@@ -260,6 +265,7 @@ const StyledJoinedmark = styled.div`
 
 const StyledActivityName = styled.h2`
   font-size: ${theme.fontSizes.large};
+  margin: auto;
 `;
 
 const StyledInformationBox = styled.section`
@@ -274,28 +280,6 @@ const StyledInformationBox = styled.section`
   width: ${theme.box.width};
   margin-top: ${theme.spacing.xl};
   padding-top: ${theme.spacing.large};
-`;
-
-const StyledCloseButton = styled.button`
-  display: flex;
-  position: absolute;
-  justify-content: center;
-  align-items: center;
-  font-size: ${theme.fontSizes.small};
-  top: 0.5rem;
-  right: 0.5rem;
-  height: ${theme.button.xs};
-  width: ${theme.button.xs};
-  border-width: ${theme.borderWidth.medium};
-  border-radius: 5px;
-  box-shadow: none;
-  &:hover,
-  &:active {
-    box-shadow: none;
-    background-color: ${theme.primaryColor};
-    color: ${theme.textColor};
-  }
-  background-color: ${({ category }) => getCategoryColor(category, theme)};
 `;
 
 const StyledUl = styled.ul`
@@ -327,26 +311,27 @@ const StyledInfo = styled.li`
 
 const StyledDescription = styled.p`
   font-size: ${theme.fontSizes.small};
-  font-family: ${theme.fonts.heading};
+  font-family: ${theme.fonts.text};
   width: 80%;
-  margin-top: ${theme.spacing.medium};
-  margin-bottom: ${theme.spacing.xl};
+  margin-top: ${theme.spacing.small};
+  margin-bottom: 0;
   letter-spacing: 0.009rem;
   line-height: 1.4;
+`;
+const StyledJoinButton = styled.button`
+  width: ${theme.button.xl};
+  margin-top: ${theme.spacing.medium};
+  background-color: ${(props) =>
+    props.isJoined ? `${theme.alertColor}` : `${theme.confirmColor}`};
 `;
 
 const StyledButtonBox = styled.div`
   display: flex;
   gap: 2rem;
   padding: ${theme.spacing.medium};
+  padding-top: ${theme.spacing.medium};
 `;
 
 const StyledButton = styled.button`
   width: ${theme.button.medium};
-`;
-
-const StyledJoinButton = styled.button`
-  width: ${theme.button.lx};
-  background-color: ${(props) =>
-    props.isJoined ? `${theme.alertColor}` : `${theme.confirmColor}`};
 `;

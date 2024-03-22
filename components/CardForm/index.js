@@ -1,21 +1,54 @@
 import { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import BackIcon from "@/Icons/BackIcon";
-import SaveIcon from "@/Icons/SaveIcon";
 import { theme } from "@/styles";
 import Logo from "@/Icons/Logo";
+import useSWR from "swr";
+import { useRouter } from "next/router";
+import SaveIcon from "@/Icons/SaveIcon";
 
 export default function CardForm({
-  onSubmit,
   onCancel,
   existingActivityData,
   pageTitle,
+  setIsEditMode,
 }) {
+  const router = useRouter();
+  const { id } = router.query;
+  const endpoint = existingActivityData
+    ? `/api/activities/${id}`
+    : "/api/activities";
+  const method = existingActivityData ? "PUT" : "POST";
+  const { mutate } = useSWR(endpoint);
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const activityData = Object.fromEntries(formData);
+    activityData.joined = false;
+
+    const response = await fetch(endpoint, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(activityData),
+    });
+    if (response.ok) {
+      mutate();
+      onCancel();
+      setIsEditMode(false);
+      event.target.reset();
+    }
+  }
+
   const inputRef = useRef(null);
 
   useEffect(() => {
-    inputRef.current.focus();
-  }, []);
+    if (existingActivityData) {
+      inputRef.current.focus();
+    }
+  }, [existingActivityData]);
 
   const [selectedCategory, setSelectedCategory] = useState(
     existingActivityData?.category || ""
@@ -25,8 +58,26 @@ export default function CardForm({
     setSelectedCategory(event.target.value);
   };
 
+  const textareaRef = useRef(null);
+
+  useEffect(() => {
+    adjustTextareaHeight();
+  }, []);
+
+  const adjustTextareaHeight = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  };
+
+  const handleChange = () => {
+    adjustTextareaHeight();
+  };
+
   return (
-    <StyledCardForm onSubmit={onSubmit}>
+    <StyledCardForm onSubmit={handleSubmit}>
       <StyledHeadlineBox>
         <StyledLogoWrapper>
           <Logo />
@@ -43,7 +94,7 @@ export default function CardForm({
           name="name"
           autoComplete="off"
           minLength="3"
-          maxLength="20"
+          maxLength="12"
           placeholder="My activity"
           defaultValue={existingActivityData?.name || ""}
           autoFocus
@@ -52,7 +103,7 @@ export default function CardForm({
       </StyledActivityNameBox>
       <StyledInputBox>
         <StyledUpperInputBox>
-          <label htmlFor="author">Author: </label>
+          <StyledLabel htmlFor="author">Author: </StyledLabel>
           <StyledInputField
             type="text"
             id="author"
@@ -61,7 +112,7 @@ export default function CardForm({
             defaultValue={existingActivityData?.author || ""}
             required
           />
-          <label htmlFor="date">Date: </label>
+          <StyledLabel htmlFor="date">Date: </StyledLabel>
           <StyledInputField
             type="date"
             id="date"
@@ -70,7 +121,7 @@ export default function CardForm({
             defaultValue={existingActivityData?.date || ""}
             required
           />
-          <label htmlFor="time">Time: </label>
+          <StyledLabel htmlFor="time">Time: </StyledLabel>
           <StyledInputField
             type="time"
             id="time"
@@ -79,7 +130,7 @@ export default function CardForm({
             defaultValue={existingActivityData?.time || ""}
             required
           />
-          <label htmlFor="location">Location: </label>
+          <StyledLabel htmlFor="location">Location: </StyledLabel>
           <StyledInputField
             type="text"
             id="location"
@@ -88,7 +139,7 @@ export default function CardForm({
             defaultValue={existingActivityData?.location || ""}
             required
           />
-          <label htmlFor="category">Category: </label>
+          <StyledLabel htmlFor="category">Category: </StyledLabel>
           <StyledCategoryInput
             type="text"
             id="category"
@@ -96,7 +147,7 @@ export default function CardForm({
             defaultValue={existingActivityData?.category || ""}
             onChange={handleCategoryChange}
           >
-            <option value=""></option>
+            <option value="">--choose--</option>
             <option value="Sports">Sports</option>
             <option value="Culture">Culture</option>
             <option value="Food">Food</option>
@@ -106,9 +157,9 @@ export default function CardForm({
         <StyledDescriptionBox>
           <label htmlFor="description">Description: </label>
           <StyledTextArea
+            ref={textareaRef}
+            onChange={handleChange}
             autoComplete="off"
-            cols="45"
-            rows="8"
             type="text"
             id="description"
             name="description"
@@ -120,7 +171,9 @@ export default function CardForm({
           <StyledButton type="button" onClick={onCancel}>
             <BackIcon />
           </StyledButton>
-          <StyledButton type="submit">+{/* <SaveIcon /> */}</StyledButton>
+          <StyledButton type="submit">
+            {existingActivityData ? "save" : "create"}
+          </StyledButton>
         </StyledButtonBox>
       </StyledInputBox>
     </StyledCardForm>
@@ -140,7 +193,7 @@ const StyledHeadlineBox = styled.div`
   justify-content: flex-start;
   align-items: center;
   gap: ${theme.spacing.xs};
-  margin-top: ${theme.spacing.small};
+
   width: ${theme.box.width};
 `;
 
@@ -157,6 +210,7 @@ const StyledAppName = styled.h1`
 
 const StyledPageTitle = styled.h1`
   font-size: ${theme.fontSizes.ml};
+  margin: ${theme.spacing.small};
 `;
 
 const StyledCardForm = styled.form`
@@ -166,7 +220,6 @@ const StyledCardForm = styled.form`
   margin: auto;
   margin-top: ${theme.spacing.small};
   width: ${theme.box.width};
-  gap: 0.5rem;
   justify-content: space-evenly;
 `;
 
@@ -193,7 +246,7 @@ const StyledActivityNameInput = styled.input`
   border: none;
   color: ${theme.textColor};
   font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes.medium};
+  font-size: ${theme.fontSizes.large};
   text-align: center;
   padding-top: ${theme.spacing.medium};
   padding-bottom: ${theme.spacing.medium};
@@ -210,7 +263,7 @@ const StyledButton = styled.button`
 
 const StyledInputBox = styled.div`
   margin: auto;
-  margin-top: ${theme.spacing.medium};
+  margin-top: ${theme.spacing.xl};
   padding: ${theme.spacing.large};
   padding-bottom: ${theme.spacing.medium};
   border-style: solid;
@@ -228,8 +281,16 @@ const StyledUpperInputBox = styled.div`
   gap: ${theme.spacing.medium};
 `;
 
+const StyledLabel = styled.label`
+  display: flex;
+  justify-content: end;
+  width: 5.5rem;
+`;
+
 const StyledInputField = styled.input`
-  font-family: ${theme.fonts.text};
+  display: flex;
+  justify-content: start;
+  font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.small};
   width: 8rem;
   background-color: ${theme.primaryColor};
@@ -239,7 +300,7 @@ const StyledInputField = styled.input`
 
 const StyledCategoryInput = styled.select`
   width: 8rem;
-  font-family: ${theme.fonts.text};
+  font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.small};
   text-align: center;
   background-color: ${theme.primaryColor};
@@ -259,6 +320,9 @@ const StyledDescriptionBox = styled.div`
 
 const StyledTextArea = styled.textarea`
   resize: none;
+  overflow: hidden;
+  height: auto;
+  min-height: ${theme.box.height};
   font-family: ${theme.fonts.text};
   font-size: ${theme.fontSizes.small};
   padding: ${theme.spacing.small};
