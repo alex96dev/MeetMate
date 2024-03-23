@@ -76,18 +76,18 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
 
-  // if (isLoading || status === "loading") return <div>loading...</div>;
-  // if (!session) {
-  //   return (
-  //     <>
-  //       <LoginPage />
-  //     </>
-  //   );
-  // }
+  if (isLoading || status === "loading") return <div>loading...</div>;
+  if (!session) {
+    return (
+      <>
+        <LoginPage />
+      </>
+    );
+  }
 
   return (
     <>
-      {/* Signed in as {session.user.email} <br /> */}
+      Signed in as {session.user.email} <br />
       <StyledHeadlineBox>
         <StyledLogoWrapper>
           <Logo />
