@@ -4,7 +4,7 @@ import "react-calendar/dist/Calendar.css";
 import activitiesData from "@/lib/db";
 import dynamic from "next/dynamic";
 import styled from "styled-components";
-import { useAuthentication } from "./api/useAuthentication";
+import useAuthentication from "./api/auth/useAuthentication";
 
 const Calendar = dynamic(() => import("react-calendar"), { ssr: false });
 

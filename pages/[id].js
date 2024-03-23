@@ -1,5 +1,5 @@
 import DetailsCard from "@/components/DetailsCard";
-import { useAuthentication } from "./api/useAuthentication";
+import useAuthentication from "./api/auth/useAuthentication";
 
 export default function DetailsCardPage({ isEditMode, setIsEditMode }) {
   const { authenticated, loading } = useAuthentication();
