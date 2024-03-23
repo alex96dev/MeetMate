@@ -14,7 +14,7 @@ import LogoutIcon from "@/Icons/Logout";
 import CardForm from "@/components/CardForm";
 
 export default function HomePage({ onSubmit, setIsEditMode }) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { data: activities, isLoading } = useSWR("/api/activities");
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -65,9 +65,6 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
     setShowFilterWindow(!showFilterWindow);
   };
 
-  if (isLoading) return <div>loading...</div>;
-  if (!activities) return <div>failed to load</div>;
-
   const handleCreateClick = () => {
     setIsCreateMode(true);
   };
@@ -76,62 +73,67 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
     setIsCreateMode(false);
   };
 
-  if (session) {
-    return (
-      <>
-        Signed in as {session.user.email} <br />
-        <StyledHeadlineBox>
-          <StyledLogoWrapper>
-            <Logo />
-          </StyledLogoWrapper>
-          <StyledHeadline>MeetMate</StyledHeadline>
-          <StyledLogoutButton onClick={() => signOut()}>
-            <LogoutIcon />
-          </StyledLogoutButton>
-        </StyledHeadlineBox>
-        <StyledSearchFilterBox>
-          <SearchBar onSearch={handleSearch} />
-          <StyledFilterButton onClick={toggleFilterWindow}>
-            Filter
-          </StyledFilterButton>
-        </StyledSearchFilterBox>
-        <Filter onSubmit={handleFilter} showFilterWindow={showFilterWindow} />
-        <StyledCardSection>
-          {displayedActivities.length > 0 ? (
-            displayedActivities.map((activity) => (
-              <Link key={activity._id} href={`/${activity._id}`}>
-                <ActivityCard
-                  name={activity.name}
-                  date={activity.date}
-                  time={activity.time}
-                  joined={activity.joined}
-                  category={activity.category}
-                />
-              </Link>
-            ))
-          ) : (
-            <div>No results found</div>
-          )}
-        </StyledCardSection>
-        {!isCreateMode && <Navigation onCreateClick={handleCreateClick} />}
-        {isCreateMode && (
-          <Overlay>
-            <CardForm
-              pageTitle="Create your activity!"
-              onCancel={handleCloseClick}
-              setIsCreateMode={setIsCreateMode}
-              setIsEditMode={setIsEditMode}
-              isEditMode={false}
-              onSubmit={onSubmit}
-            />
-          </Overlay>
-        )}
-      </>
-    );
-  }
+  if (isLoading) return <div>loading...</div>;
+  if (!activities) return <div>failed to load</div>;
+
+  // if (isLoading || status === "loading") return <div>loading...</div>;
+  // if (!session) {
+  //   return (
+  //     <>
+  //       <LoginPage />
+  //     </>
+  //   );
+  // }
+
   return (
     <>
-      <LoginPage />
+      {/* Signed in as {session.user.email} <br /> */}
+      <StyledHeadlineBox>
+        <StyledLogoWrapper>
+          <Logo />
+        </StyledLogoWrapper>
+        <StyledHeadline>MeetMate</StyledHeadline>
+        <StyledLogoutButton onClick={() => signOut()}>
+          <LogoutIcon />
+        </StyledLogoutButton>
+      </StyledHeadlineBox>
+      <StyledSearchFilterBox>
+        <SearchBar onSearch={handleSearch} />
+        <StyledFilterButton onClick={toggleFilterWindow}>
+          Filter
+        </StyledFilterButton>
+      </StyledSearchFilterBox>
+      <Filter onSubmit={handleFilter} showFilterWindow={showFilterWindow} />
+      <StyledCardSection>
+        {displayedActivities.length > 0 ? (
+          displayedActivities.map((activity) => (
+            <Link key={activity._id} href={`/${activity._id}`}>
+              <ActivityCard
+                name={activity.name}
+                date={activity.date}
+                time={activity.time}
+                joined={activity.joined}
+                category={activity.category}
+              />
+            </Link>
+          ))
+        ) : (
+          <div>No results found</div>
+        )}
+      </StyledCardSection>
+      {!isCreateMode && <Navigation onCreateClick={handleCreateClick} />}
+      {isCreateMode && (
+        <Overlay>
+          <CardForm
+            pageTitle="Create your activity!"
+            onCancel={handleCloseClick}
+            setIsCreateMode={setIsCreateMode}
+            setIsEditMode={setIsEditMode}
+            isEditMode={false}
+            onSubmit={onSubmit}
+          />
+        </Overlay>
+      )}
     </>
   );
 }

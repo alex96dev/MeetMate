@@ -7,7 +7,7 @@ export default function LoginPage() {
     <>
       <StyledButtonBox>
         <h2>Not signed in</h2> <br />
-        <StyledLoginButton onClick={() => signIn()}>Sign in</StyledLoginButton>;
+        <StyledLoginButton onClick={() => signIn()}>Sign in</StyledLoginButton>
       </StyledButtonBox>
     </>
   );

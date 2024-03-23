@@ -22,7 +22,7 @@ export function useAuthentication() {
     }
 
     checkSession();
-  }, []);
+  }, [router]);
 
   return { authenticated, loading };
 }
