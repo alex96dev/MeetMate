@@ -15,8 +15,8 @@ import CardForm from "@/components/CardForm";
 
 export default function HomePage({ onSubmit, setIsEditMode }) {
   const { data: session } = useSession();
-  const [isCreateMode, setIsCreateMode] = useState(false);
   const { data: activities, isLoading } = useSWR("/api/activities");
+  const [isCreateMode, setIsCreateMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [authorFilter, setAuthorFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -75,8 +75,6 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
   const handleCloseClick = () => {
     setIsCreateMode(false);
   };
-
-  // const displayedActivities = searchTerm ? filteredActivities : activities;
 
   if (session) {
     return (
