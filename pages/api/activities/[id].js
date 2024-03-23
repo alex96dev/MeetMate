@@ -1,6 +1,5 @@
 import dbConnect from "@/db/connect";
 import Activity from "@/db/models/Activity";
-import { useRouter } from "next/router";
 
 export default async function handler(request, response) {
   await dbConnect();
