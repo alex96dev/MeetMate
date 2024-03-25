@@ -1,21 +1,35 @@
 import ActivityCard from "@/components/ActivityCard";
 import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import styled from "styled-components";
-import PlaceholderLogo from "@/Icons/Placeholder";
+import Logo from "@/Icons/Logo";
 import Navigation from "@/components/Navigation";
 import { theme } from "@/styles";
 import SearchBar from "/components/SearchBar";
 import Image from "next/image";
+import Filter from "@/components/Filter/Index";
+import ActivityCard from "@/components/ActivityCard";
+import { useSession, signOut } from "next-auth/react";
+import LoginPage from "./loginpage";
+import LogoutIcon from "@/Icons/Logout";
+import CardForm from "@/components/CardForm";
 
-export default function HomePage() {
+
+export default function HomePage({ onSubmit, setIsEditMode }) {
+  const { data: session, status } = useSession();
   const { data: activities, isLoading } = useSWR("/api/activities");
   const [filteredActivities, setFilteredActivities] = useState([]);
   const [weather, setWeather] = useState("no data");
   const [condition, setCondition] = useState("no data");
   const [searchTerm, setSearchTerm] = useState("");
   const [city, setCity] = useState("Berlin");
+  const [isCreateMode, setIsCreateMode] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [authorFilter, setAuthorFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [showFilterWindow, setShowFilterWindow] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -39,26 +53,84 @@ export default function HomePage() {
 
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
-    if (!searchTerm) {
-      setFilteredActivities([]);
-      return;
-    }
-    const filtered = activities.filter((activity) =>
-      activity.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredActivities(filtered);
   };
+
+  const handleFilter = ({ author, category }) => {
+    setAuthorFilter(author);
+    setCategoryFilter(category);
+  };
+
+  function getFilteredActivities() {
+    if (!isLoading && activities) {
+      let filtered = activities;
+
+      if (authorFilter) {
+        filtered = filtered.filter(
+          (activity) =>
+            activity.author.toLowerCase() === authorFilter.toLowerCase()
+        );
+      }
+
+      if (categoryFilter) {
+        filtered = filtered.filter(
+          (activity) =>
+            activity.category.toLowerCase() === categoryFilter.toLowerCase()
+        );
+      }
+
+      return filtered;
+    }
+  }
+
+  const filteredActivities = getFilteredActivities();
+
+  const displayedActivities = searchTerm
+    ? filteredActivities.filter((activity) =>
+        activity.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : filteredActivities;
+
+  const toggleFilterWindow = () => {
+    setShowFilterWindow(!showFilterWindow);
+  };
+
+  const handleCreateClick = () => {
+    setIsCreateMode(true);
+  };
+
+  const handleCloseClick = () => {
+    setIsCreateMode(false);
+  };
+
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
+  
   const displayedActivities = searchTerm ? filteredActivities : activities;
+
+  if (isLoading || status === "loading") return <div>loading...</div>;
+  if (!session) {
+    return (
+      <>
+        <LoginPage />
+      </>
+    );
+  }
 
   return (
     <>
+      Signed in as {session.user.email} <br />
       <StyledHeadlineBox>
-        <PlaceholderLogo />
+        <StyledLogoWrapper>
+          <Logo />
+        </StyledLogoWrapper>
         <StyledHeadline>MeetMate</StyledHeadline>
+        <StyledLogoutButton onClick={() => signOut()}>
+          <LogoutIcon />
+        </StyledLogoutButton>
       </StyledHeadlineBox>
-      <StyledSearchBarContainer>
+
+      <StyledSearchFilterBox>
+        <StyledSearchBarContainer>
         <SearchBar onSearch={handleSearch} />
       </StyledSearchBarContainer>
       <StyledWeather>
@@ -72,10 +144,14 @@ export default function HomePage() {
           />
         )}
       </StyledWeather>
+        <StyledFilterButton onClick={toggleFilterWindow}>
+          Filter
+        </StyledFilterButton>
+      </StyledSearchFilterBox>
+      <Filter onSubmit={handleFilter} showFilterWindow={showFilterWindow} />
       <StyledCardSection>
-        {searchTerm === "" &&
-          activities.length > 0 &&
-          activities.map((activity) => (
+        {displayedActivities.length > 0 ? (
+          displayedActivities.map((activity) => (
             <Link key={activity._id} href={`/${activity._id}`}>
               <ActivityCard
                 name={activity.name}
@@ -85,25 +161,46 @@ export default function HomePage() {
                 category={activity.category}
               />
             </Link>
-          ))}
-        {displayedActivities.length > 0
-          ? displayedActivities.map((activity) => (
-              <Link key={activity._id} href={`/${activity._id}`}>
-                <ActivityCard
-                  name={activity.name}
-                  date={activity.date}
-                  time={activity.time}
-                  joined={activity.joined}
-                  category={activity.category}
-                />
-              </Link>
-            ))
-          : searchTerm !== "" && <div>No results found</div>}
+          ))
+        ) : (
+          <div>No results found</div>
+        )}
       </StyledCardSection>
-      <Navigation />
+      {!isCreateMode && <Navigation onCreateClick={handleCreateClick} />}
+      {isCreateMode && (
+        <Overlay>
+          <CardForm
+            pageTitle="Create your activity!"
+            onCancel={handleCloseClick}
+            setIsCreateMode={setIsCreateMode}
+            setIsEditMode={setIsEditMode}
+            isEditMode={false}
+            onSubmit={onSubmit}
+          />
+        </Overlay>
+      )}
     </>
   );
 }
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-bottom: ${theme.spacing.large};
+  width: 100%;
+  height: 100%;
+  background-color: ${theme.primaryColor};
+  overflow-y: auto;
+`;
+const StyledLogoutButton = styled.button`
+  position: relative;
+  left: ${theme.spacing.xl};
+`;
+
+const StyledFilterButton = styled.button`
+  height: 2.4rem;
+`;
 
 const StyledHeadlineBox = styled.div`
   display: flex;
@@ -113,22 +210,22 @@ const StyledHeadlineBox = styled.div`
   margin-top: ${theme.spacing.medium};
 `;
 
-const StyledCardSection = styled.section`
+const StyledSearchFilterBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 0;
   margin-bottom: 6rem;
   position: relative;
-  @media screen and (min-width: 600px) {
-    margin-bottom: 6.5rem;
-  }
-  @media screen and (min-width: 900px) {
-    margin-bottom: 7rem;
-  }
-  @media screen and (min-width: 1200px) {
-    margin-bottom: 7.5rem;
-  }
+  gap: ${theme.spacing.medium};
+  margin: 0 auto;
+  width: 20rem;
+  margin-bottom: ${theme.spacing.small};
+`;
+
+const StyledLogoWrapper = styled.div`
+  width: 1.7rem;
+  height: 1.7rem;
 `;
 
 const StyledHeadline = styled.h1`
@@ -140,6 +237,23 @@ const StyledHeadline = styled.h1`
   }
   @media screen and (min-width: 1200px) {
     font-size: ${theme.fontSizes.large.split("r")[0] * 1.6 + "rem"};
+  }
+`;
+
+const StyledCardSection = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  margin-bottom: 6rem;
+  @media screen and (min-width: 600px) {
+    margin-bottom: 6.5rem;
+  }
+  @media screen and (min-width: 900px) {
+    margin-bottom: 7rem;
+  }
+  @media screen and (min-width: 1200px) {
+    margin-bottom: 7.5rem;
   }
 `;
 
