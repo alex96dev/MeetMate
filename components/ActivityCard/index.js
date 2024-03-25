@@ -21,8 +21,8 @@ export default function ActivityCard({ name, date, time, joined, category }) {
 
   return (
     <StyledActivityCard category={category}>
+      {joined && <StyledJoinMark>XX</StyledJoinMark>}
       <StyledDivLeft>
-        {joined && <StyledJoinMark>XX</StyledJoinMark>}
         <StyledActivityName ref={activityNameRef}>{name}</StyledActivityName>
       </StyledDivLeft>
       <StyledDivRight>
@@ -84,7 +84,8 @@ const StyledActivityCard = styled.div`
 
 const StyledJoinMark = styled.p`
   position: absolute;
-  top: 0;
+  top: ${theme.spacing.xs};
+  left: ${theme.spacing.small};
   @media screen and (min-width: 600px) {
     font-size: ${theme.fontSizes.small.split("r")[0] * 1.2 + "rem"};
   }
