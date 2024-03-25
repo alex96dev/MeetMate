@@ -27,11 +27,7 @@ const CalendarPage = () => {
 
     return activities.filter((activity) => {
       const activityDate = new Date(activity.date);
-      return (
-        activityDate.getFullYear() === selectedYear &&
-        activityDate.getMonth() === selectedMonth &&
-        activityDate.getDate() === selectedDay
-      );
+      return date.toDateString() === activityDate.toDateString();
     });
   };
 
@@ -67,10 +63,7 @@ const CalendarPage = () => {
       </StyledHeadlineBox>
       <StyledPageDetailTitle>Calendar</StyledPageDetailTitle>
 
-      <Calendar
-        tileContent={renderTileContent}
-        onClickDay={handleDateClick}
-      ></Calendar>
+      <Calendar tileContent={renderTileContent} onClickDay={handleDateClick} />
 
       <StyledCardSection>
         {selectedDateActivities.map((activity) => (
