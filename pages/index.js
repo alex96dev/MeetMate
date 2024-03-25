@@ -24,12 +24,10 @@ export default function HomePage() {
       try {
         const response = await fetch(url);
         const result = await response.json();
-        console.log(result);
 
         const mainTemp = result.current.temp_c;
         const condition = result.current.condition.icon;
 
-        console.log(condition);
         setWeather(mainTemp);
         setCondition(condition);
       } catch (error) {

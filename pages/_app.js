@@ -1,11 +1,9 @@
-import { useState } from "react";
 import GlobalStyle from "../styles";
 import { SWRConfig } from "swr";
 
 const fetcher = (url) => fetch(url).then((response) => response.json());
 
 export default function App({ Component, pageProps }) {
-  const [isEditMode, setIsEditMode] = useState("hallo");
   return (
     <>
       <GlobalStyle />
