@@ -1,4 +1,3 @@
-// import "react-calendar/dist/Calendar.css";
 import dynamic from "next/dynamic";
 import styled from "styled-components";
 import useAuthentication from "./api/auth/useAuthentication";
@@ -72,7 +71,7 @@ const CalendarPage = () => {
         <Calendar
           tileContent={renderTileContent}
           onClickDay={handleDateClick}
-          locale="en-US"
+          locale="en-GB"
         />
       </StyledCalendarWrapper>
       <StyledCardSection>
@@ -138,7 +137,7 @@ const StyledAppName = styled.h1`
 const StyledPageDetailTitle = styled.h1`
   font-size: ${theme.fontSizes.ml};
   text-align: center;
-  margin: ${theme.spacing.medium};
+  margin: ${theme.spacing.small};
 `;
 
 const StyledCalendarWrapper = styled.div`
@@ -153,7 +152,7 @@ const StyledCalendarWrapper = styled.div`
     border-width: ${theme.borderWidth.medium};
     border-radius: ${theme.borderRadius.medium};
     box-shadow: ${theme.box.shadow};
-    padding: ${theme.spacing.small};
+    padding: ${theme.spacing.xs};
     padding-top: 0;
     padding-bottom: 0;
   }
@@ -178,29 +177,44 @@ const StyledCalendarWrapper = styled.div`
   }
 
   .react-calendar__navigation__label {
-    font-size: ${theme.fontSizes.small};
+    font-size: ${theme.fontSizes.medium};
     font-family: ${theme.fonts.text};
     border: none;
     box-shadow: none;
   }
 
+  .react-calendar__viewContainer {
+    margin-top: ${theme.spacing.medium};
+  }
+
   .react-calendar__month-view {
-    margin: ${theme.spacing.small};
+    margin: ${theme.spacing.xs};
+  }
+
+  .react-calendar__month-view__weekdays {
+    display: flex;
+    justify-content: space-between;
   }
 
   .react-calendar__month-view__weekdays__weekday {
-    display: flex;
-    justify-content: center;
+    flex: 1;
+    text-align: center;
+  }
+
+  .react-calendar__month-view__days {
   }
 
   .react-calendar__month-view__days__day {
     display: flex;
     flex-direction: column;
     align-items: center;
-
+    min-width: 0.3rem;
+    max-width: 2.5rem;
     gap: ${theme.spacing.xs};
+    padding: 0;
+    margin: 0;
     padding-top: ${theme.spacing.small};
-    font-size: ${theme.fontSizes.xs}style;
+    font-size: ${theme.fontSizes.xs};
     height: ${theme.button.large};
   }
 
@@ -209,22 +223,33 @@ const StyledCalendarWrapper = styled.div`
     box-shadow: none;
     background-color: none;
     border-radius: ${theme.borderRadius.small};
+    margin: 2px;
+    padding: 1px;
+  }
+
+  .react-calendar__tileContent {
   }
 
   .react-calendar__tile--active {
-    background-color: ${theme.textColor};
-    color: ${theme.primaryColor};
+    border-style: solid;
+    border-color: ${theme.textColor};
+    border-width: ${theme.borderWidth.thin};
+    border-radius: ${theme.borderRadius.small};
+    box-shadow: ${theme.box.shadowSmall};
   }
 
-  .react-calendar__tile--today {
-    color: ${theme.confirmColor};
-    background-color: red;
-  }
-  .react-calendar__tile--weekend {
-  }
-  .react-calendar__tile--hasActive {
-  }
   .react-calendar__tile--now {
+    /* background-color: ${theme.textColor}; */
+    background-color: rgba(38, 37, 36, 0.7);
+    color: ${theme.primaryColor};
+    font-weight: bolder;
+  }
+
+  .react-calendar__month-view__days__day--weekend {
+    /* background-color: rgba(180, 201, 171, 0.3); */
+  }
+
+  .react-calendar__tile--hasActive {
   }
 `;
 
@@ -236,8 +261,10 @@ const StyledRenderTileContent = styled.div`
 const StyledEntry = styled.div`
   display: flex;
   position: absolute;
-  top: ${({ index }) => index * -0.3}rem;
-  left: ${({ index }) => index * -0.3}rem;
+
+  top: ${({ index }) => index * -0.35 + 0.1}rem;
+  left: ${({ index }) => index * -0.3 + -0.3}rem;
+
   font-size: ${theme.fontSizes.xs};
   color: ${theme.textColor};
   border-style: solid;
@@ -246,7 +273,8 @@ const StyledEntry = styled.div`
   border-radius: ${theme.borderRadius.small};
   box-shadow: ${theme.box.shadowSmall};
   background-color: ${({ category }) => getCategoryColor(category, theme)};
-  padding: 0;
+  margin: 0;
+  padding: 0.05rem;
 `;
 
 const StyledCardSection = styled.section`

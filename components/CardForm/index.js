@@ -264,7 +264,7 @@ const StyledButton = styled.button`
 
 const StyledInputBox = styled.div`
   margin: auto;
-  margin-top: ${theme.spacing.xl};
+  margin-top: ${theme.spacing.medium};
   padding: ${theme.spacing.large};
   padding-bottom: ${theme.spacing.medium};
   border-style: solid;
