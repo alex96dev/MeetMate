@@ -5,7 +5,6 @@ import { theme } from "@/styles";
 import Logo from "@/Icons/Logo";
 import useSWR from "swr";
 import { useRouter } from "next/router";
-import SaveIcon from "@/Icons/SaveIcon";
 
 export default function CardForm({
   onCancel,
