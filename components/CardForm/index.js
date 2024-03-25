@@ -85,7 +85,7 @@ export default function CardForm({
         <StyledAppName> MeetMate</StyledAppName>
       </StyledHeadlineBox>
       {pageTitle && <StyledPageTitle>{pageTitle}</StyledPageTitle>}
-      <StyledActivityNameBox selectedCategory={selectedCategory}>
+      <StyledActivityNameBox selectedcategory={selectedCategory}>
         <label htmlFor="name" />
         <StyledActivityNameInput
           ref={inputRef}
@@ -152,6 +152,7 @@ export default function CardForm({
             <option value="Culture">Culture</option>
             <option value="Food">Food</option>
             <option value="Outdoor">Outdoor</option>
+            <option value="Others">Others</option>
           </StyledCategoryInput>
         </StyledUpperInputBox>
         <StyledDescriptionBox>
@@ -233,7 +234,7 @@ const StyledActivityNameBox = styled.div`
   height: ${theme.box.height};
   background-color: ${(props) =>
     props.selectedCategory
-      ? categoryColors[props.selectedCategory]
+      ? categoryColors[props.selectedcategory]
       : "transparent"};
 `;
 

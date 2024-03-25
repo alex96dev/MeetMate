@@ -5,6 +5,7 @@ import activitiesData from "@/lib/db";
 import dynamic from "next/dynamic";
 import styled from "styled-components";
 import useAuthentication from "./api/auth/useAuthentication";
+import Navigation from "@/components/Navigation";
 
 const Calendar = dynamic(() => import("react-calendar"), { ssr: false });
 
@@ -38,6 +39,7 @@ const CalendarPage = () => {
       <button onClick={() => window.open("/")}>Home</button>
 
       <Calendar tileContent={renderTileContent}></Calendar>
+      <Navigation />
     </>
   );
 };
