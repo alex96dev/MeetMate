@@ -62,7 +62,7 @@ export default function HomePage() {
         <SearchBar onSearch={handleSearch} />
       </StyledSearchBarContainer>
       <StyledWeather>
-        {weather}°C{" "}
+        {weather !== "no data" && `${weather}°C`}
         {condition !== "no data" && (
           <Image
             src={`https:${condition}`}
