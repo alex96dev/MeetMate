@@ -7,6 +7,7 @@ import PlaceholderLogo from "@/Icons/Placeholder";
 import Navigation from "@/components/Navigation";
 import { theme } from "@/styles";
 import SearchBar from "/components/SearchBar";
+import Image from "next/image";
 
 export default function HomePage() {
   const { data: activities, isLoading } = useSWR("/api/activities");
@@ -26,10 +27,8 @@ export default function HomePage() {
         console.log(result);
 
         const mainTemp = result.current.temp_c;
-        const condition = result.current.condition.text;
+        const condition = result.current.condition.icon;
 
-        // const mainValue = ((result.main.temp - 32) * (5 / 9)).toFixed(0) + "°C";
-        // console.log(mainValue);
         console.log(condition);
         setWeather(mainTemp);
         setCondition(condition);
@@ -62,10 +61,18 @@ export default function HomePage() {
         <StyledHeadline>MeetMate</StyledHeadline>
       </StyledHeadlineBox>
       <StyledSearchBarContainer>
-        <StyledSearchBar onSearch={handleSearch} />
+        <SearchBar onSearch={handleSearch} />
       </StyledSearchBarContainer>
       <StyledWeather>
-        {weather}°C {condition}
+        {weather}°C{" "}
+        {condition !== "no data" && (
+          <Image
+            src={`https:${condition}`}
+            width={64}
+            height={64}
+            alt="Weather Icon"
+          />
+        )}
       </StyledWeather>
       <StyledCardSection>
         {searchTerm === "" &&
@@ -139,16 +146,14 @@ const StyledHeadline = styled.h1`
 `;
 
 const StyledWeather = styled.div`
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  right: 240px;
+  right: 225px;
   margin: 10px;
   font-size: ${theme.fontSizes.medium};
   font-family: ${theme.fonts.heading};
-`;
-
-const StyledSearchBar = styled(SearchBar)`
-  /* position: relative; */
 `;
 
 const StyledSearchBarContainer = styled.div`

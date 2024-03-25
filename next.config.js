@@ -3,6 +3,15 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.weatherapi.com",
+        port: "",
+      },
+    ],
+  },
   reactStrictMode: true,
   webpack(config) {
     config.module.rules.push({
