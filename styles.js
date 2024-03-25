@@ -162,5 +162,11 @@ textarea:focus,:active {
 
 }
 
+abbr {
+  text-decoration: none;
+  font-family: ${theme.fonts.text};
+  font-weight: normal;
+}
+
 
 `;
