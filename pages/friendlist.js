@@ -15,6 +15,22 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     setIsCreateMode(false);
   };
 
+  const friendCardsData = [
+    { name: `Machsiemilian` },
+    { name: `Annabelschnell` },
+    { name: `Peter Enis` },
+    { name: `Peli Kann` },
+    { name: `Hom Thanks` },
+    { name: `Hellga` },
+    { name: `Sandra Klaus` },
+    { name: `Mari Johanna` },
+    { name: `User` },
+    { name: `Guillermo` },
+    { name: `Pedro` },
+    { name: `Consuela` },
+    { name: `Steven Seagull` },
+  ];
+
   return (
     <StyledFriendList>
       <StyledHeadlineBox>
@@ -25,86 +41,13 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
       </StyledHeadlineBox>
       <StyledHeadline>Your Mates</StyledHeadline>
       <StyledCardSection>
-        <StyledFriendCard>
-          <StyledDivLeft>
-            <StyledActivityName>Maximilian</StyledActivityName>
-          </StyledDivLeft>
-          <StyledDivRight>
-            <StyledSection></StyledSection>
-          </StyledDivRight>
-        </StyledFriendCard>
-        <StyledFriendCard>
-          <StyledDivLeft>
-            <StyledActivityName>Annabelschnell</StyledActivityName>
-          </StyledDivLeft>
-          <StyledDivRight>
-            <StyledSection></StyledSection>
-          </StyledDivRight>
-        </StyledFriendCard>
-        <StyledFriendCard>
-          <StyledDivLeft>
-            <StyledActivityName>Peter Enis</StyledActivityName>
-          </StyledDivLeft>
-          <StyledDivRight>
-            <StyledSection></StyledSection>
-          </StyledDivRight>
-        </StyledFriendCard>
-        <StyledFriendCard>
-          <StyledDivLeft>
-            <StyledActivityName>Peli kann</StyledActivityName>
-          </StyledDivLeft>
-          <StyledDivRight>
-            <StyledSection></StyledSection>
-          </StyledDivRight>
-        </StyledFriendCard>
-        <StyledFriendCard>
-          <StyledDivLeft>
-            <StyledActivityName>Hom Tanks</StyledActivityName>
-          </StyledDivLeft>
-          <StyledDivRight>
-            <StyledSection></StyledSection>
-          </StyledDivRight>
-        </StyledFriendCard>
-        <StyledFriendCard>
-          <StyledDivLeft>
-            <StyledActivityName>Maximilian</StyledActivityName>
-          </StyledDivLeft>
-          <StyledDivRight>
-            <StyledSection></StyledSection>
-          </StyledDivRight>
-        </StyledFriendCard>
-        <StyledFriendCard>
-          <StyledDivLeft>
-            <StyledActivityName>Annabelschnell</StyledActivityName>
-          </StyledDivLeft>
-          <StyledDivRight>
-            <StyledSection></StyledSection>
-          </StyledDivRight>
-        </StyledFriendCard>
-        <StyledFriendCard>
-          <StyledDivLeft>
-            <StyledActivityName>Peter Enis</StyledActivityName>
-          </StyledDivLeft>
-          <StyledDivRight>
-            <StyledSection></StyledSection>
-          </StyledDivRight>
-        </StyledFriendCard>
-        <StyledFriendCard>
-          <StyledDivLeft>
-            <StyledActivityName>Peli kann</StyledActivityName>
-          </StyledDivLeft>
-          <StyledDivRight>
-            <StyledSection></StyledSection>
-          </StyledDivRight>
-        </StyledFriendCard>
-        <StyledFriendCard>
-          <StyledDivLeft>
-            <StyledActivityName>Hom Tanks</StyledActivityName>
-          </StyledDivLeft>
-          <StyledDivRight>
-            <StyledSection></StyledSection>
-          </StyledDivRight>
-        </StyledFriendCard>
+        {friendCardsData.map((friend, index) => (
+          <StyledFriendCard key={index}>
+            <StyledDivLeft>
+              <StyledActivityName>{friend.name}</StyledActivityName>
+            </StyledDivLeft>
+          </StyledFriendCard>
+        ))}
         {!isCreateMode && <Navigation onCreateClick={handleCreateClick} />}
         {isCreateMode && (
           <Overlay>
