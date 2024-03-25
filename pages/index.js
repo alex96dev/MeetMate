@@ -12,8 +12,8 @@ import Image from "next/image";
 export default function HomePage() {
   const { data: activities, isLoading } = useSWR("/api/activities");
   const [filteredActivities, setFilteredActivities] = useState([]);
-  const [weather, setWeather] = useState("no data");
-  const [condition, setCondition] = useState("no data");
+  const [weather, setWeather] = useState(null);
+  const [condition, setCondition] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [city, setCity] = useState("Berlin");
 
@@ -62,8 +62,8 @@ export default function HomePage() {
         <SearchBar onSearch={handleSearch} />
       </StyledSearchBarContainer>
       <StyledWeather>
-        {weather !== "no data" && `${weather}°C`}
-        {condition !== "no data" && (
+        {weather !== null && `${weather}°C`}
+        {condition !== null && (
           <Image
             src={`https:${condition}`}
             width={64}
