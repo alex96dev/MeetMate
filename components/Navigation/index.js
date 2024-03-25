@@ -1,19 +1,33 @@
+import { useRouter } from "next/router";
 import { theme } from "@/styles";
 import styled from "styled-components";
+import Link from "next/link";
+import BackIcon from "@/Icons/BackIcon";
+import CalendarIcon from "@/Icons/CalendarIcon";
 
-export default function Navigation() {
+export default function Navigation({ onCreateClick }) {
+  const router = useRouter();
+
   return (
     <StyledNavigation>
       <StyledNavButtonBox>
-        <StyledSideButton onClick={() => (window.location.href = "/joined")}>
-          XX
-        </StyledSideButton>
-        <StyledCenterButton onClick={() => (window.location.href = "/create")}>
-          create
-        </StyledCenterButton>
-        <StyledSideButton onClick={() => (window.location.href = "/calendar")}>
-          <span class="material-symbols-outlined">calendar_month</span>
-        </StyledSideButton>
+        {router.pathname === "/joined" ? (
+          <StyledSideLink href="/">
+            <BackIcon />
+          </StyledSideLink>
+        ) : (
+          <StyledSideLink href="/joined">XX</StyledSideLink>
+        )}
+        <StyledCenterButton onClick={onCreateClick}>create</StyledCenterButton>
+        {router.pathname === "/calendar" ? (
+          <StyledSideLink href="/">
+            <BackIcon />
+          </StyledSideLink>
+        ) : (
+          <StyledSideLink href="/calendar">
+            <CalendarIcon />
+          </StyledSideLink>
+        )}
       </StyledNavButtonBox>
     </StyledNavigation>
   );
@@ -67,9 +81,20 @@ const StyledNavButtonBox = styled.div`
   padding-bottom: ${theme.spacing.medium};
 `;
 
-const StyledSideButton = styled.button`
+const StyledSideLink = styled(Link)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: ${theme.fonts.heading};
+  padding: ${theme.spacing.small};
   height: ${theme.button.large};
   width: ${theme.button.large};
+  background-color: ${theme.primaryColor};
+  border-color: ${theme.textColor};
+  border-radius: ${theme.borderRadius.medium};
+  border-width: ${theme.borderWidth.medium};
+  border-style: solid;
+  box-shadow: ${theme.box.shadow};
   @media screen and (min-width: 600px) {
     height: ${theme.button.large.split("r")[0] * 1.4 + "rem"};
     width: ${theme.button.large.split("r")[0] * 1.4 + "rem"};

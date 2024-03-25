@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { theme } from "@/styles";
 import SearchIcon from "../../assets/svg/searchIcon";
@@ -27,12 +27,10 @@ export default function SearchBar({ onSearch }) {
 
 const StyledInputContainer = styled.div`
   display: flex;
-  margin-left: auto;
-  margin-right: auto;
+  flex-grow: 1;
   border-style: solid;
 
   margin-bottom: 2rem;
-  width: 20rem;
   height: 2.4rem;
   border-color: ${theme.textColor};
   background-color: transparent;
