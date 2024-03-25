@@ -38,6 +38,7 @@ export const theme = {
     shadowSmall: "2px 3px 0 #262524",
     hover: "3px 3px 0 #262524",
     height: "4.8rem",
+    friendheight: "3.2rem",
     width: "20rem",
   },
 
