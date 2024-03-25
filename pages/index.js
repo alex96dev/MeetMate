@@ -1,6 +1,4 @@
-import ActivityCard from "@/components/ActivityCard";
 import React, { useEffect, useState } from "react";
-import { useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import styled from "styled-components";
@@ -16,14 +14,11 @@ import LoginPage from "./loginpage";
 import LogoutIcon from "@/Icons/Logout";
 import CardForm from "@/components/CardForm";
 
-
 export default function HomePage({ onSubmit, setIsEditMode }) {
   const { data: session, status } = useSession();
   const { data: activities, isLoading } = useSWR("/api/activities");
-  const [filteredActivities, setFilteredActivities] = useState([]);
   const [weather, setWeather] = useState(null);
   const [condition, setCondition] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
   const [city, setCity] = useState("Berlin");
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -104,8 +99,6 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
 
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
-  
-  const displayedActivities = searchTerm ? filteredActivities : activities;
 
   if (isLoading || status === "loading") return <div>loading...</div>;
   if (!session) {
@@ -128,11 +121,13 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
           <LogoutIcon />
         </StyledLogoutButton>
       </StyledHeadlineBox>
-
       <StyledSearchFilterBox>
-        <StyledSearchBarContainer>
         <SearchBar onSearch={handleSearch} />
-      </StyledSearchBarContainer>
+        <StyledFilterButton onClick={toggleFilterWindow}>
+          Filter
+        </StyledFilterButton>
+      </StyledSearchFilterBox>
+      <Filter onSubmit={handleFilter} showFilterWindow={showFilterWindow} />
       <StyledWeather>
         {weather !== null && `${weather}°C`}
         {condition !== null && (
@@ -144,11 +139,6 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
           />
         )}
       </StyledWeather>
-        <StyledFilterButton onClick={toggleFilterWindow}>
-          Filter
-        </StyledFilterButton>
-      </StyledSearchFilterBox>
-      <Filter onSubmit={handleFilter} showFilterWindow={showFilterWindow} />
       <StyledCardSection>
         {displayedActivities.length > 0 ? (
           displayedActivities.map((activity) => (
@@ -212,11 +202,6 @@ const StyledHeadlineBox = styled.div`
 
 const StyledSearchFilterBox = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0;
-  margin-bottom: 6rem;
-  position: relative;
   gap: ${theme.spacing.medium};
   margin: 0 auto;
   width: 20rem;
@@ -266,8 +251,4 @@ const StyledWeather = styled.div`
   margin: 10px;
   font-size: ${theme.fontSizes.medium};
   font-family: ${theme.fonts.heading};
-`;
-
-const StyledSearchBarContainer = styled.div`
-  position: relative;
 `;
