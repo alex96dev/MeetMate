@@ -2,7 +2,7 @@ import { useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import styled from "styled-components";
-import PlaceholderLogo from "@/Icons/Placeholder";
+import Logo from "@/Icons/Logo";
 import Navigation from "@/components/Navigation";
 import { theme } from "@/styles";
 import SearchBar from "/components/SearchBar";
@@ -11,10 +11,12 @@ import ActivityCard from "@/components/ActivityCard";
 import { useSession, signOut } from "next-auth/react";
 import LoginPage from "./loginpage";
 import LogoutIcon from "@/Icons/Logout";
+import CardForm from "@/components/CardForm";
 
-export default function HomePage() {
-  const { data: session } = useSession();
+export default function HomePage({ onSubmit, setIsEditMode }) {
+  const { data: session, status } = useSession();
   const { data: activities, isLoading } = useSWR("/api/activities");
+  const [isCreateMode, setIsCreateMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [authorFilter, setAuthorFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -63,57 +65,89 @@ export default function HomePage() {
     setShowFilterWindow(!showFilterWindow);
   };
 
+  const handleCreateClick = () => {
+    setIsCreateMode(true);
+  };
+
+  const handleCloseClick = () => {
+    setIsCreateMode(false);
+  };
+
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
 
-  // const displayedActivities = searchTerm ? filteredActivities : activities;
-
-  if (session) {
+  if (isLoading || status === "loading") return <div>loading...</div>;
+  if (!session) {
     return (
       <>
-        Signed in as {session.user.email} <br />
-        <StyledHeadlineBox>
-          <PlaceholderLogo />
-          <StyledHeadline>MeetMate</StyledHeadline>
-          <StyledLogoutButton onClick={() => signOut()}>
-            <LogoutIcon />
-          </StyledLogoutButton>
-        </StyledHeadlineBox>
-        <StyledSearchFilterBox>
-          <SearchBar onSearch={handleSearch} />
-          <StyledFilterButton onClick={toggleFilterWindow}>
-            Filter
-          </StyledFilterButton>
-        </StyledSearchFilterBox>
-        <Filter onSubmit={handleFilter} showFilterWindow={showFilterWindow} />
-        <StyledCardSection>
-          {displayedActivities.length > 0 ? (
-            displayedActivities.map((activity) => (
-              <Link key={activity._id} href={`/${activity._id}`}>
-                <ActivityCard
-                  name={activity.name}
-                  date={activity.date}
-                  time={activity.time}
-                  joined={activity.joined}
-                  category={activity.category}
-                />
-              </Link>
-            ))
-          ) : (
-            <div>No results found</div>
-          )}
-        </StyledCardSection>
-        <Navigation />
+        <LoginPage />
       </>
     );
   }
+
   return (
     <>
-      <LoginPage />
+      Signed in as {session.user.email} <br />
+      <StyledHeadlineBox>
+        <StyledLogoWrapper>
+          <Logo />
+        </StyledLogoWrapper>
+        <StyledHeadline>MeetMate</StyledHeadline>
+        <StyledLogoutButton onClick={() => signOut()}>
+          <LogoutIcon />
+        </StyledLogoutButton>
+      </StyledHeadlineBox>
+      <StyledSearchFilterBox>
+        <SearchBar onSearch={handleSearch} />
+        <StyledFilterButton onClick={toggleFilterWindow}>
+          Filter
+        </StyledFilterButton>
+      </StyledSearchFilterBox>
+      <Filter onSubmit={handleFilter} showFilterWindow={showFilterWindow} />
+      <StyledCardSection>
+        {displayedActivities.length > 0 ? (
+          displayedActivities.map((activity) => (
+            <Link key={activity._id} href={`/${activity._id}`}>
+              <ActivityCard
+                name={activity.name}
+                date={activity.date}
+                time={activity.time}
+                joined={activity.joined}
+                category={activity.category}
+              />
+            </Link>
+          ))
+        ) : (
+          <div>No results found</div>
+        )}
+      </StyledCardSection>
+      {!isCreateMode && <Navigation onCreateClick={handleCreateClick} />}
+      {isCreateMode && (
+        <Overlay>
+          <CardForm
+            pageTitle="Create your activity!"
+            onCancel={handleCloseClick}
+            setIsCreateMode={setIsCreateMode}
+            setIsEditMode={setIsEditMode}
+            isEditMode={false}
+            onSubmit={onSubmit}
+          />
+        </Overlay>
+      )}
     </>
   );
 }
 
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-bottom: ${theme.spacing.large};
+  width: 100%;
+  height: 100%;
+  background-color: ${theme.primaryColor};
+  overflow-y: auto;
+`;
 const StyledLogoutButton = styled.button`
   position: relative;
   left: ${theme.spacing.xl};
@@ -139,6 +173,23 @@ const StyledSearchFilterBox = styled.div`
   margin-bottom: ${theme.spacing.small};
 `;
 
+const StyledLogoWrapper = styled.div`
+  width: 1.7rem;
+  height: 1.7rem;
+`;
+
+const StyledHeadline = styled.h1`
+  @media screen and (min-width: 600px) {
+    font-size: ${theme.fontSizes.large.split("r")[0] * 1.2 + "rem"};
+  }
+  @media screen and (min-width: 900px) {
+    font-size: ${theme.fontSizes.large.split("r")[0] * 1.4 + "rem"};
+  }
+  @media screen and (min-width: 1200px) {
+    font-size: ${theme.fontSizes.large.split("r")[0] * 1.6 + "rem"};
+  }
+`;
+
 const StyledCardSection = styled.section`
   display: flex;
   flex-direction: column;
@@ -153,17 +204,5 @@ const StyledCardSection = styled.section`
   }
   @media screen and (min-width: 1200px) {
     margin-bottom: 7.5rem;
-  }
-`;
-
-const StyledHeadline = styled.h1`
-  @media screen and (min-width: 600px) {
-    font-size: ${theme.fontSizes.large.split("r")[0] * 1.2 + "rem"};
-  }
-  @media screen and (min-width: 900px) {
-    font-size: ${theme.fontSizes.large.split("r")[0] * 1.4 + "rem"};
-  }
-  @media screen and (min-width: 1200px) {
-    font-size: ${theme.fontSizes.large.split("r")[0] * 1.6 + "rem"};
   }
 `;

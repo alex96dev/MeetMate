@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 
-export function useAuthentication() {
+export default function useAuthentication() {
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -22,7 +22,7 @@ export function useAuthentication() {
     }
 
     checkSession();
-  }, []);
+  }, [router]);
 
   return { authenticated, loading };
 }

@@ -1,8 +1,7 @@
 import ActivityCard from "@/components/ActivityCard";
 import useSWR from "swr";
 import Link from "next/link";
-import { useAuthentication } from "./api/useAuthentication";
-
+import useAuthentication from "./api/auth/useAuthentication";
 export default function Joined() {
   const { data: activities, isLoading } = useSWR("/api/activities");
   const { authenticated, loading } = useAuthentication();
