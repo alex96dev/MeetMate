@@ -12,6 +12,7 @@ export default function HomePage() {
   const { data: activities, isLoading } = useSWR("/api/activities");
   const [filteredActivities, setFilteredActivities] = useState([]);
   const [weather, setWeather] = useState("no data");
+  const [condition, setCondition] = useState("no data");
   const [searchTerm, setSearchTerm] = useState("");
   const [city, setCity] = useState("Berlin");
 
@@ -25,12 +26,13 @@ export default function HomePage() {
         console.log(result);
 
         const mainTemp = result.current.temp_c;
-        const 
+        const condition = result.current.condition.text;
 
         // const mainValue = ((result.main.temp - 32) * (5 / 9)).toFixed(0) + "°C";
         // console.log(mainValue);
-        console.log(mainTemp);
+        console.log(condition);
         setWeather(mainTemp);
+        setCondition(condition);
       } catch (error) {
         console.error(error);
       }
@@ -63,9 +65,7 @@ export default function HomePage() {
         <StyledSearchBar onSearch={handleSearch} />
       </StyledSearchBarContainer>
       <StyledWeather>
-        {weather.condition.text === "light rain"
-          ? `light rain ${weather}°C`
-          : `${weather}°C`}
+        {weather}°C {condition}
       </StyledWeather>
       <StyledCardSection>
         {searchTerm === "" &&
