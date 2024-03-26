@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import styled from "styled-components";
@@ -56,25 +56,27 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
   };
 
   function getFilteredActivities() {
-    if (!isLoading && activities) {
-      let filtered = activities;
-
-      if (authorFilter) {
-        filtered = filtered.filter(
-          (activity) =>
-            activity.author.toLowerCase() === authorFilter.toLowerCase()
-        );
-      }
-
-      if (categoryFilter) {
-        filtered = filtered.filter(
-          (activity) =>
-            activity.category.toLowerCase() === categoryFilter.toLowerCase()
-        );
-      }
-
-      return filtered;
+    if (isLoading || !activities) {
+      return [];
     }
+
+    let filtered = activities;
+
+    if (authorFilter) {
+      filtered = filtered.filter(
+        (activity) =>
+          activity.author.toLowerCase() === authorFilter.toLowerCase()
+      );
+    }
+
+    if (categoryFilter) {
+      filtered = filtered.filter(
+        (activity) =>
+          activity.category.toLowerCase() === categoryFilter.toLowerCase()
+      );
+    }
+
+    return filtered;
   }
 
   const filteredActivities = getFilteredActivities();
@@ -84,6 +86,12 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
         activity.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : filteredActivities;
+
+  displayedActivities.sort((a, b) => {
+    const dateA = new Date(`${a.date}T${a.time}`);
+    const dateB = new Date(`${b.date}T${b.time}`);
+    return dateA - dateB;
+  });
 
   const toggleFilterWindow = () => {
     setShowFilterWindow(!showFilterWindow);
