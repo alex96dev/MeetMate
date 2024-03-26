@@ -274,7 +274,7 @@ const StyledInformationBox = styled.section`
   border-width: ${theme.borderWidth.medium};
   box-shadow: ${theme.box.shadow};
   width: ${theme.box.width};
-  margin-top: ${theme.spacing.xl};
+  margin-top: ${theme.spacing.medium};
   padding-top: ${theme.spacing.large};
 `;
 

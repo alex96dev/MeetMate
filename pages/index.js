@@ -205,6 +205,7 @@ const StyledSearchFilterBox = styled.div`
   gap: ${theme.spacing.medium};
   margin: 0 auto;
   width: 20rem;
+  height: 3rem;
   margin-bottom: ${theme.spacing.small};
 `;
 

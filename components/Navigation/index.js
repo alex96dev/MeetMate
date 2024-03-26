@@ -95,6 +95,11 @@ const StyledSideLink = styled(Link)`
   border-width: ${theme.borderWidth.medium};
   border-style: solid;
   box-shadow: ${theme.box.shadow};
+
+  &:hover {
+    box-shadow: ${theme.box.shadowSmall};
+  }
+
   @media screen and (min-width: 600px) {
     height: ${theme.button.large.split("r")[0] * 1.4 + "rem"};
     width: ${theme.button.large.split("r")[0] * 1.4 + "rem"};
