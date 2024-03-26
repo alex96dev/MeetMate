@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { theme } from "@/styles";
 import SearchIcon from "../../assets/svg/searchIcon";
+import { IoSearch } from "react-icons/io5";
 
 export default function SearchBar({ onSearch }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,7 +15,7 @@ export default function SearchBar({ onSearch }) {
 
   return (
     <StyledInputContainer>
-      <SearchIcon />
+      <IoSearch size="1.5rem" color={theme.textColor} />
       <StyledInput
         type="search"
         placeholder="Search..."
@@ -29,7 +30,9 @@ const StyledInputContainer = styled.div`
   display: flex;
   flex-grow: 1;
   border-style: solid;
-
+  align-items: center;
+  padding: ${theme.spacing.xs};
+  gap: ${theme.spacing.xs};
   margin-bottom: 2rem;
   height: 2.4rem;
   border-color: ${theme.textColor};

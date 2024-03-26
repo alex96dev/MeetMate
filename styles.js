@@ -63,6 +63,7 @@ export const theme = {
     large: "3rem",
     lx: "6rem",
     xl: "11.5rem",
+    xxl: "15.8rem",
   },
 };
 
