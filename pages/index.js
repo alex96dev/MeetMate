@@ -60,23 +60,23 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
       return [];
     }
 
-    let filtered = activities;
+    let filteredActivities = activities;
 
     if (authorFilter) {
-      filtered = filtered.filter(
+      filteredActivities = filteredActivities.filter(
         (activity) =>
           activity.author.toLowerCase() === authorFilter.toLowerCase()
       );
     }
 
     if (categoryFilter) {
-      filtered = filtered.filter(
+      filteredActivities = filteredActivities.filter(
         (activity) =>
           activity.category.toLowerCase() === categoryFilter.toLowerCase()
       );
     }
 
-    return filtered;
+    return filteredActivities;
   }
 
   const filteredActivities = getFilteredActivities();
