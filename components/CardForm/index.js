@@ -75,6 +75,21 @@ export default function CardForm({
     adjustTextareaHeight();
   };
 
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const getCurrentTime = () => {
+    const today = new Date();
+    const hours = String(today.getHours()).padStart(2, "0");
+    const minutes = String(today.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
+
   return (
     <StyledCardForm onSubmit={handleSubmit}>
       <StyledHeadlineBox>
@@ -117,6 +132,7 @@ export default function CardForm({
             id="date"
             name="date"
             autoComplete="off"
+            min={getCurrentDate()}
             defaultValue={existingActivityData?.date || ""}
             required
           />
@@ -126,6 +142,7 @@ export default function CardForm({
             id="time"
             name="time"
             autoComplete="off"
+            min={getCurrentTime()}
             defaultValue={existingActivityData?.time || ""}
             required
           />

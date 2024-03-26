@@ -76,6 +76,14 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
       );
     }
 
+    // Comment out for coding ///////////////////////////////////////////////////////////////////////
+    filteredActivities = filteredActivities.filter((activity) => {
+      const activityDate = new Date(`${activity.date}T${activity.time}`);
+      const currentDate = new Date();
+      return activityDate >= currentDate;
+    });
+    // Comment out for coding ///////////////////////////////////////////////////////////////////////
+
     return filteredActivities;
   }
 
