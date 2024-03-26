@@ -8,6 +8,7 @@ import ActivityCard from "@/components/ActivityCard";
 import { theme } from "@/styles";
 import Logo from "@/Icons/Logo";
 import useSWR from "swr";
+import { useEffect } from "react";
 
 const Calendar = dynamic(() => import("react-calendar"), { ssr: false });
 
@@ -15,6 +16,14 @@ const CalendarPage = () => {
   const { data: activities, isLoading } = useSWR("/api/activities");
   const { authenticated, loading } = useAuthentication();
   const [selectedDateActivities, setSelectedDateActivities] = useState([]);
+  const currentDate = new Date();
+
+  useEffect(() => {
+    if (!isLoading && activities) {
+      const activitiesForCurrentDate = getActivitiesForDate(currentDate);
+      setSelectedDateActivities(activitiesForCurrentDate);
+    }
+  }, [isLoading, activities]);
 
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
@@ -141,9 +150,6 @@ const StyledPageDetailTitle = styled.h1`
 `;
 
 const StyledCalendarWrapper = styled.div`
-  width: 100%;
-  margin: auto;
-
   .react-calendar {
     font-family: ${theme.fonts.heading};
     width: ${theme.box.width};
@@ -177,8 +183,8 @@ const StyledCalendarWrapper = styled.div`
   }
 
   .react-calendar__navigation__label {
-    font-size: ${theme.fontSizes.medium};
-    font-family: ${theme.fonts.text};
+    font-size: ${theme.fontSizes.small};
+    font-family: ${theme.fonts.heading};
     border: none;
     box-shadow: none;
   }
@@ -191,31 +197,29 @@ const StyledCalendarWrapper = styled.div`
     margin: ${theme.spacing.xs};
   }
 
-  .react-calendar__month-view__weekdays {
-    display: flex;
-    justify-content: space-between;
-  }
-
   .react-calendar__month-view__weekdays__weekday {
     flex: 1;
     text-align: center;
-  }
-
-  .react-calendar__month-view__days {
   }
 
   .react-calendar__month-view__days__day {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 0.3rem;
-    max-width: 2.5rem;
+    min-width: ${theme.spacing.xs};
+    max-width: ${theme.button.medium};
     gap: ${theme.spacing.xs};
     padding: 0;
     margin: 0;
     padding-top: ${theme.spacing.small};
     font-size: ${theme.fontSizes.xs};
     height: ${theme.button.large};
+  }
+
+  .react-calendar__month-view__days {
+    :hover {
+      font-weight: bold;
+    }
   }
 
   .react-calendar__tile {
@@ -227,9 +231,6 @@ const StyledCalendarWrapper = styled.div`
     padding: 1px;
   }
 
-  .react-calendar__tileContent {
-  }
-
   .react-calendar__tile--active {
     border-style: solid;
     border-color: ${theme.textColor};
@@ -239,17 +240,8 @@ const StyledCalendarWrapper = styled.div`
   }
 
   .react-calendar__tile--now {
-    /* background-color: ${theme.textColor}; */
-    background-color: rgba(38, 37, 36, 0.7);
-    color: ${theme.primaryColor};
-    font-weight: bolder;
-  }
-
-  .react-calendar__month-view__days__day--weekend {
-    /* background-color: rgba(180, 201, 171, 0.3); */
-  }
-
-  .react-calendar__tile--hasActive {
+    background-color: ${theme.confirmColor};
+    color: ${theme.textColor};
   }
 `;
 
