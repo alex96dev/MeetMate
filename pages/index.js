@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import styled from "styled-components";
@@ -6,6 +6,7 @@ import Logo from "@/Icons/Logo";
 import Navigation from "@/components/Navigation";
 import { theme } from "@/styles";
 import SearchBar from "/components/SearchBar";
+import Image from "next/image";
 import Filter from "@/components/Filter/Index";
 import ActivityCard from "@/components/ActivityCard";
 import { useSession, signOut } from "next-auth/react";
@@ -16,11 +17,34 @@ import CardForm from "@/components/CardForm";
 export default function HomePage({ onSubmit, setIsEditMode }) {
   const { data: session, status } = useSession();
   const { data: activities, isLoading } = useSWR("/api/activities");
+  const [weather, setWeather] = useState(null);
+  const [condition, setCondition] = useState(null);
+  const [city, setCity] = useState("Berlin");
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [authorFilter, setAuthorFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [showFilterWindow, setShowFilterWindow] = useState(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      const url = `http://api.weatherapi.com/v1/current.json?key=27d7a8c529bf4b43af9113412242203&q=${city}&aqi=no`;
+
+      try {
+        const response = await fetch(url);
+        const result = await response.json();
+
+        const mainTemp = result.current.temp_c;
+        const condition = result.current.condition.icon;
+
+        setWeather(mainTemp);
+        setCondition(condition);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData();
+  }, []);
 
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
@@ -104,6 +128,17 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
         </StyledFilterButton>
       </StyledSearchFilterBox>
       <Filter onSubmit={handleFilter} showFilterWindow={showFilterWindow} />
+      <StyledWeather>
+        {weather !== null && `${weather}°C`}
+        {condition !== null && (
+          <Image
+            src={`https:${condition}`}
+            width={64}
+            height={64}
+            alt="Weather Icon"
+          />
+        )}
+      </StyledWeather>
       <StyledCardSection>
         {displayedActivities.length > 0 ? (
           displayedActivities.map((activity) => (
@@ -205,4 +240,15 @@ const StyledCardSection = styled.section`
   @media screen and (min-width: 1200px) {
     margin-bottom: 7.5rem;
   }
+`;
+
+const StyledWeather = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  right: 225px;
+  margin: 10px;
+  font-size: ${theme.fontSizes.medium};
+  font-family: ${theme.fonts.heading};
 `;
