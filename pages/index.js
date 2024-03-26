@@ -28,7 +28,7 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
 
   useEffect(() => {
     async function fetchData() {
-      const url = `http://api.weatherapi.com/v1/current.json?key=27d7a8c529bf4b43af9113412242203&q=${city}&aqi=no`;
+      const url = `https://api.weatherapi.com/v1/current.json?key=27d7a8c529bf4b43af9113412242203&q=${city}&aqi=no`;
 
       try {
         const response = await fetch(url);
