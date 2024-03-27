@@ -174,12 +174,24 @@ export default function CardForm({
             defaultValue={existingActivityData?.category || ""}
             onChange={handleCategoryChange}
           >
-            <option value="">--choose--</option>
-            <option value="Sports">Sports</option>
-            <option value="Culture">Culture</option>
-            <option value="Food">Food</option>
-            <option value="Outdoor">Outdoor</option>
-            <option value="Others">Others</option>
+            <option id="choose" name="chosoe" value="">
+              --choose--
+            </option>
+            <option id="sports" name="sports" value="Sports">
+              Sports
+            </option>
+            <option id="culture" name="culture" value="Culture">
+              Culture
+            </option>
+            <option id="food" name="food" value="Food">
+              Food
+            </option>
+            <option id="outdoor" name="outdoor" value="Outdoor">
+              Outdoor
+            </option>
+            <option id="others" name="others" value="Others">
+              Others
+            </option>
           </StyledCategoryInput>
         </StyledUpperInputBox>
         <StyledDescriptionBox>
