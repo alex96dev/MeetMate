@@ -170,5 +170,51 @@ abbr {
   font-weight: normal;
 }
 
+.Toastify__toast--success {
+  font-family: ${theme.fonts.heading};
+  background-color: ${theme.primaryColor}; 
+  color: ${theme.textColor};
+}
 
+.Toastify__toast--error {
+  font-family: ${theme.fonts.heading};
+  background-color: ${theme.primaryColor}; 
+  color: ${theme.textColor};
+}
+
+.Toastify__close-button {
+  height: ${theme.button.xs};
+  width: ${theme.button.xs};
+  border-radius: ${theme.borderRadius.small};
+box-shadow: none;
+}
+
+.Toastify__close-button:hover {
+  box-shadow: none;}
+
+.Toastify__progress-bar--success {
+  background-color: ${theme.confirmColor}; 
+}
+
+.Toastify__toast--success svg {
+  fill: ${theme.confirmColor}; 
+}
+
+.Toastify__toast--error svg {
+  fill: ${theme.alertColor}; 
+}
+
+.Toastify__progress-bar--error {
+  background-color: ${theme.alertColor}; 
+}
+
+.Toastify__toast--info {
+  background-color: ${theme.primaryColor};
+  color: ${theme.textColor}; 
+  font-family: ${theme.fonts.heading};
+}
+
+.Toastify__progress-bar--info {
+}
+  
 `;

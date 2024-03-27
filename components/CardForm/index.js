@@ -6,12 +6,14 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 import { FiSave } from "react-icons/fi";
 import { TbArrowBack } from "react-icons/tb";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import useStore from "@/store";
 
 export default function CardForm({
   onCancel,
   existingActivityData,
   pageTitle,
-  setIsEditMode,
 }) {
   const router = useRouter();
   const { id } = router.query;
@@ -20,6 +22,7 @@ export default function CardForm({
     : "/api/activities";
   const method = existingActivityData ? "PUT" : "POST";
   const { mutate } = useSWR(endpoint);
+  const { setIsEditMode, isEditMode } = useStore();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -39,6 +42,13 @@ export default function CardForm({
       onCancel();
       setIsEditMode(false);
       event.target.reset();
+      if (isEditMode) {
+        toast.success("Activity updated successfully!");
+      } else {
+        toast.success("Activity created successfully!");
+      }
+    } else {
+      toast.error("Failed to save changes. Please try again.");
     }
   }
 
