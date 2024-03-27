@@ -14,18 +14,25 @@ import LoginPage from "./loginpage";
 import { FiLogOut } from "react-icons/fi";
 import CardForm from "@/components/CardForm";
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
+import useStore from "@/store";
 
-export default function HomePage({ onSubmit, setIsEditMode }) {
+export default function HomePage({ onSubmit }) {
   const { data: session, status } = useSession();
   const { data: activities, isLoading } = useSWR("/api/activities");
   const [weather, setWeather] = useState(null);
   const [condition, setCondition] = useState(null);
   const [city, setCity] = useState("Berlin");
-  const [isCreateMode, setIsCreateMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [authorFilter, setAuthorFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [showFilterWindow, setShowFilterWindow] = useState(false);
+  const {
+    setIsEditMode,
+    isCreateMode,
+    setIsCreateMode,
+    handleCreateClick,
+    handleCloseClick,
+  } = useStore();
 
   useEffect(() => {
     async function fetchData() {
@@ -104,14 +111,6 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
 
   const toggleFilterWindow = () => {
     setShowFilterWindow(!showFilterWindow);
-  };
-
-  const handleCreateClick = () => {
-    setIsCreateMode(true);
-  };
-
-  const handleCloseClick = () => {
-    setIsCreateMode(false);
   };
 
   if (isLoading) return <div>loading...</div>;

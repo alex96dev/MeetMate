@@ -14,7 +14,11 @@ export default function Navigation({ onCreateClick }) {
       <StyledNavButtonBox>
         {router.pathname === "/joined" ? (
           <StyledSideLink href="/">
-            <TbArrowBackUp size={theme.button.xs} color={theme.textColor} />
+            <TbArrowBackUp
+              size={theme.button.xs}
+              color={theme.textColor}
+              style={{ transform: "scaleX(-1)" }}
+            />
           </StyledSideLink>
         ) : (
           <StyledSideLink href="/joined">XX</StyledSideLink>
