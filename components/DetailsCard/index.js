@@ -5,9 +5,9 @@ import CardForm from "../CardForm";
 import { useState, useEffect } from "react";
 import { theme } from "@/styles";
 import Logo from "@/Icons/Logo";
-import DeleteIcon from "@/Icons/DeleteIcon";
-import EditIcon from "@/Icons/EditIcon";
-import BackIcon from "@/Icons/BackIcon";
+import { FiEdit3 } from "react-icons/fi";
+import { FiTrash2 } from "react-icons/fi";
+import { TbArrowBackUp } from "react-icons/tb";
 
 export default function DetailsCard({ isEditMode, setIsEditMode }) {
   const router = useRouter();
@@ -143,12 +143,11 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
           {joinState.isJoined ? "Disjoin" : "XX Join"}
         </StyledJoinButton>
         <StyledButtonBox>
-          <StyledButton onClick={() => (window.location.href = "/")}>
-            <BackIcon />
+          <StyledButton onClick={() => router.back()}>
+            <TbArrowBackUp size={theme.button.xs} color={theme.textColor} />
           </StyledButton>
           <StyledButton onClick={handleEditClick}>
-            {" "}
-            {isEditMode ? "Cancel" : <EditIcon />}
+            <FiEdit3 size={theme.button.xs} color={theme.textColor} />
           </StyledButton>
           <StyledButton
             onClick={() => {
@@ -159,7 +158,7 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
               }
             }}
           >
-            <DeleteIcon />
+            <FiTrash2 size={theme.button.xs} color={theme.textColor} />
           </StyledButton>
         </StyledButtonBox>
         {isEditMode && (
@@ -315,7 +314,7 @@ const StyledDescription = styled.p`
   line-height: 1.4;
 `;
 const StyledJoinButton = styled.button`
-  width: ${theme.button.xl};
+  width: ${theme.button.xxl};
   margin-top: ${theme.spacing.medium};
   background-color: ${(props) =>
     props.isJoined ? `${theme.alertColor}` : `${theme.confirmColor}`};
@@ -323,9 +322,10 @@ const StyledJoinButton = styled.button`
 
 const StyledButtonBox = styled.div`
   display: flex;
-  gap: 2rem;
-  padding: ${theme.spacing.medium};
+  justify-content: space-between;
+  width: ${theme.button.xxl};
   padding-top: ${theme.spacing.medium};
+  padding-bottom: ${theme.spacing.medium};
 `;
 
 const StyledButton = styled.button`

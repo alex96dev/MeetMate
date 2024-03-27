@@ -1,10 +1,11 @@
 import { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
-import BackIcon from "@/Icons/BackIcon";
 import { theme } from "@/styles";
 import Logo from "@/Icons/Logo";
 import useSWR from "swr";
 import { useRouter } from "next/router";
+import { FiSave } from "react-icons/fi";
+import { TbArrowBack } from "react-icons/tb";
 
 export default function CardForm({
   onCancel,
@@ -186,10 +187,10 @@ export default function CardForm({
         </StyledDescriptionBox>
         <StyledButtonBox>
           <StyledButton type="button" onClick={onCancel}>
-            <BackIcon />
+            <TbArrowBack size={theme.button.xs} color={theme.textColor} />
           </StyledButton>
           <StyledButton type="submit">
-            {existingActivityData ? "save" : "create"}
+            <FiSave size={theme.button.xs} color={theme.textColor} />
           </StyledButton>
         </StyledButtonBox>
       </StyledInputBox>

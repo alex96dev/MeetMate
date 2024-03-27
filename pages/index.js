@@ -11,8 +11,9 @@ import Filter from "@/components/Filter/Index";
 import ActivityCard from "@/components/ActivityCard";
 import { useSession, signOut } from "next-auth/react";
 import LoginPage from "./loginpage";
-import LogoutIcon from "@/Icons/Logout";
+import { FiLogOut } from "react-icons/fi";
 import CardForm from "@/components/CardForm";
+import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
 
 export default function HomePage({ onSubmit, setIsEditMode }) {
   const { data: session, status } = useSession();
@@ -44,7 +45,7 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
       }
     }
     fetchData();
-  }, []);
+  }, [city]);
 
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
@@ -128,19 +129,22 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
   return (
     <>
       Signed in as {session.user.email} <br />
+      <StyledLogoutButton onClick={() => signOut()}>
+        <FiLogOut size={theme.button.xs} color={theme.textColor} />
+      </StyledLogoutButton>
       <StyledHeadlineBox>
         <StyledLogoWrapper>
           <Logo />
         </StyledLogoWrapper>
         <StyledHeadline>MeetMate</StyledHeadline>
-        <StyledLogoutButton onClick={() => signOut()}>
-          <LogoutIcon />
-        </StyledLogoutButton>
       </StyledHeadlineBox>
       <StyledSearchFilterBox>
         <SearchBar onSearch={handleSearch} />
         <StyledFilterButton onClick={toggleFilterWindow}>
-          Filter
+          <HiOutlineAdjustmentsHorizontal
+            size={theme.button.xs}
+            color={theme.textColor}
+          />
         </StyledFilterButton>
       </StyledSearchFilterBox>
       <Filter onSubmit={handleFilter} showFilterWindow={showFilterWindow} />
@@ -149,8 +153,8 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
         {condition !== null && (
           <Image
             src={`https:${condition}`}
-            width={64}
-            height={64}
+            width={50}
+            height={50}
             alt="Weather Icon"
           />
         )}
@@ -200,8 +204,8 @@ const Overlay = styled.div`
   overflow-y: auto;
 `;
 const StyledLogoutButton = styled.button`
-  position: relative;
-  left: ${theme.spacing.xl};
+  position: absolute;
+  right: 1.8rem;
 `;
 
 const StyledFilterButton = styled.button`
@@ -212,8 +216,8 @@ const StyledHeadlineBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0;
-  margin-top: ${theme.spacing.medium};
+  width: ${theme.box.width};
+  margin: 0 auto;
 `;
 
 const StyledSearchFilterBox = styled.div`
@@ -262,10 +266,9 @@ const StyledCardSection = styled.section`
 const StyledWeather = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  position: relative;
-  right: 225px;
-  margin: 10px;
+  justify-content: start;
+  margin: 0 auto;
+  width: ${theme.box.width};
   font-size: ${theme.fontSizes.medium};
   font-family: ${theme.fonts.heading};
 `;

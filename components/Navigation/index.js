@@ -2,8 +2,9 @@ import { useRouter } from "next/router";
 import { theme } from "@/styles";
 import styled from "styled-components";
 import Link from "next/link";
-import BackIcon from "@/Icons/BackIcon";
-import CalendarIcon from "@/Icons/CalendarIcon";
+import { FiCalendar } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
+import { TbArrowBackUp } from "react-icons/tb";
 
 export default function Navigation({ onCreateClick }) {
   const router = useRouter();
@@ -13,19 +14,21 @@ export default function Navigation({ onCreateClick }) {
       <StyledNavButtonBox>
         {router.pathname === "/joined" ? (
           <StyledSideLink href="/">
-            <BackIcon />
+            <TbArrowBackUp size={theme.button.xs} color={theme.textColor} />
           </StyledSideLink>
         ) : (
           <StyledSideLink href="/joined">XX</StyledSideLink>
         )}
-        <StyledCenterButton onClick={onCreateClick}>create</StyledCenterButton>
+        <StyledCenterButton onClick={onCreateClick}>
+          <FiPlus size={theme.button.xs} color={theme.textColor} />
+        </StyledCenterButton>
         {router.pathname === "/calendar" ? (
           <StyledSideLink href="/">
-            <BackIcon />
+            <TbArrowBackUp size={theme.button.xs} color={theme.textColor} />
           </StyledSideLink>
         ) : (
           <StyledSideLink href="/calendar">
-            <CalendarIcon />
+            <FiCalendar size={theme.button.xs} color={theme.textColor} />
           </StyledSideLink>
         )}
       </StyledNavButtonBox>
@@ -86,7 +89,7 @@ const StyledSideLink = styled(Link)`
   justify-content: center;
   align-items: center;
   font-family: ${theme.fonts.heading};
-  padding: ${theme.spacing.small};
+  padding: ${theme.spacing.xs};
   height: ${theme.button.large};
   width: ${theme.button.large};
   background-color: ${theme.primaryColor};
