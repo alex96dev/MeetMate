@@ -1,7 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { theme } from "@/styles";
-import SearchIcon from "../../assets/svg/searchIcon";
 import { IoSearch } from "react-icons/io5";
 
 export default function SearchBar({ onSearch }) {

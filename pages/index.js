@@ -45,7 +45,7 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
       }
     }
     fetchData();
-  }, []);
+  }, [city]);
 
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
