@@ -9,14 +9,23 @@ import { theme } from "@/styles";
 import Logo from "@/Icons/Logo";
 import useSWR from "swr";
 import { useEffect } from "react";
+import CardForm from "@/components/CardForm";
+import useStore from "@/store";
 
 const Calendar = dynamic(() => import("react-calendar"), { ssr: false });
 
-const CalendarPage = () => {
+const CalendarPage = ({ onSubmit }) => {
   const { data: activities, isLoading } = useSWR("/api/activities");
   const { authenticated, loading } = useAuthentication();
   const [selectedDateActivities, setSelectedDateActivities] = useState([]);
   const currentDate = new Date();
+  const {
+    setIsEditMode,
+    isCreateMode,
+    setIsCreateMode,
+    handleCreateClick,
+    handleCloseClick,
+  } = useStore();
 
   useEffect(() => {
     if (!isLoading && activities) {
@@ -95,13 +104,36 @@ const CalendarPage = () => {
             />
           </Link>
         ))}
-        <Navigation />
+        {!isCreateMode && <Navigation onCreateClick={handleCreateClick} />}
+        {isCreateMode && (
+          <Overlay>
+            <CardForm
+              pageTitle="Create your activity!"
+              onCancel={handleCloseClick}
+              setIsCreateMode={setIsCreateMode}
+              setIsEditMode={setIsEditMode}
+              isEditMode={false}
+              onSubmit={onSubmit}
+            />
+          </Overlay>
+        )}
       </StyledCardSection>
     </StyledCalendarPage>
   );
 };
 
 export default CalendarPage;
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-bottom: ${theme.spacing.large};
+  width: 100%;
+  height: 100%;
+  background-color: ${theme.primaryColor};
+  overflow-y: auto;
+`;
 
 const getCategoryColor = (category, theme) => {
   switch (category) {

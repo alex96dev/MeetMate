@@ -8,11 +8,13 @@ import Logo from "@/Icons/Logo";
 import { FiEdit3 } from "react-icons/fi";
 import { FiTrash2 } from "react-icons/fi";
 import { TbArrowBackUp } from "react-icons/tb";
+import useStore from "@/store";
 
-export default function DetailsCard({ isEditMode, setIsEditMode }) {
+export default function DetailsCard() {
   const router = useRouter();
   const { id } = router.query;
   const endpoint = `/api/activities/${id}`;
+  const { isEditMode, setIsEditMode, handleEditClick } = useStore();
 
   const [joinState, setJoinState] = useState({
     isJoined: false,
@@ -41,7 +43,7 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, endpoint]);
 
   const { data: activities, isLoading, mutate, error } = useSWR(endpoint);
 
@@ -50,10 +52,6 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
   }
   if (!activities || error) {
     return <p>Ups! Something went wrong...</p>;
-  }
-
-  function handleEditClick() {
-    setIsEditMode(true);
   }
 
   async function handleEditActivity(event) {
@@ -83,7 +81,7 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
       method: "DELETE",
     });
     if (response.ok) {
-      router.replace("/");
+      router.back();
     }
   }
 
