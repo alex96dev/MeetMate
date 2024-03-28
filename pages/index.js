@@ -63,7 +63,7 @@ export default function HomePage({ onSubmit }) {
         console.error(error);
       }
     }
-    
+
     if (appUsers) {
       fetchData();
     }
@@ -93,7 +93,6 @@ export default function HomePage({ onSubmit }) {
   };
 
   function getFilteredActivities() {
-
     if (isLoading || !activities) {
       return [];
     }
@@ -188,23 +187,6 @@ export default function HomePage({ onSubmit }) {
           />
         )}
       </StyledWeather>
-      {/* <StyledCardSection>
-        {displayedActivities.length > 0 ? (
-          displayedActivities.map((activity) => (
-            <Link key={activity._id} href={`/${activity._id}`}>
-              <ActivityCard
-                name={activity.name}
-                date={activity.date}
-                time={activity.time}
-                joined={activity.joined}
-                category={activity.category}
-              />
-            </Link>
-          ))
-        ) : (
-          <div>No results found</div>
-        )}
-      </StyledCardSection> */}
       <StyledCardSection>
         {displayedActivities.length > 0 ? (
           displayedActivities
