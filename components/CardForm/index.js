@@ -22,8 +22,6 @@ export default function CardForm({
   const { mutate } = useSWR(endpoint);
   const { data: session, status } = useSession();
 
-  console.log(session.user.email);
-
   async function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.target);

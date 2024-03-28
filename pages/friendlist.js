@@ -9,7 +9,7 @@ import useAuthentication from "./api/auth/useAuthentication";
 export default function FriendList({ onSubmit, setIsEditMode }) {
   const { authenticated, loading, session } = useAuthentication();
   const userId = session?.user?.id;
-  const id = "6602d68450e7d82ed8519222";
+  const id = "65fd9d760c057e6bcdb880cd";
 
   const [isCreateMode, setIsCreateMode] = useState(false);
   const handleCreateClick = () => {
@@ -52,8 +52,6 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     return <p>You must be signed in to view this page.</p>;
   }
 
-  console.log(session.user.id);
-
   const friendCardsData = [
     { name: `Machsiemilian` },
     { name: `Annabelschnell` },
@@ -77,7 +75,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
           <Logo />
         </StyledLogoWrapper>
         <StyledAppName> MeetMate</StyledAppName>
-        <button onClick={handleTestClick}>TEST</button>
+        <button onClick={handleTestClick}>Add friend (Hardcoded - fix)</button>
       </StyledHeadlineBox>
       <StyledHeadline>Your Mates</StyledHeadline>
       <StyledCardSection>

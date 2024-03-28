@@ -19,7 +19,7 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
   const { data: activities, isLoading: activitiesIsLoading } =
     useSWR("/api/activities");
   const { data: appUsers, isLoading: appUsersIsLoading } = useSWR("/api/users");
-  // const [appUserFriendsList, setAppUserFriendsList] = useState();
+  const [appUserFriendsList, setAppUserFriendsList] = useState();
   const [weather, setWeather] = useState(null);
   const [condition, setCondition] = useState(null);
   const [city, setCity] = useState("Berlin");
@@ -42,18 +42,13 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
 
         setWeather(mainTemp);
         setCondition(condition);
-        console.log("appUsers:", appUsers); // Log appUsers
         if (appUsers) {
-          console.log("session:", session);
-          const user = appUsers.find((user) => user.id === session?.user?.id);
-          console.log("session?.user?.id:", session?.user?.id);
-          console.log("user:", user);
+          const user = appUsers.find((user) => user._id === session?.user?.id);
 
           if (user && user.friends) {
-            console.log("user.friends:", user.friends);
-            // setAppUserFriendsList(user.friends);
+            setAppUserFriendsList(user.friends);
           } else {
-            console.log("User or user.friends is undefined");
+            return;
           }
         }
       } catch (error) {
@@ -78,10 +73,6 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
       </>
     );
   }
-
-  console.log(appUsers);
-  console.log("session2:", session);
-  // console.log(appUserFriendsList);
 
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
@@ -164,7 +155,7 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
           />
         )}
       </StyledWeather>
-      <StyledCardSection>
+      {/* <StyledCardSection>
         {displayedActivities.length > 0 ? (
           displayedActivities.map((activity) => (
             <Link key={activity._id} href={`/${activity._id}`}>
@@ -177,6 +168,30 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
               />
             </Link>
           ))
+        ) : (
+          <div>No results found</div>
+        )}
+      </StyledCardSection> */}
+      <StyledCardSection>
+        {displayedActivities.length > 0 ? (
+          displayedActivities
+            .filter(
+              (activity) =>
+                appUserFriendsList &&
+                appUserFriendsList.length > 0 &&
+                appUserFriendsList.find((user) => user === activity.authorId)
+            )
+            .map((activity) => (
+              <Link key={activity._id} href={`/${activity._id}`}>
+                <ActivityCard
+                  name={activity.name}
+                  date={activity.date}
+                  time={activity.time}
+                  joined={activity.joined}
+                  category={activity.category}
+                />
+              </Link>
+            ))
         ) : (
           <div>No results found</div>
         )}
