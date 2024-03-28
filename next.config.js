@@ -1,9 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  compiler: {
-    styledComponents: true,
-  },
   images: {
+    domains: ["avatars.githubusercontent.com"],
     remotePatterns: [
       {
         protocol: "https",
@@ -12,6 +10,11 @@ const nextConfig = {
       },
     ],
   },
+
+  compiler: {
+    styledComponents: true,
+  },
+
   reactStrictMode: true,
   webpack(config) {
     config.module.rules.push({

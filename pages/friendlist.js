@@ -5,6 +5,7 @@ import { theme } from "@/styles";
 import Navigation from "@/components/Navigation";
 import CardForm from "@/components/CardForm";
 import useAuthentication from "./api/auth/useAuthentication";
+import UserProfile from "@/components/UserProfile";
 
 export default function FriendList({ onSubmit, setIsEditMode }) {
   const { authenticated, loading, session } = useAuthentication();
@@ -77,7 +78,11 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
         <StyledAppName> MeetMate</StyledAppName>
         <button onClick={handleTestClick}>Add friend (Hardcoded - fix)</button>
       </StyledHeadlineBox>
-      <StyledHeadline>Your Mates</StyledHeadline>
+      <StyledHeadline>Me and my Mates</StyledHeadline>
+      <p>This is me:</p>
+      <UserProfile />
+
+      <p>These are my Mates:</p>
       <StyledCardSection>
         {friendCardsData.map((friend, index) => (
           <StyledFriendCard key={index}>
@@ -188,12 +193,6 @@ const StyledFriendCard = styled.div`
   }
 `;
 
-const StyledSection = styled.section`
-  top: 50%;
-  transform: translateY(-50%);
-  position: relative;
-`;
-
 const StyledDivLeft = styled.div`
   position: absolute;
   top: 50%;
@@ -210,26 +209,6 @@ const StyledDivLeft = styled.div`
     width: 24rem;
   }
   align-items: center;
-`;
-const StyledDivRight = styled.div`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 8rem;
-  @media screen and (min-width: 600px) {
-    width: 9rem;
-  }
-  @media screen and (min-width: 900px) {
-    width: 11rem;
-  }
-  @media screen and (min-width: 1200px) {
-    width: 12rem;
-  }
-  height: 85%;
-  padding-left: 15px;
-  border-left: solid;
-  right: 0;
-  border-width: ${theme.borderWidth.thin};
 `;
 
 const StyledActivityName = styled.h2`

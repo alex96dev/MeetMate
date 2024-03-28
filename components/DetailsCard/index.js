@@ -5,14 +5,18 @@ import CardForm from "../CardForm";
 import { useState, useEffect } from "react";
 import { theme } from "@/styles";
 import Logo from "@/Icons/Logo";
-import DeleteIcon from "@/Icons/DeleteIcon";
-import EditIcon from "@/Icons/EditIcon";
-import BackIcon from "@/Icons/BackIcon";
+import { FiEdit3 } from "react-icons/fi";
+import { FiTrash2 } from "react-icons/fi";
+import { TbArrowBackUp } from "react-icons/tb";
+import useStore from "@/store";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function DetailsCard({ isEditMode, setIsEditMode }) {
+export default function DetailsCard() {
   const router = useRouter();
   const { id } = router.query;
   const endpoint = `/api/activities/${id}`;
+  const { isEditMode, setIsEditMode, handleEditClick } = useStore();
 
   const [joinState, setJoinState] = useState({
     isJoined: false,
@@ -41,7 +45,7 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, endpoint]);
 
   const { data: activities, isLoading, mutate, error } = useSWR(endpoint);
 
@@ -50,10 +54,6 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
   }
   if (!activities || error) {
     return <p>Ups! Something went wrong...</p>;
-  }
-
-  function handleEditClick() {
-    setIsEditMode(true);
   }
 
   async function handleEditActivity(event) {
@@ -83,7 +83,10 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
       method: "DELETE",
     });
     if (response.ok) {
-      router.replace("/");
+      toast.success("Activity deleted successfully!");
+      router.back();
+    } else {
+      toast.error("Failed to delete activity");
     }
   }
 
@@ -93,7 +96,10 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
       ...prevState,
       isJoined: updatedIsJoined,
     }));
-
+    const message = updatedIsJoined
+      ? "You joined the activity."
+      : "You disjoined the activity.";
+    const type = updatedIsJoined ? "success" : "error";
     const response = await fetch(endpoint, {
       method: "PUT",
       headers: {
@@ -103,6 +109,7 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
     });
     if (response.ok) {
       mutate();
+      toast[type](message);
     }
   }
 
@@ -143,12 +150,11 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
           {joinState.isJoined ? "Disjoin" : "XX Join"}
         </StyledJoinButton>
         <StyledButtonBox>
-          <StyledButton onClick={() => (window.location.href = "/")}>
-            <BackIcon />
+          <StyledButton onClick={() => router.back()}>
+            <TbArrowBackUp size={theme.button.xs} color={theme.textColor} />
           </StyledButton>
           <StyledButton onClick={handleEditClick}>
-            {" "}
-            {isEditMode ? "Cancel" : <EditIcon />}
+            <FiEdit3 size={theme.button.xs} color={theme.textColor} />
           </StyledButton>
           <StyledButton
             onClick={() => {
@@ -159,7 +165,7 @@ export default function DetailsCard({ isEditMode, setIsEditMode }) {
               }
             }}
           >
-            <DeleteIcon />
+            <FiTrash2 size={theme.button.xs} color={theme.textColor} />
           </StyledButton>
         </StyledButtonBox>
         {isEditMode && (
@@ -274,7 +280,7 @@ const StyledInformationBox = styled.section`
   border-width: ${theme.borderWidth.medium};
   box-shadow: ${theme.box.shadow};
   width: ${theme.box.width};
-  margin-top: ${theme.spacing.xl};
+  margin-top: ${theme.spacing.medium};
   padding-top: ${theme.spacing.large};
 `;
 
@@ -315,7 +321,7 @@ const StyledDescription = styled.p`
   line-height: 1.4;
 `;
 const StyledJoinButton = styled.button`
-  width: ${theme.button.xl};
+  width: ${theme.button.xxl};
   margin-top: ${theme.spacing.medium};
   background-color: ${(props) =>
     props.isJoined ? `${theme.alertColor}` : `${theme.confirmColor}`};
@@ -323,9 +329,10 @@ const StyledJoinButton = styled.button`
 
 const StyledButtonBox = styled.div`
   display: flex;
-  gap: 2rem;
-  padding: ${theme.spacing.medium};
+  justify-content: space-between;
+  width: ${theme.button.xxl};
   padding-top: ${theme.spacing.medium};
+  padding-bottom: ${theme.spacing.medium};
 `;
 
 const StyledButton = styled.button`

@@ -6,10 +6,19 @@ import Navigation from "@/components/Navigation";
 import styled from "styled-components";
 import Logo from "@/Icons/Logo";
 import { theme } from "@/styles";
+import useStore from "@/store";
+import CardForm from "@/components/CardForm";
 
-export default function Joined() {
+export default function Joined({ onSubmit }) {
   const { data: activities, isLoading } = useSWR("/api/activities");
   const { authenticated, loading } = useAuthentication();
+  const {
+    setIsEditMode,
+    isCreateMode,
+    setIsCreateMode,
+    handleCreateClick,
+    handleCloseClick,
+  } = useStore();
 
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
@@ -45,11 +54,34 @@ export default function Joined() {
             </Link>
           ) : null
         )}
-        <Navigation />
+        {!isCreateMode && <Navigation onCreateClick={handleCreateClick} />}
+        {isCreateMode && (
+          <Overlay>
+            <CardForm
+              pageTitle="Create your activity!"
+              onCancel={handleCloseClick}
+              setIsCreateMode={setIsCreateMode}
+              setIsEditMode={setIsEditMode}
+              isEditMode={false}
+              onSubmit={onSubmit}
+            />
+          </Overlay>
+        )}
       </StyledCardSection>
     </StyledJoinedPage>
   );
 }
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-bottom: ${theme.spacing.large};
+  width: 100%;
+  height: 100%;
+  background-color: ${theme.primaryColor};
+  overflow-y: auto;
+`;
 
 const StyledJoinedPage = styled.div`
   margin: ${theme.spacing.small} auto;

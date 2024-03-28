@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import styled from "styled-components";
@@ -11,10 +11,12 @@ import Filter from "@/components/Filter/Index";
 import ActivityCard from "@/components/ActivityCard";
 import { useSession, signOut } from "next-auth/react";
 import LoginPage from "./loginpage";
-import LogoutIcon from "@/Icons/Logout";
+import { FiLogOut } from "react-icons/fi";
 import CardForm from "@/components/CardForm";
+import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
+import useStore from "@/store";
 
-export default function HomePage({ onSubmit, setIsEditMode }) {
+export default function HomePage({ onSubmit }) {
   const { data: session, status } = useSession();
   const { data: activities, isLoading: activitiesIsLoading } =
     useSWR("/api/activities");
@@ -23,11 +25,17 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
   const [weather, setWeather] = useState(null);
   const [condition, setCondition] = useState(null);
   const [city, setCity] = useState("Berlin");
-  const [isCreateMode, setIsCreateMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [authorFilter, setAuthorFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [showFilterWindow, setShowFilterWindow] = useState(false);
+  const {
+    setIsEditMode,
+    isCreateMode,
+    setIsCreateMode,
+    handleCreateClick,
+    handleCloseClick,
+  } = useStore();
 
   useEffect(() => {
     async function fetchData() {
@@ -55,10 +63,11 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
         console.error(error);
       }
     }
+    
     if (appUsers) {
       fetchData();
     }
-  }, [appUsers, session]);
+  }, [appUsers, session, city]);
 
   if (!appUsers) return <div>Loading...</div>;
 
@@ -84,25 +93,36 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
   };
 
   function getFilteredActivities() {
-    if (!activitiesIsLoading && activities) {
-      let filtered = activities;
 
-      if (authorFilter) {
-        filtered = filtered.filter(
-          (activity) =>
-            activity.author.toLowerCase() === authorFilter.toLowerCase()
-        );
-      }
-
-      if (categoryFilter) {
-        filtered = filtered.filter(
-          (activity) =>
-            activity.category.toLowerCase() === categoryFilter.toLowerCase()
-        );
-      }
-
-      return filtered;
+    if (isLoading || !activities) {
+      return [];
     }
+
+    let filteredActivities = activities;
+
+    if (authorFilter) {
+      filteredActivities = filteredActivities.filter(
+        (activity) =>
+          activity.author.toLowerCase() === authorFilter.toLowerCase()
+      );
+    }
+
+    if (categoryFilter) {
+      filteredActivities = filteredActivities.filter(
+        (activity) =>
+          activity.category.toLowerCase() === categoryFilter.toLowerCase()
+      );
+    }
+
+    // Comment out for coding ///////////////////////////////////////////////////////////////////////
+    filteredActivities = filteredActivities.filter((activity) => {
+      const activityDate = new Date(`${activity.date}T${activity.time}`);
+      const currentDate = new Date();
+      return activityDate >= currentDate;
+    });
+    // Comment out for coding ///////////////////////////////////////////////////////////////////////
+
+    return filteredActivities;
   }
 
   const filteredActivities = getFilteredActivities();
@@ -113,34 +133,47 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
       )
     : filteredActivities;
 
+  displayedActivities.sort((a, b) => {
+    const dateA = new Date(`${a.date}T${a.time}`);
+    const dateB = new Date(`${b.date}T${b.time}`);
+    return dateA - dateB;
+  });
+
   const toggleFilterWindow = () => {
     setShowFilterWindow(!showFilterWindow);
   };
 
-  const handleCreateClick = () => {
-    setIsCreateMode(true);
-  };
+  if (isLoading) return <div>loading...</div>;
+  if (!activities) return <div>failed to load</div>;
 
-  const handleCloseClick = () => {
-    setIsCreateMode(false);
-  };
+  if (isLoading || status === "loading") return <div>loading...</div>;
+  if (!session) {
+    return (
+      <>
+        <LoginPage />
+      </>
+    );
+  }
 
   return (
     <>
       Signed in as {session.user.email} <br />
+      <StyledLogoutButton onClick={() => signOut()}>
+        <FiLogOut size={theme.button.xs} color={theme.textColor} />
+      </StyledLogoutButton>
       <StyledHeadlineBox>
         <StyledLogoWrapper>
           <Logo />
         </StyledLogoWrapper>
         <StyledHeadline>MeetMate</StyledHeadline>
-        <StyledLogoutButton onClick={() => signOut()}>
-          <LogoutIcon />
-        </StyledLogoutButton>
       </StyledHeadlineBox>
       <StyledSearchFilterBox>
         <SearchBar onSearch={handleSearch} />
         <StyledFilterButton onClick={toggleFilterWindow}>
-          Filter
+          <HiOutlineAdjustmentsHorizontal
+            size={theme.button.xs}
+            color={theme.textColor}
+          />
         </StyledFilterButton>
       </StyledSearchFilterBox>
       <Filter onSubmit={handleFilter} showFilterWindow={showFilterWindow} />
@@ -149,8 +182,8 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
         {condition !== null && (
           <Image
             src={`https:${condition}`}
-            width={64}
-            height={64}
+            width={50}
+            height={50}
             alt="Weather Icon"
           />
         )}
@@ -224,8 +257,8 @@ const Overlay = styled.div`
   overflow-y: auto;
 `;
 const StyledLogoutButton = styled.button`
-  position: relative;
-  left: ${theme.spacing.xl};
+  position: absolute;
+  right: 1.8rem;
 `;
 
 const StyledFilterButton = styled.button`
@@ -236,8 +269,8 @@ const StyledHeadlineBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0;
-  margin-top: ${theme.spacing.medium};
+  width: ${theme.box.width};
+  margin: 0 auto;
 `;
 
 const StyledSearchFilterBox = styled.div`
@@ -245,6 +278,7 @@ const StyledSearchFilterBox = styled.div`
   gap: ${theme.spacing.medium};
   margin: 0 auto;
   width: 20rem;
+  height: 3rem;
   margin-bottom: ${theme.spacing.small};
 `;
 
@@ -285,10 +319,9 @@ const StyledCardSection = styled.section`
 const StyledWeather = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  position: relative;
-  right: 225px;
-  margin: 10px;
+  justify-content: start;
+  margin: 0 auto;
+  width: ${theme.box.width};
   font-size: ${theme.fontSizes.medium};
   font-family: ${theme.fonts.heading};
 `;
