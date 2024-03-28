@@ -5,6 +5,7 @@ import { getSession } from "next-auth/react";
 export default function useAuthentication() {
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState();
   const router = useRouter();
 
   useEffect(() => {
@@ -12,6 +13,7 @@ export default function useAuthentication() {
       const session = await getSession();
       if (session) {
         setAuthenticated(true);
+        setSession(session);
       } else {
         setAuthenticated(false);
         setTimeout(() => {
@@ -24,5 +26,5 @@ export default function useAuthentication() {
     checkSession();
   }, [router]);
 
-  return { authenticated, loading };
+  return { authenticated, loading, session };
 }

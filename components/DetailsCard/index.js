@@ -96,7 +96,9 @@ export default function DetailsCard() {
       ...prevState,
       isJoined: updatedIsJoined,
     }));
-
+    const message = updatedIsJoined
+      ? "You joined the activity."
+      : "You disjoined the activity.";
     const type = updatedIsJoined ? "success" : "error";
     const response = await fetch(endpoint, {
       method: "PUT",
@@ -107,6 +109,7 @@ export default function DetailsCard() {
     });
     if (response.ok) {
       mutate();
+      toast[type](message);
     }
   }
 
