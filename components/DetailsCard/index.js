@@ -96,9 +96,7 @@ export default function DetailsCard() {
       ...prevState,
       isJoined: updatedIsJoined,
     }));
-    const message = updatedIsJoined
-      ? "You joined the activity."
-      : "You disjoined the activity.";
+
     const type = updatedIsJoined ? "success" : "error";
     const response = await fetch(endpoint, {
       method: "PUT",
@@ -109,7 +107,6 @@ export default function DetailsCard() {
     });
     if (response.ok) {
       mutate();
-      toast[type](message);
     }
   }
 
@@ -123,7 +120,9 @@ export default function DetailsCard() {
       </StyledHeadlineBox>
       <StyledPageDetailTitle>Join your friend!</StyledPageDetailTitle>
       <StyledAcitivityNameBox category={activities.category}>
-        <StyledJoinedmark>{joinState.isJoined && <h2>XX</h2>}</StyledJoinedmark>
+        <StyledJoinedmark>
+          {joinState.isJoined && <StyledJoinBookmark>XX</StyledJoinBookmark>}
+        </StyledJoinedmark>
         <StyledActivityName>{activities.name}</StyledActivityName>
       </StyledAcitivityNameBox>
       <StyledInformationBox>
@@ -200,6 +199,22 @@ const getCategoryColor = (category, theme) => {
       return theme.secondaryColors.default;
   }
 };
+
+const StyledJoinBookmark = styled.h4`
+  display: flex;
+  position: absolute;
+  top: -0.8rem;
+  font-family: ${theme.fonts.heading};
+  border: ${theme.borderWidth.medium} solid ${theme.textColor};
+  border-top-left-radius: ${theme.borderRadius.small};
+  border-top-right-radius: ${theme.borderRadius.small};
+  border-bottom-left-radius: ${theme.borderRadius.medium};
+  border-bottom-right-radius: ${theme.borderRadius.medium};
+  box-shadow: ${theme.box.shadowXs};
+  padding: ${theme.spacing.xs};
+  padding-bottom: 0.1rem;
+  background-color: white;
+`;
 
 const Overlay = styled.div`
   position: fixed;
