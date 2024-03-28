@@ -192,9 +192,7 @@ export default function HomePage({ onSubmit }) {
           displayedActivities
             .filter(
               (activity) =>
-                appUserFriendsList &&
-                appUserFriendsList.length > 0 &&
-                appUserFriendsList.find((user) => user === activity.authorId)
+                appUserFriendsList?.find((user) => user === activity.authorId)
             )
             .map((activity) => (
               <Link key={activity._id} href={`/${activity._id}`}>
