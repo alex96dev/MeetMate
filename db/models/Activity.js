@@ -11,6 +11,7 @@ const activitySchema = new Schema({
   location: { type: String, required: true },
   description: { type: String, required: false },
   joined: { type: Boolean, required: false },
+  authorId: { type: String, required: true },
 });
 
 const Activity =

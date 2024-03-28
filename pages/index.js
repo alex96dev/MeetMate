@@ -18,7 +18,10 @@ import useStore from "@/store";
 
 export default function HomePage({ onSubmit }) {
   const { data: session, status } = useSession();
-  const { data: activities, isLoading } = useSWR("/api/activities");
+  const { data: activities, isLoading: activitiesIsLoading } =
+    useSWR("/api/activities");
+  const { data: appUsers, isLoading: appUsersIsLoading } = useSWR("/api/users");
+  const [appUserFriendsList, setAppUserFriendsList] = useState([]);
   const [weather, setWeather] = useState(null);
   const [condition, setCondition] = useState(null);
   const [city, setCity] = useState("Berlin");
@@ -47,12 +50,32 @@ export default function HomePage({ onSubmit }) {
 
         setWeather(mainTemp);
         setCondition(condition);
+        if (appUsers && session?.user?.id) {
+          const user = appUsers.find((user) => user._id === session.user.id);
+          setAppUserFriendsList(user?.friends || []);
+        }
       } catch (error) {
         console.error(error);
       }
     }
-    fetchData();
-  }, [city]);
+
+    if (appUsers) {
+      fetchData();
+    }
+  }, [appUsers, session, city]);
+
+  if (!activities) return <div>failed to load</div>;
+
+  if (
+    activitiesIsLoading ||
+    status === "loading" ||
+    appUsersIsLoading ||
+    !appUsers
+  )
+    return <div>loading...</div>;
+  if (!session) {
+    return <LoginPage />;
+  }
 
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
@@ -64,7 +87,7 @@ export default function HomePage({ onSubmit }) {
   };
 
   function getFilteredActivities() {
-    if (isLoading || !activities) {
+    if (activitiesIsLoading || !activities) {
       return [];
     }
 
@@ -113,10 +136,9 @@ export default function HomePage({ onSubmit }) {
     setShowFilterWindow(!showFilterWindow);
   };
 
-  if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
 
-  if (isLoading || status === "loading") return <div>loading...</div>;
+  if (status === "loading") return <div>loading...</div>;
   if (!session) {
     return (
       <>
@@ -160,17 +182,21 @@ export default function HomePage({ onSubmit }) {
       </StyledWeather>
       <StyledCardSection>
         {displayedActivities.length > 0 ? (
-          displayedActivities.map((activity) => (
-            <Link key={activity._id} href={`/${activity._id}`}>
-              <ActivityCard
-                name={activity.name}
-                date={activity.date}
-                time={activity.time}
-                joined={activity.joined}
-                category={activity.category}
-              />
-            </Link>
-          ))
+          displayedActivities
+            .filter((activity) =>
+              appUserFriendsList?.find((user) => user === activity.authorId)
+            )
+            .map((activity) => (
+              <Link key={activity._id} href={`/${activity._id}`}>
+                <ActivityCard
+                  name={activity.name}
+                  date={activity.date}
+                  time={activity.time}
+                  joined={activity.joined}
+                  category={activity.category}
+                />
+              </Link>
+            ))
         ) : (
           <div>No results found</div>
         )}

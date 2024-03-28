@@ -4,11 +4,16 @@ import Logo from "@/Icons/Logo";
 import { theme } from "@/styles";
 import Navigation from "@/components/Navigation";
 import CardForm from "@/components/CardForm";
+import useAuthentication from "./api/auth/useAuthentication";
 import UserProfile from "@/components/UserProfile";
 import FriendRequest from "@/components/FriendRequest";
 import { FiUserPlus } from "react-icons/fi";
 
 export default function FriendList({ onSubmit, setIsEditMode }) {
+  const { authenticated, loading, session } = useAuthentication();
+  const userId = session?.user?.id;
+  const id = "65fd9d760c057e6bcdb880cd";
+
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [showRequestWindow, setShowRequestWindow] = useState(false);
 
@@ -20,9 +25,42 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     setIsCreateMode(false);
   };
 
+  async function handleTestClick() {
+    if (!userId) {
+      console.error("User ID is not available.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/users/${userId}`, {
+        method: "POST",
+        body: JSON.stringify({ id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        return;
+      } else {
+        console.error("Failed to update user.");
+      }
+    } catch (error) {
+      console.error("Error occurred while updating user:", error);
+    }
+  }
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!authenticated) {
+    return <p>You must be signed in to view this page.</p>;
+  }
+
   const toggleRequestWindow = () => {
     setShowRequestWindow(!showRequestWindow);
   };
+
 
   const friendCardsData = [
     { name: `Machsiemilian` },
@@ -47,6 +85,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
           <Logo />
         </StyledLogoWrapper>
         <StyledAppName> MeetMate</StyledAppName>
+        <button onClick={handleTestClick}>Add friend (Hardcoded - fix)</button>
       </StyledHeadlineBox>
       <StyledHeadline>Me and my Mates</StyledHeadline>
       <p>This is me:</p>

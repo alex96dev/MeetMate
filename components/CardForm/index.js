@@ -4,6 +4,7 @@ import { theme } from "@/styles";
 import Logo from "@/Icons/Logo";
 import useSWR from "swr";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import { FiSave } from "react-icons/fi";
 import { TbArrowBack } from "react-icons/tb";
 import { toast } from "react-toastify";
@@ -22,6 +23,7 @@ export default function CardForm({
     : "/api/activities";
   const method = existingActivityData ? "PUT" : "POST";
   const { mutate } = useSWR(endpoint);
+  const { data: session, status } = useSession();
   const { setIsEditMode, isEditMode } = useStore();
 
   async function handleSubmit(event) {
@@ -29,6 +31,7 @@ export default function CardForm({
     const formData = new FormData(event.target);
     const activityData = Object.fromEntries(formData);
     activityData.joined = false;
+    activityData.authorId = session.user.id;
 
     const response = await fetch(endpoint, {
       method: method,
