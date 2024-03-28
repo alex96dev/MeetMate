@@ -119,7 +119,7 @@ export default function CardForm({
           name="name"
           autoComplete="off"
           minLength="3"
-          maxLength="15"
+          maxLength="12"
           placeholder="My activity"
           defaultValue={existingActivityData?.name || ""}
           autoFocus
