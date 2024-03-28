@@ -77,9 +77,7 @@ export default function HomePage({ onSubmit }) {
     return <div>loading...</div>;
   if (!session) {
     return (
-      <>
         <LoginPage />
-      </>
     );
   }
 
