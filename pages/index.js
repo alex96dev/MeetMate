@@ -21,7 +21,7 @@ export default function HomePage({ onSubmit }) {
   const { data: activities, isLoading: activitiesIsLoading } =
     useSWR("/api/activities");
   const { data: appUsers, isLoading: appUsersIsLoading } = useSWR("/api/users");
-  const [appUserFriendsList, setAppUserFriendsList] = useState();
+  const [appUserFriendsList, setAppUserFriendsList] = useState([]);
   const [weather, setWeather] = useState(null);
   const [condition, setCondition] = useState(null);
   const [city, setCity] = useState("Berlin");
@@ -50,14 +50,9 @@ export default function HomePage({ onSubmit }) {
 
         setWeather(mainTemp);
         setCondition(condition);
-        if (appUsers) {
-          const user = appUsers.find((user) => user._id === session?.user?.id);
-
-          if (user && user.friends) {
-            setAppUserFriendsList(user.friends);
-          } else {
-            return;
-          }
+        if (appUsers && session?.user?.id) {
+          const user = appUsers.find((user) => user._id === session.user.id);
+          setAppUserFriendsList(user?.friends || []);
         }
       } catch (error) {
         console.error(error);
@@ -69,16 +64,17 @@ export default function HomePage({ onSubmit }) {
     }
   }, [appUsers, session, city]);
 
-  if (!appUsers) return <div>Loading...</div>;
-
   if (!activities) return <div>failed to load</div>;
 
-  if (activitiesIsLoading || status === "loading" || appUsersIsLoading)
+  if (
+    activitiesIsLoading ||
+    status === "loading" ||
+    appUsersIsLoading ||
+    !appUsers
+  )
     return <div>loading...</div>;
   if (!session) {
-    return (
-        <LoginPage />
-    );
+    return <LoginPage />;
   }
 
   const handleSearch = (searchTerm) => {
@@ -91,7 +87,7 @@ export default function HomePage({ onSubmit }) {
   };
 
   function getFilteredActivities() {
-    if (isLoading || !activities) {
+    if (activitiesIsLoading || !activities) {
       return [];
     }
 
@@ -140,10 +136,9 @@ export default function HomePage({ onSubmit }) {
     setShowFilterWindow(!showFilterWindow);
   };
 
-  if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
 
-  if (isLoading || status === "loading") return <div>loading...</div>;
+  if (status === "loading") return <div>loading...</div>;
   if (!session) {
     return (
       <>
@@ -188,9 +183,8 @@ export default function HomePage({ onSubmit }) {
       <StyledCardSection>
         {displayedActivities.length > 0 ? (
           displayedActivities
-            .filter(
-              (activity) =>
-                appUserFriendsList?.find((user) => user === activity.authorId)
+            .filter((activity) =>
+              appUserFriendsList?.find((user) => user === activity.authorId)
             )
             .map((activity) => (
               <Link key={activity._id} href={`/${activity._id}`}>
