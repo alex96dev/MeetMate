@@ -16,7 +16,10 @@ import CardForm from "@/components/CardForm";
 
 export default function HomePage({ onSubmit, setIsEditMode }) {
   const { data: session, status } = useSession();
-  const { data: activities, isLoading } = useSWR("/api/activities");
+  const { data: activities, isLoading: activitiesIsLoading } =
+    useSWR("/api/activities");
+  const { data: appUsers, isLoading: appUsersIsLoading } = useSWR("/api/users");
+  // const [appUserFriendsList, setAppUserFriendsList] = useState();
   const [weather, setWeather] = useState(null);
   const [condition, setCondition] = useState(null);
   const [city, setCity] = useState("Berlin");
@@ -39,12 +42,46 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
 
         setWeather(mainTemp);
         setCondition(condition);
+        console.log("appUsers:", appUsers); // Log appUsers
+        if (appUsers) {
+          console.log("session:", session);
+          const user = appUsers.find((user) => user.id === session?.user?.id);
+          console.log("session?.user?.id:", session?.user?.id);
+          console.log("user:", user);
+
+          if (user && user.friends) {
+            console.log("user.friends:", user.friends);
+            // setAppUserFriendsList(user.friends);
+          } else {
+            console.log("User or user.friends is undefined");
+          }
+        }
       } catch (error) {
         console.error(error);
       }
     }
-    fetchData();
-  }, []);
+    if (appUsers) {
+      fetchData();
+    }
+  }, [appUsers, session]);
+
+  if (!appUsers) return <div>Loading...</div>;
+
+  if (!activities) return <div>failed to load</div>;
+
+  if (activitiesIsLoading || status === "loading" || appUsersIsLoading)
+    return <div>loading...</div>;
+  if (!session) {
+    return (
+      <>
+        <LoginPage />
+      </>
+    );
+  }
+
+  console.log(appUsers);
+  console.log("session2:", session);
+  // console.log(appUserFriendsList);
 
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
@@ -56,7 +93,7 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
   };
 
   function getFilteredActivities() {
-    if (!isLoading && activities) {
+    if (!activitiesIsLoading && activities) {
       let filtered = activities;
 
       if (authorFilter) {
@@ -96,18 +133,6 @@ export default function HomePage({ onSubmit, setIsEditMode }) {
   const handleCloseClick = () => {
     setIsCreateMode(false);
   };
-
-  if (isLoading) return <div>loading...</div>;
-  if (!activities) return <div>failed to load</div>;
-
-  if (isLoading || status === "loading") return <div>loading...</div>;
-  if (!session) {
-    return (
-      <>
-        <LoginPage />
-      </>
-    );
-  }
 
   return (
     <>

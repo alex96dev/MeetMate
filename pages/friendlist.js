@@ -4,8 +4,13 @@ import Logo from "@/Icons/Logo";
 import { theme } from "@/styles";
 import Navigation from "@/components/Navigation";
 import CardForm from "@/components/CardForm";
+import useAuthentication from "./api/auth/useAuthentication";
 
 export default function FriendList({ onSubmit, setIsEditMode }) {
+  const { authenticated, loading, session } = useAuthentication();
+  const userId = session?.user?.id;
+  const id = "6602d68450e7d82ed8519222";
+
   const [isCreateMode, setIsCreateMode] = useState(false);
   const handleCreateClick = () => {
     setIsCreateMode(true);
@@ -14,6 +19,40 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
   const handleCloseClick = () => {
     setIsCreateMode(false);
   };
+
+  async function handleTestClick() {
+    if (!userId) {
+      console.error("User ID is not available.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/users/${userId}`, {
+        method: "POST",
+        body: JSON.stringify({ id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        return;
+      } else {
+        console.error("Failed to update user.");
+      }
+    } catch (error) {
+      console.error("Error occurred while updating user:", error);
+    }
+  }
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!authenticated) {
+    return <p>You must be signed in to view this page.</p>;
+  }
+
+  console.log(session.user.id);
 
   const friendCardsData = [
     { name: `Machsiemilian` },
@@ -38,6 +77,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
           <Logo />
         </StyledLogoWrapper>
         <StyledAppName> MeetMate</StyledAppName>
+        <button onClick={handleTestClick}>TEST</button>
       </StyledHeadlineBox>
       <StyledHeadline>Your Mates</StyledHeadline>
       <StyledCardSection>
