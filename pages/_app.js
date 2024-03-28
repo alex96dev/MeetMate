@@ -2,6 +2,8 @@ import GlobalStyle from "../styles";
 import { SWRConfig } from "swr";
 import { StyleSheetManager } from "styled-components";
 import { SessionProvider } from "next-auth/react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const fetcher = (url) => fetch(url).then((response) => response.json());
 
@@ -19,6 +21,7 @@ export default function App({
           }
         >
           <SessionProvider session={session}>
+            <ToastContainer />
             <Component {...pageProps} />
           </SessionProvider>
         </StyleSheetManager>

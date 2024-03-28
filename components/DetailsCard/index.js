@@ -9,6 +9,8 @@ import { FiEdit3 } from "react-icons/fi";
 import { FiTrash2 } from "react-icons/fi";
 import { TbArrowBackUp } from "react-icons/tb";
 import useStore from "@/store";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function DetailsCard() {
   const router = useRouter();
@@ -81,7 +83,10 @@ export default function DetailsCard() {
       method: "DELETE",
     });
     if (response.ok) {
+      toast.success("Activity deleted successfully!");
       router.back();
+    } else {
+      toast.error("Failed to delete activity");
     }
   }
 
@@ -91,7 +96,10 @@ export default function DetailsCard() {
       ...prevState,
       isJoined: updatedIsJoined,
     }));
-
+    const message = updatedIsJoined
+      ? "You joined the activity."
+      : "You disjoined the activity.";
+    const type = updatedIsJoined ? "success" : "error";
     const response = await fetch(endpoint, {
       method: "PUT",
       headers: {
@@ -101,6 +109,7 @@ export default function DetailsCard() {
     });
     if (response.ok) {
       mutate();
+      toast[type](message);
     }
   }
 

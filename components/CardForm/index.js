@@ -6,12 +6,14 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 import { FiSave } from "react-icons/fi";
 import { TbArrowBack } from "react-icons/tb";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import useStore from "@/store";
 
 export default function CardForm({
   onCancel,
   existingActivityData,
   pageTitle,
-  setIsEditMode,
 }) {
   const router = useRouter();
   const { id } = router.query;
@@ -20,6 +22,7 @@ export default function CardForm({
     : "/api/activities";
   const method = existingActivityData ? "PUT" : "POST";
   const { mutate } = useSWR(endpoint);
+  const { setIsEditMode, isEditMode } = useStore();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -39,6 +42,13 @@ export default function CardForm({
       onCancel();
       setIsEditMode(false);
       event.target.reset();
+      if (isEditMode) {
+        toast.success("Activity updated successfully!");
+      } else {
+        toast.success("Activity created successfully!");
+      }
+    } else {
+      toast.error("Failed to save changes. Please try again.");
     }
   }
 
@@ -164,12 +174,24 @@ export default function CardForm({
             defaultValue={existingActivityData?.category || ""}
             onChange={handleCategoryChange}
           >
-            <option value="">--choose--</option>
-            <option value="Sports">Sports</option>
-            <option value="Culture">Culture</option>
-            <option value="Food">Food</option>
-            <option value="Outdoor">Outdoor</option>
-            <option value="Others">Others</option>
+            <option id="choose" name="chosoe" value="">
+              --choose--
+            </option>
+            <option id="sports" name="sports" value="Sports">
+              Sports
+            </option>
+            <option id="culture" name="culture" value="Culture">
+              Culture
+            </option>
+            <option id="food" name="food" value="Food">
+              Food
+            </option>
+            <option id="outdoor" name="outdoor" value="Outdoor">
+              Outdoor
+            </option>
+            <option id="others" name="others" value="Others">
+              Others
+            </option>
           </StyledCategoryInput>
         </StyledUpperInputBox>
         <StyledDescriptionBox>

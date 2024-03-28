@@ -51,9 +51,14 @@ const CalendarPage = ({ onSubmit }) => {
   const renderTileContent = ({ date, view }) => {
     if (view === "month") {
       const activities = getActivitiesForDate(date);
+      const maxEntriesPerDay = 3;
+      const limitedActivities = activities.filter(
+        (activity, index) => index < maxEntriesPerDay
+      );
+
       return activities.length > 0 ? (
         <StyledRenderTileContent>
-          {activities.map((activity, index) => (
+          {limitedActivities.map((activity, index) => (
             <StyledEntry key={index} index={index} category={activity.category}>
               XX
             </StyledEntry>
@@ -272,7 +277,10 @@ const StyledCalendarWrapper = styled.div`
   }
 
   .react-calendar__tile--now {
-    background-color: ${theme.confirmColor};
+    /* background-color: ${theme.confirmColor}; */
+    border: solid;
+    border-width: ${theme.borderWidth.medium};
+    border-color: ${theme.confirmColor};
     color: ${theme.textColor};
   }
 `;
