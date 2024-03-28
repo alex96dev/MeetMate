@@ -6,6 +6,8 @@ import Navigation from "@/components/Navigation";
 import CardForm from "@/components/CardForm";
 import useAuthentication from "./api/auth/useAuthentication";
 import UserProfile from "@/components/UserProfile";
+import FriendRequest from "@/components/FriendRequest";
+import { FiUserPlus } from "react-icons/fi";
 
 export default function FriendList({ onSubmit, setIsEditMode }) {
   const { authenticated, loading, session } = useAuthentication();
@@ -13,6 +15,8 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
   const id = "65fd9d760c057e6bcdb880cd";
 
   const [isCreateMode, setIsCreateMode] = useState(false);
+  const [showRequestWindow, setShowRequestWindow] = useState(false);
+
   const handleCreateClick = () => {
     setIsCreateMode(true);
   };
@@ -53,6 +57,11 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     return <p>You must be signed in to view this page.</p>;
   }
 
+  const toggleRequestWindow = () => {
+    setShowRequestWindow(!showRequestWindow);
+  };
+
+
   const friendCardsData = [
     { name: `Machsiemilian` },
     { name: `Annabelschnell` },
@@ -81,13 +90,17 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
       <StyledHeadline>Me and my Mates</StyledHeadline>
       <p>This is me:</p>
       <UserProfile />
-
+      <button onClick={toggleRequestWindow}>
+        <FiUserPlus size={theme.button.xs} color={theme.textColor} />
+      </button>
+      <FriendRequest showRequestWindow={showRequestWindow} />
+      <StyledLine />
       <p>These are my Mates:</p>
       <StyledCardSection>
         {friendCardsData.map((friend, index) => (
           <StyledFriendCard key={index}>
             <StyledDivLeft>
-              <StyledActivityName>{friend.name}</StyledActivityName>
+              <StyledFirendName>{friend.name}</StyledFirendName>
             </StyledDivLeft>
           </StyledFriendCard>
         ))}
@@ -169,6 +182,7 @@ const StyledFriendCard = styled.div`
   border-radius: ${theme.borderRadius.medium};
   height: ${theme.box.friendheight};
   box-shadow: ${theme.box.shadow};
+
   &:hover {
     box-shadow: ${theme.box.hover};
   }
@@ -211,7 +225,7 @@ const StyledDivLeft = styled.div`
   align-items: center;
 `;
 
-const StyledActivityName = styled.h2`
+const StyledFirendName = styled.h2`
   text-align: center;
 
   @media screen and (min-width: 600px) {
@@ -231,6 +245,7 @@ const StyledCardSection = styled.section`
   align-items: center;
   margin: 0;
   margin-bottom: 6rem;
+
   @media screen and (min-width: 600px) {
     margin-bottom: 6.5rem;
   }
@@ -240,4 +255,15 @@ const StyledCardSection = styled.section`
   @media screen and (min-width: 1200px) {
     margin-bottom: 7.5rem;
   }
+`;
+
+const StyledLine = styled.div`
+  position: relative;
+  width: ${theme.line.width};
+  height: 1px;
+  background-color: ${theme.textColor};
+  margin-top: -10px;
+  /* top: 50%; */
+  left: 50%;
+  transform: translate(-50%);
 `;
