@@ -123,7 +123,9 @@ export default function DetailsCard() {
       </StyledHeadlineBox>
       <StyledPageDetailTitle>Join your friend!</StyledPageDetailTitle>
       <StyledAcitivityNameBox category={activities.category}>
-        <StyledJoinedmark>{joinState.isJoined && <h2>XX</h2>}</StyledJoinedmark>
+        <StyledJoinedmarkWrapper>
+          {joinState.isJoined && <StyledJoinBookmark>XX</StyledJoinBookmark>}
+        </StyledJoinedmarkWrapper>
         <StyledActivityName>{activities.name}</StyledActivityName>
       </StyledAcitivityNameBox>
       <StyledInformationBox>
@@ -257,7 +259,22 @@ const StyledAcitivityNameBox = styled.div`
   background-color: ${({ category }) => getCategoryColor(category, theme)};
 `;
 
-const StyledJoinedmark = styled.div`
+const StyledJoinBookmark = styled.h4`
+  display: flex;
+  position: absolute;
+  top: -0.8rem;
+  font-family: ${theme.fonts.heading};
+  border: ${theme.borderWidth.medium} solid ${theme.textColor};
+  border-top-left-radius: ${theme.borderRadius.small};
+  border-top-right-radius: ${theme.borderRadius.small};
+  border-bottom-left-radius: ${theme.borderRadius.medium};
+  border-bottom-right-radius: ${theme.borderRadius.medium};
+  box-shadow: ${theme.box.shadowXs};
+  padding: ${theme.spacing.xs};
+  padding-bottom: 0.1rem;
+  background-color: white;
+`;
+const StyledJoinedmarkWrapper = styled.div`
   position: absolute;
   top: -1rem;
   left: 0.6rem;
