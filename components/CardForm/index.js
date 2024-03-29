@@ -14,6 +14,7 @@ import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { enGB } from "date-fns/locale";
 import { format } from "date-fns";
+import { FiCalendar } from "react-icons/fi";
 
 export default function CardForm({
   onCancel,
@@ -170,34 +171,36 @@ export default function CardForm({
             defaultValue={existingActivityData?.date || ""}
             required
           /> */}
-          <StyledInputField
-            type="text"
-            id="date"
-            name="date"
-            autoComplete="off"
-            value={
-              selectedDate
-                ? format(selectedDate, "dd.MM.yyyy")
-                : existingActivityData?.date || getCurrentDate()
-            }
-            readOnly
-            onClick={toggleDayPicker}
-            onChange={handleInputChange}
-            required
-          />
-          {showDayPicker && (
-            <DayPicker
-              onDayClick={handleDayClick}
-              selected={selectedDate}
-              modifiers={{ disabled: { before: new Date() } }}
-              locale={enGB}
-              format="dd.MM.yyyy"
-              formatDate={(date) =>
-                format(date, "dd.MM.yyyy", { locale: enGB })
+          <StyledDateWrapper>
+            <StyledInputField
+              type="text"
+              id="date"
+              name="date"
+              autoComplete="off"
+              value={
+                selectedDate
+                  ? format(selectedDate, "dd.MM.yyyy")
+                  : existingActivityData?.date || getCurrentDate()
               }
-            />
-          )}
-
+              readOnly
+              onClick={toggleDayPicker}
+              onChange={handleInputChange}
+              required
+            />{" "}
+            <StyledFiCalendar onClick={toggleDayPicker} />
+            {showDayPicker && (
+              <StyledDayPicker
+                onDayClick={handleDayClick}
+                selected={selectedDate}
+                modifiers={{ disabled: { before: new Date() } }}
+                locale={enGB}
+                format="dd.MM.yyyy"
+                formatDate={(date) =>
+                  format(date, "dd.MM.yyyy", { locale: enGB })
+                }
+              />
+            )}
+          </StyledDateWrapper>
           <StyledLabel htmlFor="time">Time: </StyledLabel>
           <StyledInputField
             type="time"
@@ -270,6 +273,72 @@ export default function CardForm({
     </StyledCardForm>
   );
 }
+
+const StyledDateWrapper = styled.div`
+  display: flex;
+  position: relative;
+`;
+
+const StyledFiCalendar = styled(FiCalendar)`
+  display: flex;
+  position: absolute;
+  right: 0;
+  &:hover {
+    color: ${theme.confirmColor};
+    stroke-width: 3px;
+  }
+`;
+
+const StyledDayPicker = styled(DayPicker)`
+  display: flex;
+  position: absolute;
+  top: 0.15rem;
+  right: -1.2rem;
+  background-color: ${theme.primaryColor};
+  color: ${theme.textColor};
+  border: solid;
+  border-width: ${theme.borderWidth.thin};
+  border-radius: ${theme.borderRadius.small};
+  box-shadow: ${theme.box.shadowSmall};
+  padding: ${theme.spacing.small};
+  width: ${theme.button.xl};
+  z-index: 10;
+
+  .rdp-caption_label {
+    font-size: ${theme.fontSizes.small};
+  }
+
+  .rdp-nav_button {
+    width: 0.1rem;
+    height: 0.1rem;
+    padding: 0.06rem;
+    border-radius: ${theme.borderRadius.small};
+    box-shadow: ${theme.box.shadowSmall};
+    background-color: none;
+  }
+
+  .rdp-cell {
+    width: auto;
+    height: auto;
+    padding: 0.06rem;
+  }
+
+  .rdp-day_selected {
+    background-color: ${theme.confirmColor};
+    color: ${theme.primaryColor};
+  }
+
+  .rdp-button_reset {
+    border-radius: ${theme.borderRadius.small};
+    box-shadow: none;
+    width: auto;
+    height: auto;
+  }
+
+  .rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+    background-color: rgba(180, 201, 171, 0.5);
+  }
+`;
 
 const categoryColors = {
   Sports: `${theme.secondaryColors.sports}`,

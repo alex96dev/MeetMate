@@ -13,9 +13,11 @@ export default function ActivityCard({ name, date, time, joined, category }) {
     const textWidth = activityNameElement.scrollWidth;
 
     if (textWidth > containerWidth) {
-      activityNameElement.style.whiteSpace = "nowrap";
-    } else {
-      activityNameElement.style.whiteSpace = "normal";
+      const ratio = containerWidth / textWidth;
+      const fontSize = parseFloat(
+        window.getComputedStyle(activityNameElement).fontSize
+      );
+      activityNameElement.style.fontSize = `${fontSize * ratio}px`;
     }
   }, [name]);
 
@@ -82,10 +84,20 @@ const StyledActivityCard = styled.div`
   }
 `;
 
-const StyledJoinMark = styled.p`
+const StyledJoinMark = styled.h4`
   position: absolute;
-  top: ${theme.spacing.xs};
-  left: ${theme.spacing.small};
+  top: -0.5rem;
+  font-family: ${theme.fonts.heading};
+  border: ${theme.borderWidth.medium} solid ${theme.textColor};
+  border-top-left-radius: ${theme.borderRadius.small};
+  border-top-right-radius: ${theme.borderRadius.small};
+  border-bottom-left-radius: ${theme.borderRadius.medium};
+  border-bottom-right-radius: ${theme.borderRadius.medium};
+  box-shadow: ${theme.box.shadowXs};
+  padding: ${theme.spacing.xs};
+  padding-bottom: 0.1rem;
+  background-color: white;
+
   @media screen and (min-width: 600px) {
     font-size: ${theme.fontSizes.small.split("r")[0] * 1.2 + "rem"};
   }
@@ -159,7 +171,9 @@ const StyledPElement = styled.p`
 
 const StyledActivityName = styled.h2`
   text-align: center;
-
+  width: 100%;
+  white-space: nowrap;
+  font-size: ${theme.fontSizes.medium};
   @media screen and (min-width: 600px) {
     font-size: ${theme.fontSizes.medium.split("r")[0] * 1.2 + "rem"};
   }
