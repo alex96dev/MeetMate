@@ -10,6 +10,10 @@ import { TbArrowBack } from "react-icons/tb";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useStore from "@/store";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
+import { enGB } from "date-fns/locale";
+import { format } from "date-fns";
 
 export default function CardForm({
   onCancel,
@@ -25,6 +29,22 @@ export default function CardForm({
   const { mutate } = useSWR(endpoint);
   const { data: session, status } = useSession();
   const { setIsEditMode, isEditMode } = useStore();
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [showDayPicker, setShowDayPicker] = useState(false);
+
+  const handleDayClick = (day) => {
+    setSelectedDate(day);
+    setShowDayPicker(false);
+  };
+
+  const handleInputChange = (event) => {
+    const inputValue = event.target.value;
+    setSelectedDate(inputValue ? new Date(inputValue) : null);
+  };
+
+  const toggleDayPicker = () => {
+    setShowDayPicker((prev) => !prev);
+  };
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -141,7 +161,7 @@ export default function CardForm({
             required
           />
           <StyledLabel htmlFor="date">Date: </StyledLabel>
-          <StyledInputField
+          {/* <StyledInputField
             type="date"
             id="date"
             name="date"
@@ -149,7 +169,35 @@ export default function CardForm({
             min={getCurrentDate()}
             defaultValue={existingActivityData?.date || ""}
             required
+          /> */}
+          <StyledInputField
+            type="text"
+            id="date"
+            name="date"
+            autoComplete="off"
+            value={
+              selectedDate
+                ? format(selectedDate, "dd.MM.yyyy")
+                : existingActivityData?.date || getCurrentDate()
+            }
+            readOnly
+            onClick={toggleDayPicker}
+            onChange={handleInputChange}
+            required
           />
+          {showDayPicker && (
+            <DayPicker
+              onDayClick={handleDayClick}
+              selected={selectedDate}
+              modifiers={{ disabled: { before: new Date() } }}
+              locale={enGB}
+              format="dd.MM.yyyy"
+              formatDate={(date) =>
+                format(date, "dd.MM.yyyy", { locale: enGB })
+              }
+            />
+          )}
+
           <StyledLabel htmlFor="time">Time: </StyledLabel>
           <StyledInputField
             type="time"
