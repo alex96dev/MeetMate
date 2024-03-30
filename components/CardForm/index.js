@@ -15,6 +15,8 @@ import "react-day-picker/dist/style.css";
 import { enGB } from "date-fns/locale";
 import { format } from "date-fns";
 import { FiCalendar } from "react-icons/fi";
+import TimePicker from "react-time-picker";
+import { FiClock } from "react-icons/fi";
 
 export default function CardForm({
   onCancel,
@@ -81,6 +83,11 @@ export default function CardForm({
   useEffect(() => {
     if (existingActivityData) {
       inputRef.current.focus();
+
+      setSelectedDate(
+        existingActivityData.date ? new Date(existingActivityData.date) : null
+      );
+      setSelectedCategory(existingActivityData.category || "");
     }
   }, [existingActivityData]);
 
@@ -89,7 +96,15 @@ export default function CardForm({
   );
 
   const handleCategoryChange = (event) => {
-    setSelectedCategory(event.target.value);
+    setSelectedCategory((prevCategory) => {
+      // Hier kannst du auf den vorherigen Zustand zugreifen
+      const newCategory = event.target.value;
+      console.log("Neue Kategorie:", newCategory);
+      // Hier wird der neue Zustand gesetzt
+      if (newCategory) {
+        setSelectedCategory(newCategory);
+      }
+    });
   };
 
   const textareaRef = useRef(null);
@@ -162,15 +177,6 @@ export default function CardForm({
             required
           />
           <StyledLabel htmlFor="date">Date: </StyledLabel>
-          {/* <StyledInputField
-            type="date"
-            id="date"
-            name="date"
-            autoComplete="off"
-            min={getCurrentDate()}
-            defaultValue={existingActivityData?.date || ""}
-            required
-          /> */}
           <StyledDateWrapper>
             <StyledInputField
               type="text"
@@ -178,9 +184,11 @@ export default function CardForm({
               name="date"
               autoComplete="off"
               value={
-                selectedDate
-                  ? format(selectedDate, "dd.MM.yyyy")
-                  : existingActivityData?.date || getCurrentDate()
+                existingActivityData?.date
+                  ? existingActivityData.date
+                  : selectedDate
+                  ? format(selectedDate, "yyyy-MM-dd")
+                  : getCurrentDate()
               }
               readOnly
               onClick={toggleDayPicker}
@@ -194,15 +202,15 @@ export default function CardForm({
                 selected={selectedDate}
                 modifiers={{ disabled: { before: new Date() } }}
                 locale={enGB}
-                format="dd.MM.yyyy"
+                format="yyyy-MM-dd"
                 formatDate={(date) =>
-                  format(date, "dd.MM.yyyy", { locale: enGB })
+                  format(date, "yyyy-MM-dd", { locale: enGB })
                 }
               />
             )}
           </StyledDateWrapper>
           <StyledLabel htmlFor="time">Time: </StyledLabel>
-          <StyledInputField
+          {/* <StyledInputField
             type="time"
             id="time"
             name="time"
@@ -210,7 +218,16 @@ export default function CardForm({
             min={getCurrentTime()}
             defaultValue={existingActivityData?.time || ""}
             required
-          />
+          /> */}
+          <StyledDateWrapper>
+            <StyledTimePicker
+              clearIcon={null}
+              value={existingActivityData?.time || getCurrentTime()}
+              disableClock
+              disabled={false}
+            />
+            <StyledFiClock />
+          </StyledDateWrapper>
           <StyledLabel htmlFor="location">Location: </StyledLabel>
           <StyledInputField
             type="text"
@@ -274,6 +291,45 @@ export default function CardForm({
   );
 }
 
+const StyledTimePicker = styled(TimePicker)`
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.small};
+  width: 8rem;
+  height: 1.4rem;
+  background-color: ${theme.primaryColor};
+  border: none;
+  border-bottom: ${theme.borderWidth.thin} solid rgba(0, 0, 0, 0.3);
+
+  .react-time-picker__inputGroup__input {
+    width: ${theme.button.medium} !important;
+    height: 1.4rem;
+    padding-top: 0;
+    bottom: -0.1rem;
+    background-color: rgba(239, 232, 216, 0);
+    font-family: ${theme.fonts.heading};
+    font-size: ${theme.fontSizes.small};
+  }
+
+  .react-time-picker__inputGroup__divider {
+    font-size: larger;
+  }
+`;
+
+const StyledFiClock = styled(FiClock)`
+  display: flex;
+  position: absolute;
+  width: 1.3rem;
+  height: auto;
+  margin: auto;
+  top: -0.05rem;
+  padding: 0.1rem;
+  padding-bottom: 0.6rem;
+  right: 0;
+`;
+
 const StyledDateWrapper = styled.div`
   display: flex;
   position: relative;
@@ -284,8 +340,7 @@ const StyledFiCalendar = styled(FiCalendar)`
   position: absolute;
   right: 0;
   &:hover {
-    color: ${theme.confirmColor};
-    stroke-width: 3px;
+    stroke-width: 2.5;
   }
 `;
 
@@ -392,9 +447,15 @@ const StyledActivityNameBox = styled.div`
   width: ${theme.box.width};
   height: ${theme.box.height};
   background-color: ${(props) =>
-    props.selectedCategory
-      ? categoryColors[props.selectedcategory]
-      : "transparent"};
+    console.log("1", props.selectedCategory)
+      ? console.log("2", categoryColors[props.selectedCategory])
+      : console.log("transparent")};
+  /* 
+  background-color: ${(props) =>
+    props.selectedCategory !== undefined &&
+    categoryColors[props.selectedCategory]
+      ? categoryColors[props.selectedCategory]
+      : "transparent"}; */
 `;
 
 const StyledActivityNameInput = styled.input`
