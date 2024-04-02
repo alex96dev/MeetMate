@@ -35,6 +35,9 @@ export default function CardForm({
   const [selectedDate, setSelectedDate] = useState(null);
   const [showDayPicker, setShowDayPicker] = useState(false);
 
+  const inputRef = useRef(null);
+  const locationInputRef = useRef(null);
+
   const handleDayClick = (day) => {
     setSelectedDate(day);
     setShowDayPicker(false);
@@ -78,8 +81,6 @@ export default function CardForm({
     }
   }
 
-  const inputRef = useRef(null);
-
   useEffect(() => {
     if (existingActivityData) {
       inputRef.current.focus();
@@ -97,12 +98,9 @@ export default function CardForm({
 
   const handleCategoryChange = (event) => {
     setSelectedCategory((prevCategory) => {
-      // Hier kannst du auf den vorherigen Zustand zugreifen
       const newCategory = event.target.value;
-      console.log("Neue Kategorie:", newCategory);
-      // Hier wird der neue Zustand gesetzt
       if (newCategory) {
-        setSelectedCategory(newCategory);
+        return newCategory;
       }
     });
   };
@@ -140,6 +138,10 @@ export default function CardForm({
     return `${hours}:${minutes}`;
   };
 
+  const [selectedTime, setSelectedTime] = useState(
+    existingActivityData?.time || getCurrentTime()
+  );
+
   return (
     <StyledCardForm onSubmit={handleSubmit}>
       <StyledHeadlineBox>
@@ -149,7 +151,7 @@ export default function CardForm({
         <StyledAppName> MeetMate</StyledAppName>
       </StyledHeadlineBox>
       {pageTitle && <StyledPageTitle>{pageTitle}</StyledPageTitle>}
-      <StyledActivityNameBox selectedcategory={selectedCategory}>
+      <StyledActivityNameBox category={selectedCategory}>
         <label htmlFor="name" />
         <StyledActivityNameInput
           ref={inputRef}
@@ -210,21 +212,20 @@ export default function CardForm({
             )}
           </StyledDateWrapper>
           <StyledLabel htmlFor="time">Time: </StyledLabel>
-          {/* <StyledInputField
-            type="time"
-            id="time"
-            name="time"
-            autoComplete="off"
-            min={getCurrentTime()}
-            defaultValue={existingActivityData?.time || ""}
-            required
-          /> */}
           <StyledDateWrapper>
             <StyledTimePicker
+              id="time"
               clearIcon={null}
-              value={existingActivityData?.time || getCurrentTime()}
+              value={selectedTime}
+              onChange={setSelectedTime}
               disableClock
               disabled={false}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  locationInputRef.current.focus();
+                }
+              }}
             />
             <StyledFiClock />
           </StyledDateWrapper>
@@ -233,6 +234,7 @@ export default function CardForm({
             type="text"
             id="location"
             name="location"
+            ref={locationInputRef}
             autoComplete="off"
             defaultValue={existingActivityData?.location || ""}
             required
@@ -244,6 +246,7 @@ export default function CardForm({
             name="category"
             defaultValue={existingActivityData?.category || ""}
             onChange={handleCategoryChange}
+            required
           >
             <option id="choose" name="chosoe" value="">
               --choose--
@@ -290,6 +293,21 @@ export default function CardForm({
     </StyledCardForm>
   );
 }
+
+const getCategoryColor = (category, theme) => {
+  switch (category) {
+    case "Sports":
+      return theme.secondaryColors.sports;
+    case "Culture":
+      return theme.secondaryColors.culture;
+    case "Food":
+      return theme.secondaryColors.food;
+    case "Outdoor":
+      return theme.secondaryColors.outdoor;
+    default:
+      return theme.secondaryColors.default;
+  }
+};
 
 const StyledTimePicker = styled(TimePicker)`
   display: flex;
@@ -395,13 +413,6 @@ const StyledDayPicker = styled(DayPicker)`
   }
 `;
 
-const categoryColors = {
-  Sports: `${theme.secondaryColors.sports}`,
-  Culture: `${theme.secondaryColors.culture}`,
-  Food: `${theme.secondaryColors.food}`,
-  Outdoor: `${theme.secondaryColors.outdoor}`,
-};
-
 const StyledHeadlineBox = styled.div`
   display: flex;
   flex-direction: row;
@@ -446,16 +457,7 @@ const StyledActivityNameBox = styled.div`
   box-shadow: ${theme.box.shadow};
   width: ${theme.box.width};
   height: ${theme.box.height};
-  background-color: ${(props) =>
-    console.log("1", props.selectedCategory)
-      ? console.log("2", categoryColors[props.selectedCategory])
-      : console.log("transparent")};
-  /* 
-  background-color: ${(props) =>
-    props.selectedCategory !== undefined &&
-    categoryColors[props.selectedCategory]
-      ? categoryColors[props.selectedCategory]
-      : "transparent"}; */
+  background-color: ${({ category }) => getCategoryColor(category, theme)};
 `;
 
 const StyledActivityNameInput = styled.input`
