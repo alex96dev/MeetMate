@@ -1,6 +1,7 @@
 import ActivityCard from "../ActivityCard";
 import { theme } from "@/styles";
 import styled from "styled-components";
+import Link from "next/link";
 
 export default function NextActivity({ activities }) {
   const joinedFutureActivities = activities.filter((activity) => {
@@ -27,13 +28,15 @@ export default function NextActivity({ activities }) {
     <>
       <StyledCardSection>
         <StyledSecondary>Your next Activity:</StyledSecondary>
-        <ActivityCard
-          name={nextActivity.name}
-          date={nextActivity.date}
-          time={nextActivity.time}
-          joined={nextActivity.joined}
-          category={nextActivity.category}
-        />
+        <Link key={nextActivity._id} href={`/${nextActivity._id}`}>
+          <ActivityCard
+            name={nextActivity.name}
+            date={nextActivity.date}
+            time={nextActivity.time}
+            joined={nextActivity.joined}
+            category={nextActivity.category}
+          />
+        </Link>
       </StyledCardSection>
       <StyledLine />
     </>
@@ -60,5 +63,8 @@ const StyledLine = styled.div`
 `;
 
 const StyledSecondary = styled.div`
+  font-size: ${theme.fontSizes.small};
+  font-family: ${theme.fonts.heading};
   margin-bottom: 1.2rem;
+  width: ${theme.box.width};
 `;
