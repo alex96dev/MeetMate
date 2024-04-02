@@ -8,7 +8,7 @@ import CardForm from "@/components/CardForm";
 import useAuthentication from "./api/auth/useAuthentication";
 import UserProfile from "@/components/UserProfile";
 import FriendRequest from "@/components/FriendRequest";
-import { FiUserPlus } from "react-icons/fi";
+import { FiUserPlus, FiHome } from "react-icons/fi";
 import useSWR from "swr";
 import Fuse from "fuse.js";
 import SearchForm from "@/components/SearchForm";
@@ -158,7 +158,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
             {mates.map((mate) => (
               <StyledFriendCard key={mate._id}>
                 <StyledDivLeft>
-                  <StyledFirendName>{mate.name}</StyledFirendName>
+                  <StyledFriendName>{mate.name}</StyledFriendName>
                 </StyledDivLeft>
               </StyledFriendCard>
             ))}
