@@ -12,7 +12,6 @@ import { FiUserPlus } from "react-icons/fi";
 import useSWR from "swr";
 import Fuse from "fuse.js";
 import SearchForm from "@/components/SearchForm";
-import { FiUserPlus, FiHome } from "react-icons/fi";
 
 const fuseOptions = {
   // isCaseSensitive: false,
