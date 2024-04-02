@@ -30,7 +30,10 @@ export const authOptions = {
         currentUser.save();
       }
 
-      return { ...session, user: { ...session.user, id: user.id } };
+      return {
+        ...session,
+        user: { ...session.user, id: user.id, friends: user.friends },
+      };
     },
   },
 };

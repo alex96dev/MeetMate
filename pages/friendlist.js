@@ -12,6 +12,7 @@ import { FiUserPlus, FiHome } from "react-icons/fi";
 import useSWR from "swr";
 import Fuse from "fuse.js";
 import SearchForm from "@/components/SearchForm";
+import { toast } from "react-toastify";
 
 const fuseOptions = {
   // isCaseSensitive: false,
@@ -33,7 +34,6 @@ const fuseOptions = {
 export default function FriendList({ onSubmit, setIsEditMode }) {
   const { authenticated, loading, session } = useAuthentication();
   const userId = session?.user?.id;
-  const id = "65fd9d760c057e6bcdb880cd";
 
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [showRequestWindow, setShowRequestWindow] = useState(false);
@@ -78,7 +78,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     }
   }
 
-  async function handleTestClick() {
+  async function handleAddFriend(id) {
     if (!userId) {
       console.error("User ID is not available.");
       return;
@@ -93,7 +93,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
         },
       });
       if (response.ok) {
-        return;
+        return toast.success(`User successfully added!`);
       } else {
         console.error("Failed to update user.");
       }
@@ -114,22 +114,6 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     setShowRequestWindow(!showRequestWindow);
   };
 
-  const friendCardsData = [
-    { name: `Machsiemilian` },
-    { name: `Annabelschnell` },
-    { name: `Peter Enis` },
-    { name: `Peli Kann` },
-    { name: `Hom Thanks` },
-    { name: `Hellga` },
-    { name: `Sandra Klaus` },
-    { name: `Mari Johanna` },
-    { name: `User` },
-    { name: `Guillermo` },
-    { name: `Pedro` },
-    { name: `Consuela` },
-    { name: `Steven Seagull` },
-  ];
-
   return (
     <StyledFriendList>
       <StyledFriendlistLink href="/">
@@ -140,7 +124,6 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
           <Logo />
         </StyledLogoWrapper>
         <StyledAppName> MeetMate</StyledAppName>
-        <button onClick={handleTestClick}>Add friend (Hardcoded - fix)</button>
       </StyledHeadlineBox>
       <StyledHeadline>Me and my Mates</StyledHeadline>
       <p>This is me:</p>
@@ -160,6 +143,19 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
                 <StyledDivLeft>
                   <StyledFriendName>{mate.name}</StyledFriendName>
                 </StyledDivLeft>
+                <StyledDivRight>
+                  {fuse._docs.find(
+                    (user) =>
+                      user._id ===
+                      session.user.friends.find((friend) => friend === mate._id)
+                  ) !== undefined ? (
+                    "Already Friends"
+                  ) : (
+                    <StyledButton onClick={() => handleAddFriend(mate._id)}>
+                      Add
+                    </StyledButton>
+                  )}
+                </StyledDivRight>
               </StyledFriendCard>
             ))}
           </StyledList>
@@ -172,13 +168,17 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
       <StyledLine />
       <p>These are my Mates:</p>
       <StyledCardSection>
-        {friendCardsData.map((friend, index) => (
-          <StyledFriendCard key={index}>
-            <StyledDivLeft>
-              <StyledFriendName>{friend.name}</StyledFriendName>
-            </StyledDivLeft>
-          </StyledFriendCard>
-        ))}
+        {fuse._docs
+          .filter((user) =>
+            session.user.friends.find((friend) => friend === user._id)
+          )
+          .map((user) => (
+            <StyledFriendCard key={user._id}>
+              <StyledDivLeft>
+                <StyledFriendName>{user.name}</StyledFriendName>
+              </StyledDivLeft>
+            </StyledFriendCard>
+          ))}
         {!isCreateMode && <Navigation onCreateClick={handleCreateClick} />}
         {isCreateMode && (
           <Overlay>
@@ -369,4 +369,33 @@ const StyledSearchbarBox = styled.div`
 
 const StyledMatesLabel = styled.p`
   margin-bottom: 1.2rem;
+`;
+
+const StyledDivRight = styled.div`
+  display: flex;
+  position: absolute;
+  justify-content: space-evenly;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8rem;
+  @media screen and (min-width: 600px) {
+    width: 9rem;
+  }
+  @media screen and (min-width: 900px) {
+    width: 11rem;
+  }
+  @media screen and (min-width: 1200px) {
+    width: 12rem;
+  }
+  height: 85%;
+  border-left: solid;
+  right: 0;
+  border-width: ${theme.borderWidth.thin};
+`;
+
+const StyledButton = styled.button`
+  width: 2rem;
+  height: 2rem;
+  margin-top: 2px;
+  background-color: ${theme.alertColor};
 `;

@@ -65,8 +65,6 @@ export default function HomePage({ onSubmit }) {
     }
   }, [appUsers, session, city]);
 
-  if (!activities) return <div>failed to load</div>;
-
   if (
     activitiesIsLoading ||
     status === "loading" ||
@@ -74,6 +72,9 @@ export default function HomePage({ onSubmit }) {
     !appUsers
   )
     return <div>loading...</div>;
+
+  if (!activities) return <div>failed to load</div>;
+
   if (!session) {
     return <LoginPage />;
   }
