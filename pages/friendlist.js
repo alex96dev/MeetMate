@@ -9,6 +9,26 @@ import useAuthentication from "./api/auth/useAuthentication";
 import UserProfile from "@/components/UserProfile";
 import FriendRequest from "@/components/FriendRequest";
 import { FiUserPlus, FiHome } from "react-icons/fi";
+import useSWR from "swr";
+import Fuse from "fuse.js";
+import SearchForm from "@/components/SearchForm";
+
+const fuseOptions = {
+  // isCaseSensitive: false,
+  // includeScore: false,
+  // shouldSort: true,
+  // includeMatches: false,
+  // findAllMatches: false,
+  // minMatchCharLength: 1,
+  // location: 0,
+  threshold: 0.3,
+  // distance: 100,
+  // useExtendedSearch: false,
+  // ignoreLocation: false,
+  // ignoreFieldNorm: false,
+  // fieldNormWeight: 1,
+  keys: ["name"],
+};
 
 export default function FriendList({ onSubmit, setIsEditMode }) {
   const { authenticated, loading, session } = useAuthentication();
@@ -17,6 +37,15 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
 
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [showRequestWindow, setShowRequestWindow] = useState(false);
+  const [mates, setMates] = useState([]);
+  const [fuse, setFuse] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const { error, isLoading } = useSWR(`/api/users`, {
+    onSuccess: (fetchedUsers) => {
+      setFuse(new Fuse(fetchedUsers, fuseOptions));
+    },
+  });
 
   const handleCreateClick = () => {
     setIsCreateMode(true);
@@ -25,6 +54,29 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
   const handleCloseClick = () => {
     setIsCreateMode(false);
   };
+
+  async function handleSearch(event) {
+    event.preventDefault();
+
+    setIsSearching(true);
+
+    const searchTerm = event.target.value;
+
+    if (!fuse) return;
+
+    const searchResult = fuse.search(searchTerm);
+    const updatedSearchResult = searchResult.map((result) => result.item);
+
+    setMates(updatedSearchResult);
+
+    // setTimeout(() => setIsSearching(false), 5000);
+  }
+
+  function handleKeyPress(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+    }
+  }
 
   async function handleTestClick() {
     if (!userId) {
@@ -62,7 +114,6 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     setShowRequestWindow(!showRequestWindow);
   };
 
-
   const friendCardsData = [
     { name: `Machsiemilian` },
     { name: `Annabelschnell` },
@@ -94,9 +145,29 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
       <StyledHeadline>Me and my Mates</StyledHeadline>
       <p>This is me:</p>
       <UserProfile />
-      <button onClick={toggleRequestWindow}>
-        <FiUserPlus size={theme.button.xs} color={theme.textColor} />
-      </button>
+      <StyledSearchbarBox>
+        <SearchForm onSearch={handleSearch} onKeyPress={handleKeyPress} />
+        <button onClick={toggleRequestWindow}>
+          <FiUserPlus size={theme.button.xs} color={theme.textColor} />
+        </button>
+      </StyledSearchbarBox>
+      {isSearching && mates.length !== 0 && (
+        <>
+          <StyledMatesLabel>Potential Mates:</StyledMatesLabel>
+          <StyledList>
+            {mates.map((mate) => (
+              <StyledFriendCard key={mate._id}>
+                <StyledDivLeft>
+                  <StyledFriendName>{mate.name}</StyledFriendName>
+                </StyledDivLeft>
+              </StyledFriendCard>
+            ))}
+          </StyledList>
+        </>
+      )}
+      {isSearching && mates.length === 0 && (
+        <div>No users matching your query were found</div>
+      )}
       <FriendRequest showRequestWindow={showRequestWindow} />
       <StyledLine />
       <p>These are my Mates:</p>
@@ -286,4 +357,16 @@ const StyledLine = styled.div`
   /* top: 50%; */
   left: 50%;
   transform: translate(-50%);
+`;
+
+const StyledList = styled.div``;
+
+const StyledSearchbarBox = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1.2rem;
+`;
+
+const StyledMatesLabel = styled.p`
+  margin-bottom: 1.2rem;
 `;
