@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import Link from "next/link";
 import Logo from "@/Icons/Logo";
 import { theme } from "@/styles";
 import Navigation from "@/components/Navigation";
@@ -7,7 +8,7 @@ import CardForm from "@/components/CardForm";
 import useAuthentication from "./api/auth/useAuthentication";
 import UserProfile from "@/components/UserProfile";
 import FriendRequest from "@/components/FriendRequest";
-import { FiUserPlus } from "react-icons/fi";
+import { FiUserPlus, FiHome } from "react-icons/fi";
 
 export default function FriendList({ onSubmit, setIsEditMode }) {
   const { authenticated, loading, session } = useAuthentication();
@@ -80,6 +81,9 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
 
   return (
     <StyledFriendList>
+      <StyledFriendlistLink href="/">
+        <FiHome size={theme.button.xs} color={theme.textColor} />
+      </StyledFriendlistLink>
       <StyledHeadlineBox>
         <StyledLogoWrapper>
           <Logo />
@@ -100,7 +104,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
         {friendCardsData.map((friend, index) => (
           <StyledFriendCard key={index}>
             <StyledDivLeft>
-              <StyledFirendName>{friend.name}</StyledFirendName>
+              <StyledFriendName>{friend.name}</StyledFriendName>
             </StyledDivLeft>
           </StyledFriendCard>
         ))}
@@ -121,6 +125,22 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     </StyledFriendList>
   );
 }
+
+const StyledFriendlistLink = styled(Link)`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: ${theme.button.medium};
+  width: ${theme.button.medium};
+  background-color: ${theme.primaryColor};
+  border-color: ${theme.textColor};
+  border-radius: ${theme.borderRadius.medium};
+  border-width: ${theme.borderWidth.medium};
+  border-style: solid;
+  box-shadow: ${theme.box.shadow};
+  left: 1.8rem;
+`;
 
 const StyledFriendList = styled.div`
   margin: ${theme.spacing.small} auto;
@@ -225,7 +245,7 @@ const StyledDivLeft = styled.div`
   align-items: center;
 `;
 
-const StyledFirendName = styled.h2`
+const StyledFriendName = styled.h2`
   text-align: center;
 
   @media screen and (min-width: 600px) {
