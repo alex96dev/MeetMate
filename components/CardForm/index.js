@@ -34,6 +34,11 @@ export default function CardForm({
   const { setIsEditMode, isEditMode } = useStore();
   const [selectedDate, setSelectedDate] = useState(null);
   const [showDayPicker, setShowDayPicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
+  const toggleTimePicker = () => {
+    setShowTimePicker(!showTimePicker);
+  };
 
   const inputRef = useRef(null);
 
@@ -158,7 +163,7 @@ export default function CardForm({
           name="name"
           autoComplete="off"
           minLength="3"
-          maxLength="12"
+          maxLength="20"
           placeholder="My activity"
           defaultValue={existingActivityData?.name || ""}
           autoFocus
@@ -211,15 +216,29 @@ export default function CardForm({
           </StyledDateWrapper>
           <StyledLabel htmlFor="time">Time: </StyledLabel>
           <StyledDateWrapper>
-            <StyledTimePicker
+            <StyledInputField
+              type="text"
               id="time"
-              clearIcon={null}
+              name="time"
+              autoComplete="off"
+              defaultValue={existingActivityData?.time || ""}
               value={selectedTime}
               onChange={setSelectedTime}
-              disableClock
-              disabled={false}
+              onClick={toggleTimePicker}
+              readOnly
+              required
             />
-            <StyledFiClock />
+            {showTimePicker && (
+              <StyledTimePicker
+                id="time"
+                clearIcon={null}
+                value={selectedTime}
+                onChange={setSelectedTime}
+                disableClock
+                disabled={false}
+              />
+            )}
+            <StyledFiClock onClick={toggleTimePicker} />
           </StyledDateWrapper>
           <StyledLabel htmlFor="location">Location: </StyledLabel>
           <StyledInputField
@@ -301,15 +320,19 @@ const getCategoryColor = (category, theme) => {
 
 const StyledTimePicker = styled(TimePicker)`
   display: flex;
-  justify-content: start;
+  position: absolute;
+  justify-content: center;
   align-items: center;
+  top: 1.2rem;
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.small};
   width: 8rem;
-  height: 1.4rem;
+  height: 1.6rem;
   background-color: ${theme.primaryColor};
-  border: none;
-  border-bottom: ${theme.borderWidth.thin} solid rgba(0, 0, 0, 0.3);
+  border: solid;
+  border-width: ${theme.borderWidth.thin};
+  border-radius: ${theme.borderRadius.small};
+  box-shadow: ${theme.box.shadowSmall};
 
   .react-time-picker__inputGroup__input {
     width: ${theme.button.medium} !important;
@@ -336,6 +359,9 @@ const StyledFiClock = styled(FiClock)`
   padding: 0.1rem;
   padding-bottom: 0.6rem;
   right: 0;
+  &:hover {
+    stroke-width: 2.5;
+  }
 `;
 
 const StyledDateWrapper = styled.div`
