@@ -160,23 +160,31 @@ export default function HomePage({ onSubmit }) {
           <Logo />
         </StyledLogoWrapper>
         <StyledHeadline>MeetMate</StyledHeadline>
-        <StyledUpperButtonWrapper>
+        {/* <StyledUpperButtonWrapper>
           <StyledFriendlistLink href="/friendlist">
-            <FiUser size={theme.button.xs} color={theme.textColor} />
+            <StyledFiUser size={theme.button.xs} color={theme.textColor} />
           </StyledFriendlistLink>
           <StyledLogoutButton onClick={() => signOut()}>
-            <FiLogOut size={theme.button.xs} color={theme.textColor} />
+            <StyledFiLogOut size={theme.button.xs} color={theme.textColor} />
           </StyledLogoutButton>
-        </StyledUpperButtonWrapper>
+        </StyledUpperButtonWrapper> */}
       </StyledHeadlineBox>
       <StyledSearchFilterBox>
         <SearchBar onSearch={handleSearch} />
-        <StyledFilterButton onClick={toggleFilterWindow}>
-          <HiOutlineAdjustmentsHorizontal
-            size={theme.button.xs}
-            color={theme.textColor}
-          />
-        </StyledFilterButton>
+        <StyledUpperButtonWrapper>
+          <StyledFilterButton onClick={toggleFilterWindow}>
+            <StyledHiOutlineAdjustmentsHorizontal
+              size={theme.button.xs}
+              color={theme.textColor}
+            />
+          </StyledFilterButton>
+          <StyledFriendlistLink href="/friendlist">
+            <StyledFiUser size={theme.button.xs} color={theme.textColor} />
+          </StyledFriendlistLink>
+          <StyledLogoutButton onClick={() => signOut()}>
+            <StyledFiLogOut size={theme.button.xs} color={theme.textColor} />
+          </StyledLogoutButton>
+        </StyledUpperButtonWrapper>
       </StyledSearchFilterBox>
       <Filter onSubmit={handleFilter} showFilterWindow={showFilterWindow} />
       <StyledWeather>
@@ -241,66 +249,87 @@ const Overlay = styled.div`
   overflow-y: auto;
 `;
 
-const StyledFriendlistLink = styled(Link)`
-  height: ${theme.button.medium};
-  width: ${theme.button.medium};
-  padding: ${theme.spacing.xs};
-  background-color: ${theme.primaryColor};
-  border-color: ${theme.textColor};
-  border-radius: ${theme.borderRadius.medium};
-  border-width: ${theme.borderWidth.medium};
-  border-style: solid;
-  box-shadow: ${theme.box.shadow};
-`;
-
-const StyledLogoutButton = styled.button`
-  padding: ${theme.spacing.xs};
-  height: ${theme.button.medium};
-  width: ${theme.button.medium};
-`;
-
-const StyledFilterButton = styled.button`
-  height: ${theme.button.medium};
-  width: ${theme.button.medium};
-  padding: ${theme.spacing.xs};
-`;
-
 const StyledHeadlineBox = styled.div`
   display: flex;
   align-items: center;
   width: ${theme.box.width};
   margin: 0 auto;
+  gap: ${theme.spacing.xs};
+  padding-bottom: ${theme.spacing.large};
+  padding-top: ${theme.spacing.small};
 `;
 
-const StyledUpperButtonWrapper = styled.div`
-  display: flex;
-  justify-content: end;
-  width: 8rem;
-  gap: ${theme.spacing.medium};
+const StyledLogoWrapper = styled.div`
+  width: 1.8rem;
+  height: 1.8rem;
+  margin: 0;
+  padding: 0.15rem;
+`;
+
+const StyledHeadline = styled.h1`
+  margin: 0;
 `;
 
 const StyledSearchFilterBox = styled.div`
   display: flex;
-  gap: ${theme.spacing.medium};
+  position: relative;
+  gap: ${theme.spacing.small};
   margin: 0 auto;
   margin-bottom: 0;
   width: 20rem;
   height: 3rem;
 `;
 
-const StyledLogoWrapper = styled.div`
-  width: 1.8rem;
-  height: 1.8rem;
+const StyledUpperButtonWrapper = styled.div`
+  display: flex;
+  right: 0;
+  top: 0;
+  bottom: ${theme.spacing.small};
+
+  gap: ${theme.spacing.small};
 `;
 
-const StyledHeadline = styled.h1``;
+const StyledLogoutButton = styled.button`
+  padding: ${theme.spacing.xs};
+  height: ${theme.button.small};
+  min-width: ${theme.button.small};
+  box-shadow: ${theme.box.shadowSmall};
+`;
 
-const StyledCardSection = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0;
-  margin-bottom: 6rem;
+const StyledFilterButton = styled.button`
+  height: ${theme.button.small};
+  min-width: ${theme.button.small};
+  padding: 0.25rem;
+  box-shadow: ${theme.box.shadowSmall};
+`;
+
+const StyledFiLogOut = styled(FiLogOut)`
+  width: 100%;
+  height: 100%;
+`;
+
+const StyledFriendlistLink = styled(Link)`
+  height: ${theme.button.small};
+  min-width: ${theme.button.small};
+  padding: ${theme.spacing.xs};
+  background-color: ${theme.primaryColor};
+  border-color: ${theme.textColor};
+  border-radius: ${theme.borderRadius.medium};
+  border-width: ${theme.borderWidth.medium};
+  border-style: solid;
+  box-shadow: ${theme.box.shadowSmall};
+`;
+
+const StyledFiUser = styled(FiUser)`
+  width: 100%;
+  height: 100%;
+`;
+
+const StyledHiOutlineAdjustmentsHorizontal = styled(
+  HiOutlineAdjustmentsHorizontal
+)`
+  width: 100%;
+  height: 100%;
 `;
 
 const StyledWeather = styled.div`
@@ -317,4 +346,12 @@ const StyledWeather = styled.div`
 
 const StyledWeatherLocation = styled.h2`
   padding-left: ${theme.spacing.small};
+`;
+
+const StyledCardSection = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  margin-bottom: 6rem;
 `;

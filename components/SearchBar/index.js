@@ -27,18 +27,18 @@ export default function SearchBar({ onSearch }) {
 
 const StyledInputContainer = styled.div`
   display: flex;
-  flex-grow: 1;
+  width: 14rem;
   border-style: solid;
   align-items: center;
   padding: ${theme.spacing.xs};
   gap: ${theme.spacing.xs};
-  height: 2.4rem;
+  height: ${theme.button.small};
   border-color: ${theme.textColor};
   background-color: transparent;
   border-radius: ${theme.borderRadius.medium};
   border-width: ${theme.borderWidth.medium};
   border-style: solid;
-  box-shadow: ${theme.box.shadow};
+  box-shadow: ${theme.box.shadowSmall};
 `;
 
 const StyledInput = styled.input`
