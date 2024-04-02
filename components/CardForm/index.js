@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { theme } from "@/styles";
 import Logo from "@/Icons/Logo";
@@ -36,7 +36,6 @@ export default function CardForm({
   const [showDayPicker, setShowDayPicker] = useState(false);
 
   const inputRef = useRef(null);
-  const locationInputRef = useRef(null);
 
   const handleDayClick = (day) => {
     setSelectedDate(day);
@@ -56,7 +55,6 @@ export default function CardForm({
     event.preventDefault();
     const formData = new FormData(event.target);
     const activityData = Object.fromEntries(formData);
-    activityData.joined = false;
     activityData.authorId = session.user.id;
 
     const response = await fetch(endpoint, {
@@ -220,12 +218,6 @@ export default function CardForm({
               onChange={setSelectedTime}
               disableClock
               disabled={false}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  event.preventDefault();
-                  locationInputRef.current.focus();
-                }
-              }}
             />
             <StyledFiClock />
           </StyledDateWrapper>
@@ -234,7 +226,6 @@ export default function CardForm({
             type="text"
             id="location"
             name="location"
-            ref={locationInputRef}
             autoComplete="off"
             defaultValue={existingActivityData?.location || ""}
             required
@@ -271,7 +262,6 @@ export default function CardForm({
         <StyledDescriptionBox>
           <label htmlFor="description">Description: </label>
           <StyledTextArea
-            ref={textareaRef}
             onChange={handleChange}
             autoComplete="off"
             type="text"
