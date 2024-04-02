@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { theme } from "@/styles";
 import Logo from "@/Icons/Logo";
@@ -52,9 +52,7 @@ export default function CardForm({
     setSelectedDate(inputValue ? new Date(inputValue) : null);
   };
 
-  const toggleDayPicker = () => {
-    setShowDayPicker((prev) => !prev);
-  };
+  const toggleDayPicker = () => setShowDayPicker((prev) => !prev);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -88,10 +86,9 @@ export default function CardForm({
     if (existingActivityData) {
       inputRef.current.focus();
 
-      setSelectedDate(
-        existingActivityData.date ? new Date(existingActivityData.date) : null
-      );
-      setSelectedCategory(existingActivityData.category || "");
+      const { date, category } = existingActivityData;
+      setSelectedDate(date ? new Date(date) : null);
+      setSelectedCategory(category || "");
     }
   }, [existingActivityData]);
 
@@ -163,7 +160,7 @@ export default function CardForm({
           name="name"
           autoComplete="off"
           minLength="3"
-          maxLength="20"
+          maxLength="18"
           placeholder="My activity"
           defaultValue={existingActivityData?.name || ""}
           autoFocus
@@ -230,7 +227,7 @@ export default function CardForm({
             />
             {showTimePicker && (
               <StyledTimePicker
-                id="time"
+                id="time-picker"
                 clearIcon={null}
                 value={selectedTime}
                 onChange={setSelectedTime}
