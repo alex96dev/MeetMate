@@ -32,7 +32,6 @@ const StyledInputContainer = styled.div`
   align-items: center;
   padding: ${theme.spacing.xs};
   gap: ${theme.spacing.xs};
-  margin-bottom: 2rem;
   height: 2.4rem;
   border-color: ${theme.textColor};
   background-color: transparent;

@@ -16,6 +16,7 @@ import CardForm from "@/components/CardForm";
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
 import useStore from "@/store";
 import NextActivity from "@/components/NextActivity";
+import { toast } from "react-toastify";
 
 export default function HomePage({ onSubmit }) {
   const { data: session, status } = useSession();
@@ -37,6 +38,20 @@ export default function HomePage({ onSubmit }) {
     handleCreateClick,
     handleCloseClick,
   } = useStore();
+
+  useEffect(() => {
+    const hasDisplayedToast = sessionStorage.getItem("hasDisplayedToast");
+    if (session && !hasDisplayedToast) {
+      toast.success(`Signed in as ${session.user.email}`);
+      sessionStorage.setItem("hasDisplayedToast", true);
+    }
+
+    return () => {
+      if (!session) {
+        sessionStorage.removeItem("hasDisplayedToast");
+      }
+    };
+  }, [session]);
 
   useEffect(() => {
     async function fetchData() {
@@ -74,6 +89,7 @@ export default function HomePage({ onSubmit }) {
     !appUsers
   )
     return <div>loading...</div>;
+
   if (!session) {
     return <LoginPage />;
   }
@@ -137,31 +153,21 @@ export default function HomePage({ onSubmit }) {
     setShowFilterWindow(!showFilterWindow);
   };
 
-  if (!activities) return <div>failed to load</div>;
-
-  if (status === "loading") return <div>loading...</div>;
-  if (!session) {
-    return (
-      <>
-        <LoginPage />
-      </>
-    );
-  }
-
   return (
     <>
-      Signed in as {session.user.email} <br />
-      <StyledFriendlistLink href="/friendlist">
-        <FiUser size={theme.button.xs} color={theme.textColor} />
-      </StyledFriendlistLink>
-      <StyledLogoutButton onClick={() => signOut()}>
-        <FiLogOut size={theme.button.xs} color={theme.textColor} />
-      </StyledLogoutButton>
       <StyledHeadlineBox>
         <StyledLogoWrapper>
           <Logo />
         </StyledLogoWrapper>
         <StyledHeadline>MeetMate</StyledHeadline>
+        <StyledUpperButtonWrapper>
+          <StyledFriendlistLink href="/friendlist">
+            <FiUser size={theme.button.xs} color={theme.textColor} />
+          </StyledFriendlistLink>
+          <StyledLogoutButton onClick={() => signOut()}>
+            <FiLogOut size={theme.button.xs} color={theme.textColor} />
+          </StyledLogoutButton>
+        </StyledUpperButtonWrapper>
       </StyledHeadlineBox>
       <StyledSearchFilterBox>
         <SearchBar onSearch={handleSearch} />
@@ -183,6 +189,7 @@ export default function HomePage({ onSubmit }) {
             alt="Weather Icon"
           />
         )}
+        <StyledWeatherLocation>Berlin</StyledWeatherLocation>
       </StyledWeather>
       <NextActivity activities={activities} />
       <StyledCardSection>
@@ -235,63 +242,58 @@ const Overlay = styled.div`
 `;
 
 const StyledFriendlistLink = styled(Link)`
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   height: ${theme.button.medium};
   width: ${theme.button.medium};
+  padding: ${theme.spacing.xs};
   background-color: ${theme.primaryColor};
   border-color: ${theme.textColor};
   border-radius: ${theme.borderRadius.medium};
   border-width: ${theme.borderWidth.medium};
   border-style: solid;
   box-shadow: ${theme.box.shadow};
-  right: 5.2rem;
 `;
 
 const StyledLogoutButton = styled.button`
-  position: absolute;
-  right: 1.8rem;
+  padding: ${theme.spacing.xs};
+  height: ${theme.button.medium};
+  width: ${theme.button.medium};
 `;
 
 const StyledFilterButton = styled.button`
-  height: 2.4rem;
+  height: ${theme.button.medium};
+  width: ${theme.button.medium};
+  padding: ${theme.spacing.xs};
 `;
 
 const StyledHeadlineBox = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
   width: ${theme.box.width};
   margin: 0 auto;
+`;
+
+const StyledUpperButtonWrapper = styled.div`
+  display: flex;
+  justify-content: end;
+  width: 8rem;
+  gap: ${theme.spacing.medium};
 `;
 
 const StyledSearchFilterBox = styled.div`
   display: flex;
   gap: ${theme.spacing.medium};
   margin: 0 auto;
+  margin-bottom: 0;
   width: 20rem;
   height: 3rem;
-  margin-bottom: ${theme.spacing.small};
 `;
 
 const StyledLogoWrapper = styled.div`
-  width: 1.7rem;
-  height: 1.7rem;
+  width: 1.8rem;
+  height: 1.8rem;
 `;
 
-const StyledHeadline = styled.h1`
-  @media screen and (min-width: 600px) {
-    font-size: ${theme.fontSizes.large.split("r")[0] * 1.2 + "rem"};
-  }
-  @media screen and (min-width: 900px) {
-    font-size: ${theme.fontSizes.large.split("r")[0] * 1.4 + "rem"};
-  }
-  @media screen and (min-width: 1200px) {
-    font-size: ${theme.fontSizes.large.split("r")[0] * 1.6 + "rem"};
-  }
-`;
+const StyledHeadline = styled.h1``;
 
 const StyledCardSection = styled.section`
   display: flex;
@@ -299,15 +301,6 @@ const StyledCardSection = styled.section`
   align-items: center;
   margin: 0;
   margin-bottom: 6rem;
-  @media screen and (min-width: 600px) {
-    margin-bottom: 6.5rem;
-  }
-  @media screen and (min-width: 900px) {
-    margin-bottom: 7rem;
-  }
-  @media screen and (min-width: 1200px) {
-    margin-bottom: 7.5rem;
-  }
 `;
 
 const StyledWeather = styled.div`
@@ -315,7 +308,13 @@ const StyledWeather = styled.div`
   align-items: center;
   justify-content: start;
   margin: 0 auto;
+  margin-top: -1rem;
+  margin-bottom: ${theme.spacing.small};
   width: ${theme.box.width};
   font-size: ${theme.fontSizes.medium};
   font-family: ${theme.fonts.heading};
+`;
+
+const StyledWeatherLocation = styled.h2`
+  padding-left: ${theme.spacing.small};
 `;
