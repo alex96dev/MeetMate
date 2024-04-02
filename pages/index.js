@@ -11,10 +11,11 @@ import Filter from "@/components/Filter/Index";
 import ActivityCard from "@/components/ActivityCard";
 import { useSession, signOut } from "next-auth/react";
 import LoginPage from "./loginpage";
-import { FiLogOut } from "react-icons/fi";
+import { FiLogOut, FiUser } from "react-icons/fi";
 import CardForm from "@/components/CardForm";
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
 import useStore from "@/store";
+import NextActivity from "@/components/NextActivity";
 
 export default function HomePage({ onSubmit }) {
   const { data: session, status } = useSession();
@@ -150,6 +151,9 @@ export default function HomePage({ onSubmit }) {
   return (
     <>
       Signed in as {session.user.email} <br />
+      <StyledFriendlistLink href="/friendlist">
+        <FiUser size={theme.button.xs} color={theme.textColor} />
+      </StyledFriendlistLink>
       <StyledLogoutButton onClick={() => signOut()}>
         <FiLogOut size={theme.button.xs} color={theme.textColor} />
       </StyledLogoutButton>
@@ -180,6 +184,7 @@ export default function HomePage({ onSubmit }) {
           />
         )}
       </StyledWeather>
+      <NextActivity activities={activities} />
       <StyledCardSection>
         {displayedActivities.length > 0 ? (
           displayedActivities
@@ -228,6 +233,23 @@ const Overlay = styled.div`
   background-color: ${theme.primaryColor};
   overflow-y: auto;
 `;
+
+const StyledFriendlistLink = styled(Link)`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: ${theme.button.medium};
+  width: ${theme.button.medium};
+  background-color: ${theme.primaryColor};
+  border-color: ${theme.textColor};
+  border-radius: ${theme.borderRadius.medium};
+  border-width: ${theme.borderWidth.medium};
+  border-style: solid;
+  box-shadow: ${theme.box.shadow};
+  right: 5.2rem;
+`;
+
 const StyledLogoutButton = styled.button`
   position: absolute;
   right: 1.8rem;
