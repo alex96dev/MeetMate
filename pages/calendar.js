@@ -253,10 +253,8 @@ const StyledCalendarWrapper = styled.div`
     height: ${theme.button.large};
   }
 
-  .react-calendar__month-view__days {
-    :hover {
-      font-weight: bold;
-    }
+  .react-calendar__month-view__days__day:not(.StyledEntry):hover {
+    background-color: rgba(180, 201, 171, 0.5);
   }
 
   .react-calendar__tile {
@@ -269,18 +267,12 @@ const StyledCalendarWrapper = styled.div`
   }
 
   .react-calendar__tile--active {
-    border-style: solid;
-    border-color: ${theme.textColor};
-    border-width: ${theme.borderWidth.thin};
-    border-radius: ${theme.borderRadius.small};
     box-shadow: ${theme.box.shadowSmall};
+    background-color: ${theme.confirmColor};
   }
 
   .react-calendar__tile--now {
-    /* background-color: ${theme.confirmColor}; */
-    border: solid;
-    border-width: ${theme.borderWidth.medium};
-    border-color: ${theme.confirmColor};
+    background-color: ${theme.confirmColor};
     color: ${theme.textColor};
   }
 `;
@@ -307,6 +299,10 @@ const StyledEntry = styled.div`
   background-color: ${({ category }) => getCategoryColor(category, theme)};
   margin: 0;
   padding: 0.05rem;
+
+  &.StyledEntry {
+    /* Add a class to identify StyledEntry components */
+  }
 `;
 
 const StyledCardSection = styled.section`
