@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import Logo from "@/Icons/Logo";
@@ -12,6 +12,7 @@ import { FiUserPlus, FiHome } from "react-icons/fi";
 import useSWR from "swr";
 import Fuse from "fuse.js";
 import SearchForm from "@/components/SearchForm";
+import { toast } from "react-toastify";
 
 const fuseOptions = {
   // isCaseSensitive: false,
@@ -33,13 +34,21 @@ const fuseOptions = {
 export default function FriendList({ onSubmit, setIsEditMode }) {
   const { authenticated, loading, session } = useAuthentication();
   const userId = session?.user?.id;
-  const id = "65fd9d760c057e6bcdb880cd";
+
+  const [myMates, setMyMates] = useState([]);
 
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [showRequestWindow, setShowRequestWindow] = useState(false);
   const [mates, setMates] = useState([]);
   const [fuse, setFuse] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    if (session) {
+      setMyMates(session.user?.friends);
+    }
+  }, [session]);
+  console.log(myMates);
 
   const { error, isLoading } = useSWR(`/api/users`, {
     onSuccess: (fetchedUsers) => {
@@ -78,7 +87,31 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     }
   }
 
-  async function handleTestClick() {
+  async function handleDeleteClick(id) {
+    console.log(id);
+    try {
+      const response = await fetch(`/api/users/${id}`, {
+        method: "DELETE",
+        body: JSON.stringify({ userId }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const filteredMates = myMates.filter((mate) => mate !== id);
+        console.log(filteredMates);
+        console.log(myMates);
+        setMyMates(filteredMates);
+        return toast.success(`Friend successfully deleted!`);
+      } else {
+        console.error("Failed to delete friend.");
+      }
+    } catch (error) {
+      console.error("Error occurred while deleting friend:", error);
+    }
+  }
+
+  async function handleAddFriend(id) {
     if (!userId) {
       console.error("User ID is not available.");
       return;
@@ -93,7 +126,8 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
         },
       });
       if (response.ok) {
-        return;
+        setMyMates([id, ...myMates]);
+        return toast.success(`User successfully added!`);
       } else {
         console.error("Failed to update user.");
       }
@@ -114,22 +148,6 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     setShowRequestWindow(!showRequestWindow);
   };
 
-  const friendCardsData = [
-    { name: `Machsiemilian` },
-    { name: `Annabelschnell` },
-    { name: `Peter Enis` },
-    { name: `Peli Kann` },
-    { name: `Hom Thanks` },
-    { name: `Hellga` },
-    { name: `Sandra Klaus` },
-    { name: `Mari Johanna` },
-    { name: `User` },
-    { name: `Guillermo` },
-    { name: `Pedro` },
-    { name: `Consuela` },
-    { name: `Steven Seagull` },
-  ];
-
   return (
     <StyledFriendList>
       <StyledFriendlistLink href="/">
@@ -140,7 +158,6 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
           <Logo />
         </StyledLogoWrapper>
         <StyledAppName> MeetMate</StyledAppName>
-        <button onClick={handleTestClick}>Add friend (Hardcoded - fix)</button>
       </StyledHeadlineBox>
       <StyledHeadline>Me and my Mates</StyledHeadline>
       <p>This is me:</p>
@@ -160,6 +177,21 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
                 <StyledDivLeft>
                   <StyledFriendName>{mate.name}</StyledFriendName>
                 </StyledDivLeft>
+                <StyledDivRight>
+                  {fuse._docs.find(
+                    (user) =>
+                      user._id ===
+                      session.user.friends.find((friend) => friend === mate._id)
+                  ) !== undefined ? (
+                    "Already Friends"
+                  ) : (
+                    <StyledButtonAddFriend
+                      onClick={() => handleAddFriend(mate._id)}
+                    >
+                      +
+                    </StyledButtonAddFriend>
+                  )}
+                </StyledDivRight>
               </StyledFriendCard>
             ))}
           </StyledList>
@@ -172,13 +204,22 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
       <StyledLine />
       <p>These are my Mates:</p>
       <StyledCardSection>
-        {friendCardsData.map((friend, index) => (
-          <StyledFriendCard key={index}>
-            <StyledDivLeft>
-              <StyledFriendName>{friend.name}</StyledFriendName>
-            </StyledDivLeft>
-          </StyledFriendCard>
-        ))}
+        {fuse._docs
+          .filter((user) => myMates.find((friend) => friend === user._id))
+          .map((user) => (
+            <StyledFriendCard key={user._id}>
+              <StyledDivLeft>
+                <StyledFriendName>{user.name}</StyledFriendName>
+              </StyledDivLeft>
+              <StyledDivRight>
+                <StyledButtonDeleteFriend
+                  onClick={() => handleDeleteClick(user._id)}
+                >
+                  x
+                </StyledButtonDeleteFriend>
+              </StyledDivRight>
+            </StyledFriendCard>
+          ))}
         {!isCreateMode && <Navigation onCreateClick={handleCreateClick} />}
         {isCreateMode && (
           <Overlay>
@@ -210,7 +251,7 @@ const StyledFriendlistLink = styled(Link)`
   border-width: ${theme.borderWidth.medium};
   border-style: solid;
   box-shadow: ${theme.box.shadow};
-  left: 1.8rem;
+  right: 3.2rem;
 `;
 
 const StyledFriendList = styled.div`
@@ -273,14 +314,6 @@ const StyledFriendCard = styled.div`
   border-radius: ${theme.borderRadius.medium};
   height: ${theme.box.friendheight};
   box-shadow: ${theme.box.shadow};
-
-  &:hover {
-    box-shadow: ${theme.box.hover};
-  }
-  &:active {
-    box-shadow: ${theme.box.hover};
-  }
-
   margin-bottom: ${theme.spacing.medium};
   background-color: ${theme.primaryColor};
 
@@ -369,4 +402,40 @@ const StyledSearchbarBox = styled.div`
 
 const StyledMatesLabel = styled.p`
   margin-bottom: 1.2rem;
+`;
+
+const StyledDivRight = styled.div`
+  display: flex;
+  position: absolute;
+  justify-content: space-evenly;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8rem;
+  @media screen and (min-width: 600px) {
+    width: 9rem;
+  }
+  @media screen and (min-width: 900px) {
+    width: 11rem;
+  }
+  @media screen and (min-width: 1200px) {
+    width: 12rem;
+  }
+  height: 85%;
+  border-left: solid;
+  right: 0;
+  border-width: ${theme.borderWidth.thin};
+`;
+
+const StyledButtonAddFriend = styled.button`
+  width: 2rem;
+  height: 2rem;
+  margin-top: 2px;
+  background-color: ${theme.confirmColor};
+`;
+
+const StyledButtonDeleteFriend = styled.button`
+  width: 2rem;
+  height: 2rem;
+  margin-top: 2px;
+  background-color: ${theme.alertColor};
 `;

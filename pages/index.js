@@ -80,8 +80,6 @@ export default function HomePage({ onSubmit }) {
     }
   }, [appUsers, session, city]);
 
-  if (!activities) return <div>failed to load</div>;
-
   if (
     activitiesIsLoading ||
     status === "loading" ||
@@ -90,6 +88,8 @@ export default function HomePage({ onSubmit }) {
   )
     return <div>loading...</div>;
 
+  if (!activities) return <div>failed to load</div>;
+  
   if (!session) {
     return <LoginPage />;
   }
@@ -160,14 +160,6 @@ export default function HomePage({ onSubmit }) {
           <Logo />
         </StyledLogoWrapper>
         <StyledHeadline>MeetMate</StyledHeadline>
-        {/* <StyledUpperButtonWrapper>
-          <StyledFriendlistLink href="/friendlist">
-            <StyledFiUser size={theme.button.xs} color={theme.textColor} />
-          </StyledFriendlistLink>
-          <StyledLogoutButton onClick={() => signOut()}>
-            <StyledFiLogOut size={theme.button.xs} color={theme.textColor} />
-          </StyledLogoutButton>
-        </StyledUpperButtonWrapper> */}
       </StyledHeadlineBox>
       <StyledSearchFilterBox>
         <SearchBar onSearch={handleSearch} />
