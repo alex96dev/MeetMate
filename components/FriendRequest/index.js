@@ -6,17 +6,16 @@ export default function FriendRequest({ showRequestWindow }) {
   const [friendCardsData, setFriendCardsData] = useState([
     { name: `Machsiemilian` },
     { name: `Annabelschnell` },
-    { name: `Peter Enis` },
     { name: `Peli Kann` },
     { name: `Hom Thanks` },
     { name: `Hellga` },
     { name: `Sandra Klaus` },
     { name: `Mari Johanna` },
-    { name: `User` },
-    { name: `Guillermo` },
-    { name: `Pedro` },
-    { name: `Consuela` },
-    { name: `Steven Seagull` },
+    // { name: `User` },
+    // { name: `Guillermo` },
+    // { name: `Pedro` },
+    // { name: `Consuela` },
+    // { name: `Steven Seagull` },
   ]);
 
   const handleSubmit = (event) => {

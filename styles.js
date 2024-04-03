@@ -117,6 +117,7 @@ border-radius: ${theme.borderRadius.medium};
 border-width: ${theme.borderWidth.medium};
 border-style: solid;
 box-shadow: ${theme.box.shadow};
+cursor: pointer;
 }
 
 button:hover{
