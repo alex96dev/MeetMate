@@ -211,7 +211,15 @@ export default function CardForm({
             )}
           </StyledDateWrapper>
           <StyledLabel htmlFor="time">Time: </StyledLabel>
-          <StyledDateWrapper>
+          <StyledInputField
+            type="time"
+            id="time"
+            name="time"
+            autoComplete="off"
+            defaultValue={selectedTime || existingActivityData?.location || ""}
+            required
+          />
+          {/* <StyledDateWrapper>
             <StyledTimePicker
               id="time"
               clearIcon={null}
@@ -221,7 +229,7 @@ export default function CardForm({
               disabled={false}
             />
             <StyledFiClock />
-          </StyledDateWrapper>
+          </StyledDateWrapper> */}
           <StyledLabel htmlFor="location">Location: </StyledLabel>
           <StyledInputField
             type="text"
