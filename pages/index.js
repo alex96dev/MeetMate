@@ -256,7 +256,7 @@ const StyledHeadlineBox = styled.div`
   margin: 0 auto;
   gap: ${theme.spacing.xs};
   padding-bottom: ${theme.spacing.large};
-  padding-top: ${theme.spacing.small};
+  padding-top: ${theme.spacing.medium};
 `;
 
 const StyledLogoWrapper = styled.div`
