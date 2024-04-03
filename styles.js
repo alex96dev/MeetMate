@@ -36,6 +36,7 @@ export const theme = {
   box: {
     shadow: "5px 5px 0 #262524",
     shadowSmall: "2px 3px 0 #262524",
+    shadowXs: "1px 2px 0 #262524",
     hover: "3px 3px 0 #262524",
     height: "4.8rem",
     friendheight: "3.2rem",
