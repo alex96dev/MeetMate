@@ -42,9 +42,13 @@ export default function CardForm({
     setShowDayPicker(false);
   };
 
+  // const handleInputChange = (event) => {
+  //   const inputValue = event.target.value;
+  //   setSelectedDate(inputValue ? new Date(inputValue) : null);
+  // };
+
   const handleInputChange = (event) => {
-    const inputValue = event.target.value;
-    setSelectedDate(inputValue ? new Date(inputValue) : null);
+    setSelectedDate(new Date(event.target.value));
   };
 
   const toggleDayPicker = () => setShowDayPicker((prev) => !prev);
@@ -181,10 +185,10 @@ export default function CardForm({
               name="date"
               autoComplete="off"
               value={
-                existingActivityData?.date
-                  ? existingActivityData.date
-                  : selectedDate
+                selectedDate
                   ? format(selectedDate, "yyyy-MM-dd")
+                  : existingActivityData?.date
+                  ? existingActivityData.date
                   : getCurrentDate()
               }
               readOnly
@@ -211,8 +215,7 @@ export default function CardForm({
             <StyledTimePicker
               id="time"
               clearIcon={null}
-              value={selectedTime}
-              defaultValue={existingActivityData?.time || ""}
+              value={selectedTime || existingActivityData?.time}
               onChange={setSelectedTime}
               disableClock
               disabled={false}
