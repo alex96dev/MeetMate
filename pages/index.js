@@ -255,8 +255,8 @@ const StyledHeadlineBox = styled.div`
   width: ${theme.box.width};
   margin: 0 auto;
   gap: ${theme.spacing.xs};
-  padding-bottom: ${theme.spacing.large};
-  padding-top: ${theme.spacing.medium};
+  padding-bottom: ${theme.spacing.medium};
+  padding-top: ${theme.spacing.large};
 `;
 
 const StyledLogoWrapper = styled.div`
@@ -337,7 +337,7 @@ const StyledWeather = styled.div`
   align-items: center;
   justify-content: start;
   margin: 0 auto;
-  margin-top: -1rem;
+  margin-top: -1.5rem;
   margin-bottom: ${theme.spacing.small};
   width: ${theme.box.width};
   font-size: ${theme.fontSizes.medium};
