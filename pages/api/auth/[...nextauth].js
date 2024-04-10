@@ -25,14 +25,24 @@ export const authOptions = {
 
       const currentUser = await User.findById(user.id);
 
-      if (currentUser.friends == null) {
+      if (currentUser.friends.length === 0) {
         currentUser.friends = [];
-        currentUser.save();
+        await currentUser.save();
+      }
+
+      if (currentUser.friendRequests.length === 0) {
+        currentUser.friendRequests = [];
+        await currentUser.save();
       }
 
       return {
         ...session,
-        user: { ...session.user, id: user.id, friends: user.friends },
+        user: {
+          ...session.user,
+          id: user.id,
+          friends: user.friends,
+          friendRequests: user.friendRequests,
+        },
       };
     },
   },
