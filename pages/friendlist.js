@@ -130,6 +130,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
         setFriendRequests([userId, ...friendRequests]);
         return toast.success(`Friend Request successfully send!`);
       } else {
+        toast.error(`Friend Request has already been send!`);
         console.error("Friend Request has already been send!");
       }
     } catch (error) {
