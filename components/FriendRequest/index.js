@@ -1,8 +1,20 @@
 import styled from "styled-components";
 import { theme } from "@/styles";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
-export default function FriendRequest({ showRequestWindow }) {
+export default function FriendRequest({
+  showRequestWindow,
+  friendRequestList,
+  allUsers,
+  session,
+  myMates,
+  setMyMates,
+  userId,
+}) {
+  console.log("allUsers:", allUsers);
+  console.log("meine ID:", session.user?.id);
+
   const [friendCardsData, setFriendCardsData] = useState([
     { name: `Machsiemilian` },
     { name: `Annabelschnell` },
@@ -11,11 +23,6 @@ export default function FriendRequest({ showRequestWindow }) {
     { name: `Hellga` },
     { name: `Sandra Klaus` },
     { name: `Mari Johanna` },
-    // { name: `User` },
-    // { name: `Guillermo` },
-    // { name: `Pedro` },
-    // { name: `Consuela` },
-    // { name: `Steven Seagull` },
   ]);
 
   const handleSubmit = (event) => {
@@ -28,17 +35,70 @@ export default function FriendRequest({ showRequestWindow }) {
     setFriendCardsData(updatedCards);
   };
 
+  async function handleAccept(userId) {
+    try {
+      const response = await fetch(`/api/users/addFriend/${session.user?.id}`, {
+        method: "POST",
+        body: JSON.stringify({ userId }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        setMyMates([userId, ...myMates]);
+        return toast.success(`User successfully added!`);
+      } else {
+        toast.error(`This User is already your friend!`);
+        console.error("Failed to update user.");
+      }
+    } catch (error) {
+      console.error("Error occurred while updating user:", error);
+    }
+  }
+
+  async function handleRemoveFromFriendRequests(friendRequestId) {
+    try {
+      const response = await fetch(`/api/users/addFriend/${friendRequestId}`, {
+        method: "DELETE",
+        body: JSON.stringify({ userId }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        return toast.success(`User successfully deleted from friend Requests!`);
+      } else {
+        toast.error(`User not found in friend Requests!`);
+        console.error("Failed to delete user.");
+      }
+    } catch {
+      console.error("Error occurred while deleting user:", error);
+    }
+  }
+
   return (
     <StyledRequestBox $show={showRequestWindow} onSubmit={handleSubmit}>
       <div>
         <p>We wanna be your Mates!</p>
-        {friendCardsData.map((friend, index) => (
-          <StyledFriendCard key={index}>
+        {friendRequestList.map((request) => (
+          <StyledFriendCard key={request}>
             <StyledDivLeft>
-              <StyledFriendName>{friend.name}</StyledFriendName>
+              <StyledFriendName>
+                {allUsers.find((user) => user._id === request)
+                  ? allUsers.find((user) => user._id === request).name
+                  : ""}
+              </StyledFriendName>
             </StyledDivLeft>
             <StyledDivRight>
-              <StyledButton onClick={() => handleDelete(index)}>x</StyledButton>
+              <StyledButton
+                onClick={() => {
+                  handleAccept(request);
+                  handleRemoveFromFriendRequests(request);
+                }}
+              >
+                Accept
+              </StyledButton>
+              <StyledButton onClick={() => handleDelete()}>x</StyledButton>
             </StyledDivRight>
           </StyledFriendCard>
         ))}

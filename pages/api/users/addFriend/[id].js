@@ -9,30 +9,30 @@ export default async function handler(request, response) {
   const user = await User.findById(id).populate("friends");
 
   if (request.method === "POST") {
-    if (
-      user.friendRequests.find((request) => request === userId) === undefined
-    ) {
-      user.friendRequests.push(userId);
+    if (user.friends.find((friend) => friend === userId) === undefined) {
+      user.friends.push(userId);
       await user.save();
       return response
         .status(200)
-        .json({ message: "Friend Request successfully send!" });
+        .json({ message: "This User is your friend now!" });
     } else {
       return response
         .status(409)
-        .json({ message: "Friend Request has already been send!" });
+        .json({ message: "This User is already your friend!" });
     }
   }
 
   if (request.method === "DELETE") {
+    console.log("userId: ", userId);
+    console.log("id: ", id);
     try {
-      await User.updateOne({ _id: userId }, { $pull: { friends: id } });
+      await User.updateOne({ _id: userId }, { $pull: { friendRequests: id } });
       await user.save();
     } catch (error) {
       console.log(error);
     }
     return response
       .status(200)
-      .json({ message: "Friend successfully deleted" });
+      .json({ message: "User successfully deleted from friend Requests!" });
   }
 }

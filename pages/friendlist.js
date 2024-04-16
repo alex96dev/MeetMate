@@ -36,6 +36,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
   const userId = session?.user?.id;
 
   const [myMates, setMyMates] = useState([]);
+  const [friendRequests, setFriendRequests] = useState([]);
 
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [showRequestWindow, setShowRequestWindow] = useState(false);
@@ -46,9 +47,12 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
   useEffect(() => {
     if (session) {
       setMyMates(session.user?.friends);
+      setFriendRequests(session.user?.friendRequests);
     }
   }, [session]);
-  console.log(myMates);
+
+  console.log("myMates: ", myMates);
+  console.log("friendRequests: ", friendRequests);
 
   const { error, isLoading } = useSWR(`/api/users`, {
     onSuccess: (fetchedUsers) => {
@@ -88,7 +92,6 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
   }
 
   async function handleDeleteClick(id) {
-    console.log(id);
     try {
       const response = await fetch(`/api/users/${id}`, {
         method: "DELETE",
@@ -99,8 +102,6 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
       });
       if (response.ok) {
         const filteredMates = myMates.filter((mate) => mate !== id);
-        console.log(filteredMates);
-        console.log(myMates);
         setMyMates(filteredMates);
         return toast.success(`Friend successfully deleted!`);
       } else {
@@ -111,25 +112,26 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     }
   }
 
-  async function handleAddFriend(id) {
+  async function handleSendFriendRequest(id) {
     if (!userId) {
       console.error("User ID is not available.");
       return;
     }
 
     try {
-      const response = await fetch(`/api/users/${userId}`, {
+      const response = await fetch(`/api/users/${id}`, {
         method: "POST",
-        body: JSON.stringify({ id }),
+        body: JSON.stringify({ userId }),
         headers: {
           "Content-Type": "application/json",
         },
       });
       if (response.ok) {
-        setMyMates([id, ...myMates]);
-        return toast.success(`User successfully added!`);
+        setFriendRequests([userId, ...friendRequests]);
+        return toast.success(`Friend Request successfully send!`);
       } else {
-        console.error("Failed to update user.");
+        toast.error(`Friend Request has already been send!`);
+        console.error("Friend Request has already been send!");
       }
     } catch (error) {
       console.error("Error occurred while updating user:", error);
@@ -186,7 +188,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
                     "Already Friends"
                   ) : (
                     <StyledButtonAddFriend
-                      onClick={() => handleAddFriend(mate._id)}
+                      onClick={() => handleSendFriendRequest(mate._id)}
                     >
                       +
                     </StyledButtonAddFriend>
@@ -200,7 +202,15 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
       {isSearching && mates.length === 0 && (
         <div>No users matching your query were found</div>
       )}
-      <FriendRequest showRequestWindow={showRequestWindow} />
+      <FriendRequest
+        showRequestWindow={showRequestWindow}
+        friendRequestList={friendRequests}
+        allUsers={fuse._docs}
+        session={session}
+        myMates={myMates}
+        setMyMates={setMyMates}
+        userId={userId}
+      />
       <StyledLine />
       <p>These are my Mates:</p>
       <StyledCardSection>
