@@ -183,7 +183,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
                     (user) =>
                       user._id ===
                       session.user.friends.find((friend) => friend === mate._id)
-                  ) == undefined ? (
+                  ) !== undefined ? (
                     "Already Friends"
                   ) : (
                     <StyledButtonAddFriend
