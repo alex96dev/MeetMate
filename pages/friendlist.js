@@ -12,7 +12,8 @@ import { FiUserPlus, FiHome } from "react-icons/fi";
 import useSWR from "swr";
 import Fuse from "fuse.js";
 import SearchForm from "@/components/SearchForm";
-import { toast } from "react-toastify";
+import handleDeleteClick from "@/utils/pages/friendlist/handleDeleteClick";
+import handleSendFriendRequest from "@/utils/pages/friendlist/handleSendFriendRequest";
 
 const fuseOptions = {
   // isCaseSensitive: false,
@@ -34,16 +35,18 @@ const fuseOptions = {
 export default function FriendList({ onSubmit, setIsEditMode }) {
   const { authenticated, loading, session } = useAuthentication();
   const userId = session?.user?.id;
-
   const [myMates, setMyMates] = useState([]);
   const [friendRequests, setFriendRequests] = useState([]);
-
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [showRequestWindow, setShowRequestWindow] = useState(false);
   const [mates, setMates] = useState([]);
   const [fuse, setFuse] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
-  const [allUser, setAllUser] = useState([]);
+  const {
+    data: allUser,
+    error: error2,
+    isLoading: isLoading2,
+  } = useSWR(`/api/users`);
 
   useEffect(() => {
     if (session) {
@@ -52,20 +55,11 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     }
   }, [session]);
 
-  console.log("session: ", session);
-  console.log("myMates: ", myMates);
-  console.log("friendRequests: ", friendRequests);
-
   const { error, isLoading } = useSWR(`/api/users`, {
     onSuccess: (fetchedUsers) => {
-      console.log("fetcheduser: ", fetchedUsers);
       setFuse(new Fuse(fetchedUsers, fuseOptions));
-      setAllUser(fetchedUsers);
     },
   });
-
-  console.log("fuse_docs: ", fuse?._docs);
-  console.log("ALLUSER: ", allUser);
 
   const handleCreateClick = () => {
     setIsCreateMode(true);
@@ -98,59 +92,15 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     }
   }
 
-  async function handleDeleteClick(id) {
-    try {
-      const response = await fetch(`/api/users/${id}`, {
-        method: "DELETE",
-        body: JSON.stringify({ userId }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.ok) {
-        const filteredMates = myMates.filter((mate) => mate !== id);
-        setMyMates(filteredMates);
-        return toast.success(`Friend successfully deleted!`);
-      } else {
-        console.error("Failed to delete friend.");
-      }
-    } catch (error) {
-      console.error("Error occurred while deleting friend:", error);
-    }
-  }
-
-  async function handleSendFriendRequest(id) {
-    if (!userId) {
-      console.error("User ID is not available.");
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/users/${id}`, {
-        method: "POST",
-        body: JSON.stringify({ userId }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.ok) {
-        setFriendRequests([userId, ...friendRequests]);
-        return toast.success(`Friend Request successfully send!`);
-      } else {
-        toast.error(`Friend Request has already been send!`);
-        console.error("Friend Request has already been send!");
-      }
-    } catch (error) {
-      console.error("Error occurred while updating user:", error);
-    }
-  }
-
   const toggleRequestWindow = () => {
     setShowRequestWindow(!showRequestWindow);
   };
 
+  if (isLoading2) {
+    return <p>Loading...</p>;
+  }
+
   if (loading) {
-    console.log("IM LOADING");
     return <p>Loading...</p>;
   }
 
@@ -188,7 +138,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
                   <StyledFriendName>{mate.name}</StyledFriendName>
                 </StyledDivLeft>
                 <StyledDivRight>
-                  {fuse._docs.find(
+                  {allUser?.find(
                     (user) =>
                       user._id ===
                       session.user.friends.find((friend) => friend === mate._id)
@@ -196,7 +146,14 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
                     "Already Friends"
                   ) : (
                     <StyledButtonAddFriend
-                      onClick={() => handleSendFriendRequest(mate._id)}
+                      onClick={() =>
+                        handleSendFriendRequest(
+                          mate._id,
+                          userId,
+                          setFriendRequests,
+                          friendRequests
+                        )
+                      }
                     >
                       +
                     </StyledButtonAddFriend>
@@ -225,22 +182,25 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
       <StyledLine />
       <p>These are my Mates:</p>
       <StyledCardSection>
-        {fuse?._docs
-          .filter((user) => myMates.find((friend) => friend === user._id))
-          .map((user) => (
-            <StyledFriendCard key={user._id}>
-              <StyledDivLeft>
-                <StyledFriendName>{user.name}</StyledFriendName>
-              </StyledDivLeft>
-              <StyledDivRight>
-                <StyledButtonDeleteFriend
-                  onClick={() => handleDeleteClick(user._id)}
-                >
-                  x
-                </StyledButtonDeleteFriend>
-              </StyledDivRight>
-            </StyledFriendCard>
-          ))}
+        {allUser &&
+          allUser
+            .filter((user) => myMates.find((friend) => friend === user._id))
+            .map((user) => (
+              <StyledFriendCard key={user._id}>
+                <StyledDivLeft>
+                  <StyledFriendName>{user.name}</StyledFriendName>
+                </StyledDivLeft>
+                <StyledDivRight>
+                  <StyledButtonDeleteFriend
+                    onClick={() =>
+                      handleDeleteClick(user._id, userId, myMates, setMyMates)
+                    }
+                  >
+                    x
+                  </StyledButtonDeleteFriend>
+                </StyledDivRight>
+              </StyledFriendCard>
+            ))}
         {!isCreateMode && <Navigation onCreateClick={handleCreateClick} />}
         {isCreateMode && (
           <Overlay>

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { theme } from "@/styles";
-import { toast } from "react-toastify";
+import handleRemoveFromFriendRequests from "@/utils/components/FriendRequest/handleRemoveFromFriendRequests";
+import handleAccept from "@/utils/components/FriendRequest/handleAccept";
 
 export default function FriendRequest({
   showRequestWindow,
@@ -11,84 +12,41 @@ export default function FriendRequest({
   setMyMates,
   userId,
 }) {
-  console.log("allUsers:", allUsers);
-  console.log("meine ID:", session.user?.id);
-
   const handleSubmit = (event) => {
     event.preventDefault();
   };
-
-  async function handleAccept(userId) {
-    try {
-      const response = await fetch(`/api/users/addFriend/${session.user?.id}`, {
-        method: "POST",
-        body: JSON.stringify({ userId }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.ok) {
-        setMyMates([userId, ...myMates]);
-        return toast.success(`User successfully added!`);
-      } else {
-        toast.error(`This User is already your friend!`);
-        console.error("Failed to update user.");
-      }
-    } catch (error) {
-      console.error("Error occurred while updating user:", error);
-    }
-  }
-
-  async function handleRemoveFromFriendRequests(friendRequestId) {
-    try {
-      const response = await fetch(`/api/users/addFriend/${friendRequestId}`, {
-        method: "DELETE",
-        body: JSON.stringify({ userId }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.ok) {
-        return toast.success(`User successfully deleted from friend Requests!`);
-      } else {
-        toast.error(`User not found in friend Requests!`);
-        console.error("Failed to delete user.");
-      }
-    } catch {
-      console.error("Error occurred while deleting user:", error);
-    }
-  }
 
   return (
     <StyledRequestBox $show={showRequestWindow} onSubmit={handleSubmit}>
       <div>
         <p>We wanna be your Mates!</p>
-        {friendRequestList.map((request) => (
-          <StyledFriendCard key={request}>
-            <StyledDivLeft>
-              <StyledFriendName>
-                {allUsers?.find((user) => user._id === request)
-                  ? allUsers?.find((user) => user._id === request).name
-                  : ""}
-              </StyledFriendName>
-            </StyledDivLeft>
-            <StyledDivRight>
-              <StyledButton
-                onClick={() => {
-                  handleAccept(request);
-                  handleRemoveFromFriendRequests(request);
-                }}
-              >
-                Accept
-              </StyledButton>
-              <StyledButton
-                onClick={() => handleRemoveFromFriendRequests(request)}
-              >
-                x
-              </StyledButton>
-            </StyledDivRight>
-          </StyledFriendCard>
-        ))}
+        {allUsers &&
+          friendRequestList.map((request) => (
+            <StyledFriendCard key={request}>
+              <StyledDivLeft>
+                <StyledFriendName>
+                  {allUsers?.find((user) => user._id === request)
+                    ? allUsers?.find((user) => user._id === request).name
+                    : ""}
+                </StyledFriendName>
+              </StyledDivLeft>
+              <StyledDivRight>
+                <StyledButton
+                  onClick={() => {
+                    handleAccept(request, session, setMyMates, myMates);
+                    handleRemoveFromFriendRequests(request, userId);
+                  }}
+                >
+                  Accept
+                </StyledButton>
+                <StyledButton
+                  onClick={() => handleRemoveFromFriendRequests(request)}
+                >
+                  x
+                </StyledButton>
+              </StyledDivRight>
+            </StyledFriendCard>
+          ))}
       </div>
     </StyledRequestBox>
   );
