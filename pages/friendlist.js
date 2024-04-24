@@ -74,7 +74,6 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     setIsSearching(true);
 
     const searchTerm = event.target.value;
-
     if (!fuse) return;
 
     const searchResult = fuse.search(searchTerm);
@@ -184,7 +183,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
                     (user) =>
                       user._id ===
                       session.user.friends.find((friend) => friend === mate._id)
-                  ) !== undefined ? (
+                  ) == undefined ? (
                     "Already Friends"
                   ) : (
                     <StyledButtonAddFriend

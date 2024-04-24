@@ -89,7 +89,7 @@ export default function HomePage({ onSubmit }) {
     return <div>loading...</div>;
 
   if (!activities) return <div>failed to load</div>;
-  
+
   if (!session) {
     return <LoginPage />;
   }
