@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { theme } from "@/styles";
-import { useState } from "react";
 import { toast } from "react-toastify";
 
 export default function FriendRequest({
@@ -15,24 +14,8 @@ export default function FriendRequest({
   console.log("allUsers:", allUsers);
   console.log("meine ID:", session.user?.id);
 
-  const [friendCardsData, setFriendCardsData] = useState([
-    { name: `Machsiemilian` },
-    { name: `Annabelschnell` },
-    { name: `Peli Kann` },
-    { name: `Hom Thanks` },
-    { name: `Hellga` },
-    { name: `Sandra Klaus` },
-    { name: `Mari Johanna` },
-  ]);
-
   const handleSubmit = (event) => {
     event.preventDefault();
-  };
-
-  const handleDelete = (index) => {
-    const updatedCards = [...friendCardsData];
-    updatedCards.splice(index, 1);
-    setFriendCardsData(updatedCards);
   };
 
   async function handleAccept(userId) {
@@ -84,8 +67,8 @@ export default function FriendRequest({
           <StyledFriendCard key={request}>
             <StyledDivLeft>
               <StyledFriendName>
-                {allUsers.find((user) => user._id === request)
-                  ? allUsers.find((user) => user._id === request).name
+                {allUsers?.find((user) => user._id === request)
+                  ? allUsers?.find((user) => user._id === request).name
                   : ""}
               </StyledFriendName>
             </StyledDivLeft>
@@ -98,7 +81,11 @@ export default function FriendRequest({
               >
                 Accept
               </StyledButton>
-              <StyledButton onClick={() => handleDelete()}>x</StyledButton>
+              <StyledButton
+                onClick={() => handleRemoveFromFriendRequests(request)}
+              >
+                x
+              </StyledButton>
             </StyledDivRight>
           </StyledFriendCard>
         ))}

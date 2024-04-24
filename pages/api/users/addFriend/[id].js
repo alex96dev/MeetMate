@@ -7,11 +7,16 @@ export default async function handler(request, response) {
   const { id } = request.query;
   const { userId } = request.body;
   const user = await User.findById(id).populate("friends");
+  const user2 = await User.findById(userId).populate("friends");
 
   if (request.method === "POST") {
     if (user.friends.find((friend) => friend === userId) === undefined) {
       user.friends.push(userId);
       await user.save();
+      if (user2.friends.find((friend) => friend === id) === undefined) {
+        user2.friends.push(id);
+        await user2.save();
+      }
       return response
         .status(200)
         .json({ message: "This User is your friend now!" });

@@ -43,6 +43,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
   const [mates, setMates] = useState([]);
   const [fuse, setFuse] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [allUser, setAllUser] = useState([]);
 
   useEffect(() => {
     if (session) {
@@ -51,14 +52,20 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     }
   }, [session]);
 
+  console.log("session: ", session);
   console.log("myMates: ", myMates);
   console.log("friendRequests: ", friendRequests);
 
   const { error, isLoading } = useSWR(`/api/users`, {
     onSuccess: (fetchedUsers) => {
+      console.log("fetcheduser: ", fetchedUsers);
       setFuse(new Fuse(fetchedUsers, fuseOptions));
+      setAllUser(fetchedUsers);
     },
   });
+
+  console.log("fuse_docs: ", fuse?._docs);
+  console.log("ALLUSER: ", allUser);
 
   const handleCreateClick = () => {
     setIsCreateMode(true);
@@ -138,17 +145,18 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     }
   }
 
+  const toggleRequestWindow = () => {
+    setShowRequestWindow(!showRequestWindow);
+  };
+
   if (loading) {
+    console.log("IM LOADING");
     return <p>Loading...</p>;
   }
 
   if (!authenticated) {
     return <p>You must be signed in to view this page.</p>;
   }
-
-  const toggleRequestWindow = () => {
-    setShowRequestWindow(!showRequestWindow);
-  };
 
   return (
     <StyledFriendList>
@@ -202,19 +210,22 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
       {isSearching && mates.length === 0 && (
         <div>No users matching your query were found</div>
       )}
-      <FriendRequest
-        showRequestWindow={showRequestWindow}
-        friendRequestList={friendRequests}
-        allUsers={fuse._docs}
-        session={session}
-        myMates={myMates}
-        setMyMates={setMyMates}
-        userId={userId}
-      />
+      {allUser && myMates && (
+        <FriendRequest
+          showRequestWindow={showRequestWindow}
+          friendRequestList={friendRequests}
+          allUsers={allUser}
+          session={session}
+          myMates={myMates}
+          setMyMates={setMyMates}
+          userId={userId}
+        />
+      )}
+
       <StyledLine />
       <p>These are my Mates:</p>
       <StyledCardSection>
-        {fuse._docs
+        {fuse?._docs
           .filter((user) => myMates.find((friend) => friend === user._id))
           .map((user) => (
             <StyledFriendCard key={user._id}>
