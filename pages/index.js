@@ -170,9 +170,6 @@ export default function HomePage({ onSubmit }) {
               color={theme.textColor}
             />
           </StyledFilterButton>
-          {/* <StyledFriendlistLink href="/friendlist">
-            <StyledFiUser size={theme.button.xs} color={theme.textColor} />
-          </StyledFriendlistLink> */}
           <StyledLogoutButton onClick={() => signOut()}>
             <StyledFiLogOut size={theme.button.xs} color={theme.textColor} />
           </StyledLogoutButton>
@@ -299,23 +296,6 @@ const StyledFiLogOut = styled(FiLogOut)`
   width: 100%;
   height: 100%;
 `;
-
-// const StyledFriendlistLink = styled(Link)`
-//   height: ${theme.button.small};
-//   min-width: ${theme.button.small};
-//   padding: ${theme.spacing.xs};
-//   background-color: ${theme.primaryColor};
-//   border-color: ${theme.textColor};
-//   border-radius: ${theme.borderRadius.medium};
-//   border-width: ${theme.borderWidth.medium};
-//   border-style: solid;
-//   box-shadow: ${theme.box.shadowSmall};
-// `;
-
-// const StyledFiUser = styled(FiUser)`
-//   width: 100%;
-//   height: 100%;
-// `;
 
 const StyledHiOutlineAdjustmentsHorizontal = styled(
   HiOutlineAdjustmentsHorizontal
