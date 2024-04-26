@@ -40,7 +40,9 @@ export default function FriendRequest({
                   Accept
                 </StyledButton>
                 <StyledButton
-                  onClick={() => handleRemoveFromFriendRequests(request)}
+                  onClick={() =>
+                    handleRemoveFromFriendRequests(request, userId)
+                  }
                 >
                   x
                 </StyledButton>
