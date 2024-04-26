@@ -21,7 +21,7 @@ export default function Navigation({ onCreateClick }) {
             />
           </StyledSideLink>
         ) : (
-          <StyledSideLink href="/joined">XX</StyledSideLink>
+          <StyledSideLink href="/profilepage">XX</StyledSideLink>
         )}
         <StyledCenterButton onClick={onCreateClick}>
           <FiPlus size={theme.button.xs} color={theme.textColor} />

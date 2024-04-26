@@ -120,7 +120,9 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
       </StyledHeadlineBox>
       <StyledHeadline>Me and my Mates</StyledHeadline>
       <p>This is me:</p>
-      <UserProfile />
+      <Link key="profilepage" href="/profilepage">
+        <UserProfile />
+      </Link>
       <StyledSearchbarBox>
         <SearchForm onSearch={handleSearch} onKeyPress={handleKeyPress} />
         <button onClick={toggleRequestWindow}>
