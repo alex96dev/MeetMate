@@ -74,7 +74,6 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     setIsSearching(true);
 
     const searchTerm = event.target.value;
-
     if (!fuse) return;
 
     const searchResult = fuse.search(searchTerm);
