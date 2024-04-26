@@ -52,14 +52,9 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     if (session) {
       setMyMates(session.user?.friends);
       setFriendRequests(session.user?.friendRequests);
+      setFuse(new Fuse(allUser, fuseOptions));
     }
-  }, [session]);
-
-  const { error, isLoading } = useSWR(`/api/users`, {
-    onSuccess: (fetchedUsers) => {
-      setFuse(new Fuse(fetchedUsers, fuseOptions));
-    },
-  });
+  }, [session, allUser]);
 
   const handleCreateClick = () => {
     setIsCreateMode(true);
@@ -139,7 +134,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
                   <StyledFriendName>{mate.name}</StyledFriendName>
                 </StyledDivLeft>
                 <StyledDivRight>
-                  {allUser?.find(
+                  {mates?.find(
                     (user) =>
                       user._id ===
                       session.user.friends.find((friend) => friend === mate._id)
