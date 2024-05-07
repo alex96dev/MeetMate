@@ -1,7 +1,7 @@
 import { theme } from "@/styles";
 import styled from "styled-components";
 import { useEffect, useRef } from "react";
-import formatDate from "@/utils/components/ActivityCard/formDate";
+import formatDate from "@/utils/components/ActivityCard/formatDate";
 
 export default function ActivityCard({ name, date, time, joined, category }) {
   const activityNameRef = useRef(null);
