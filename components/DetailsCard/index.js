@@ -9,8 +9,9 @@ import { FiEdit3 } from "react-icons/fi";
 import { FiTrash2 } from "react-icons/fi";
 import { TbArrowBackUp } from "react-icons/tb";
 import useStore from "@/store";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import handleDelete from "@/utils/components/DetailsCard/handleDelete";
+import handleJoin from "@/utils/components/DetailsCard/handleJoin";
 
 export default function DetailsCard() {
   const router = useRouter();
@@ -56,37 +57,6 @@ export default function DetailsCard() {
     return <p>Ups! Something went wrong...</p>;
   }
 
-  async function handleDelete() {
-    const response = await fetch(endpoint, {
-      method: "DELETE",
-    });
-    if (response.ok) {
-      toast.success("Activity deleted successfully!");
-      router.back();
-    } else {
-      toast.error("Failed to delete activity");
-    }
-  }
-
-  async function handleJoin() {
-    const updatedIsJoined = !joinState.isJoined;
-    setJoinState((prevState) => ({
-      ...prevState,
-      isJoined: updatedIsJoined,
-    }));
-    const type = updatedIsJoined ? "success" : "error";
-    const response = await fetch(endpoint, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ joined: updatedIsJoined }),
-    });
-    if (response.ok) {
-      mutate();
-    }
-  }
-
   return (
     <StyledDetailsCard>
       <StyledHeadlineBox>
@@ -122,7 +92,10 @@ export default function DetailsCard() {
         {activities.description !== "" && (
           <StyledDescription>{activities.description}</StyledDescription>
         )}
-        <StyledJoinButton isJoined={joinState.isJoined} onClick={handleJoin}>
+        <StyledJoinButton
+          isJoined={joinState.isJoined}
+          onClick={() => handleJoin(setJoinState, joinState, endpoint, mutate)}
+        >
           {joinState.isJoined ? "Disjoin" : "XX Join"}
         </StyledJoinButton>
         <StyledButtonBox>
@@ -137,7 +110,7 @@ export default function DetailsCard() {
               if (
                 window.confirm("Do you really want to delete this activity?")
               ) {
-                handleDelete();
+                handleDelete(endpoint, router);
               }
             }}
           >
@@ -150,7 +123,7 @@ export default function DetailsCard() {
               onCancel={() => setIsEditMode(false)}
               setIsEditMode={setIsEditMode} // Not necessary anymore because zustand already does this job
               isEditMode={true} // Not necessary anymore because zustand already does this job
-              onSubmit={(event) => handleEditActivity(event, endpoint, mutate)} // Why does that work? CardForm doesn't take this one at this time
+              // onSubmit={(event) => handleEditActivity(event, endpoint, mutate)} // Why does that work? CardForm doesn't take this one at this time
               existingActivityData={activities}
               sourcePage="details" // CardForm doesn't take this one at this time. Do we still need this?
               pageTitle="Join your friend!"

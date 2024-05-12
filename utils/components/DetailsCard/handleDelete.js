@@ -1,4 +1,5 @@
-export default async function handleDelete() {
+import { toast } from "react-toastify";
+export default async function handleDelete(endpoint, router) {
   const response = await fetch(endpoint, {
     method: "DELETE",
   });
