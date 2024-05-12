@@ -108,7 +108,7 @@ export default function HomePage({ onSubmit }) {
       return [];
     }
 
-    let filteredActivities = activities;
+    let filteredActivities = activities; // Should probably be renamed because outside of this function there is a const with the same name
 
     if (authorFilter) {
       filteredActivities = filteredActivities.filter(
@@ -124,15 +124,13 @@ export default function HomePage({ onSubmit }) {
       );
     }
 
-    // Comment out for coding ///////////////////////////////////////////////////////////////////////
     filteredActivities = filteredActivities.filter((activity) => {
       const activityDate = new Date(`${activity.date}T${activity.time}`);
       const currentDate = new Date();
-      return activityDate >= currentDate;
+      return activityDate >= currentDate; // Recommendation: save the result in an addionional variable one line above and return only the variable for better unterstanding
     });
-    // Comment out for coding ///////////////////////////////////////////////////////////////////////
 
-    return filteredActivities;
+    return filteredActivities; // Will never be executed
   }
 
   const filteredActivities = getFilteredActivities();
@@ -216,10 +214,10 @@ export default function HomePage({ onSubmit }) {
           <CardForm
             pageTitle="Create your activity!"
             onCancel={handleCloseClick}
-            setIsCreateMode={setIsCreateMode}
-            setIsEditMode={setIsEditMode}
-            isEditMode={false}
-            onSubmit={onSubmit}
+            setIsCreateMode={setIsCreateMode} // Not necessary anymore because zustand already does this job
+            setIsEditMode={setIsEditMode} // Not necessary anymore because zustand already does this job
+            isEditMode={false} // Not necessary anymore because zustand already does this job
+            onSubmit={onSubmit} // Why does that work? CardForm doesn't take this one at this time
           />
         </Overlay>
       )}

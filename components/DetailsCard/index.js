@@ -56,28 +56,6 @@ export default function DetailsCard() {
     return <p>Ups! Something went wrong...</p>;
   }
 
-  async function handleEditActivity(event) {
-    event.preventDefault();
-    setIsEditMode(true);
-    const form = event.target;
-    const formData = new FormData(form);
-
-    const activityData = Object.fromEntries(formData.entries());
-
-    const response = await fetch(endpoint, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(activityData),
-    });
-    if (response.ok) {
-      mutate(endpoint);
-      setIsEditMode(false);
-      event.target.reset();
-    }
-  }
-
   async function handleDelete() {
     const response = await fetch(endpoint, {
       method: "DELETE",
@@ -170,11 +148,11 @@ export default function DetailsCard() {
           <Overlay>
             <CardForm
               onCancel={() => setIsEditMode(false)}
-              setIsEditMode={setIsEditMode}
-              isEditMode={true}
-              onSubmit={handleEditActivity}
+              setIsEditMode={setIsEditMode} // Not necessary anymore because zustand already does this job
+              isEditMode={true} // Not necessary anymore because zustand already does this job
+              onSubmit={(event) => handleEditActivity(event, endpoint, mutate)} // Why does that work? CardForm doesn't take this one at this time
               existingActivityData={activities}
-              sourcePage="details"
+              sourcePage="details" // CardForm doesn't take this one at this time. Do we still need this?
               pageTitle="Join your friend!"
             />
           </Overlay>

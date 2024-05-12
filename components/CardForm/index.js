@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { FiSave } from "react-icons/fi";
 import { TbArrowBack } from "react-icons/tb";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useStore from "@/store";
 import { DayPicker } from "react-day-picker";
@@ -17,6 +16,7 @@ import { format } from "date-fns";
 import { FiCalendar } from "react-icons/fi";
 import TimePicker from "react-time-picker";
 import { FiClock } from "react-icons/fi";
+import handleSubmit from "@/utils/components/CardForm/handleSubmit";
 
 export default function CardForm({
   onCancel,
@@ -53,34 +53,7 @@ export default function CardForm({
 
   const toggleDayPicker = () => setShowDayPicker((prev) => !prev);
 
-  async function handleSubmit(event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const activityData = Object.fromEntries(formData);
-    activityData.authorId = session.user.id;
-
-    const response = await fetch(endpoint, {
-      method: method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(activityData),
-    });
-    if (response.ok) {
-      mutate();
-      onCancel();
-      setIsEditMode(false);
-      event.target.reset();
-      if (isEditMode) {
-        toast.success("Activity updated successfully!");
-      } else {
-        toast.success("Activity created successfully!");
-      }
-    } else {
-      toast.error("Failed to save changes. Please try again.");
-    }
-  }
-
+  // This useEffect should be further up
   useEffect(() => {
     if (existingActivityData) {
       inputRef.current.focus();
@@ -107,7 +80,7 @@ export default function CardForm({
   const textareaRef = useRef(null);
 
   useEffect(() => {
-    adjustTextareaHeight();
+    adjustTextareaHeight(); // We should place this under the other useEffect. Do we really need another useEffect here?
   }, []);
 
   const adjustTextareaHeight = () => {
@@ -142,7 +115,20 @@ export default function CardForm({
   );
 
   return (
-    <StyledCardForm onSubmit={handleSubmit}>
+    <StyledCardForm
+      onSubmit={(event) =>
+        handleSubmit(
+          event,
+          session,
+          endpoint,
+          method,
+          onCancel,
+          setIsEditMode,
+          isEditMode,
+          mutate
+        )
+      }
+    >
       <StyledHeadlineBox>
         <StyledLogoWrapper>
           <Logo />
