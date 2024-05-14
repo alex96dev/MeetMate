@@ -1,6 +1,7 @@
 import { theme } from "@/styles";
 import styled from "styled-components";
 import { useEffect, useRef } from "react";
+import formatDate from "@/utils/components/ActivityCard/formatDate";
 
 export default function ActivityCard({ name, date, time, joined, category }) {
   const activityNameRef = useRef(null);
@@ -21,32 +22,6 @@ export default function ActivityCard({ name, date, time, joined, category }) {
     }
   }, [name]);
 
-  // check date to display date, weekday, "today" or "tomorrow" //////////////////////////////
-  const formatDate = () => {
-    const eventDate = new Date(date);
-    const today = new Date();
-
-    if (eventDate.toDateString() === today.toDateString()) {
-      return "Today";
-    }
-
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    const oneWeekFromNow = new Date(today);
-    oneWeekFromNow.setDate(oneWeekFromNow.getDate() + 7);
-
-    if (eventDate < today) {
-      return eventDate.toLocaleDateString("en-US");
-    } else if (eventDate < tomorrow) {
-      return "Tomorrow";
-    } else if (eventDate > oneWeekFromNow) {
-      return eventDate.toLocaleDateString("en-US");
-    } else {
-      return eventDate.toLocaleDateString("en-US", { weekday: "long" });
-    }
-  };
-
   return (
     <StyledActivityCard category={category}>
       {joined && <StyledJoinMark>XX</StyledJoinMark>}
@@ -55,7 +30,7 @@ export default function ActivityCard({ name, date, time, joined, category }) {
       </StyledDivLeft>
       <StyledDivRight>
         <StyledSection>
-          <StyledPElement>{formatDate()}</StyledPElement>
+          <StyledPElement>{formatDate(date)}</StyledPElement>
           <StyledPElement>{time}</StyledPElement>
         </StyledSection>
       </StyledDivRight>

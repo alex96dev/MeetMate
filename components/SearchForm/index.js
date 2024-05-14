@@ -1,5 +1,4 @@
 import { IoSearch } from "react-icons/io5";
-import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { theme } from "@/styles";
 import styled from "styled-components";
 
