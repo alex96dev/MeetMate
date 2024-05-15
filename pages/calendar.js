@@ -14,18 +14,12 @@ import useStore from "@/store";
 
 const Calendar = dynamic(() => import("react-calendar"), { ssr: false });
 
-const CalendarPage = ({ onSubmit }) => {
+const CalendarPage = () => {
   const { data: activities, isLoading } = useSWR("/api/activities");
   const { authenticated, loading } = useAuthentication();
   const [selectedDateActivities, setSelectedDateActivities] = useState([]);
   const currentDate = new Date();
-  const {
-    setIsEditMode,
-    isCreateMode,
-    setIsCreateMode,
-    handleCreateClick,
-    handleCloseClick,
-  } = useStore();
+  const { isCreateMode, handleCreateClick, handleCloseClick } = useStore();
 
   useEffect(() => {
     if (!isLoading && activities) {
@@ -115,10 +109,6 @@ const CalendarPage = ({ onSubmit }) => {
             <CardForm
               pageTitle="Create your activity!"
               onCancel={handleCloseClick}
-              setIsCreateMode={setIsCreateMode}
-              setIsEditMode={setIsEditMode}
-              isEditMode={false}
-              onSubmit={onSubmit}
             />
           </Overlay>
         )}
