@@ -17,8 +17,8 @@ export default function DetailsCard() {
   const router = useRouter();
   const { id } = router.query;
   const endpoint = `/api/activities/${id}`;
+  const { data: activities, isLoading, mutate, error } = useSWR(endpoint);
   const { isEditMode, setIsEditMode, handleEditClick } = useStore();
-
   const [joinState, setJoinState] = useState({
     isJoined: false,
     joinButtonText: "Join",
@@ -47,8 +47,6 @@ export default function DetailsCard() {
 
     fetchData();
   }, [id, endpoint]);
-
-  const { data: activities, isLoading, mutate, error } = useSWR(endpoint);
 
   if (isLoading) {
     return <h1>Loading...</h1>;
