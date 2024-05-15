@@ -121,11 +121,7 @@ export default function DetailsCard() {
           <Overlay>
             <CardForm
               onCancel={() => setIsEditMode(false)}
-              setIsEditMode={setIsEditMode} // Not necessary anymore because zustand already does this job
-              isEditMode={true} // Not necessary anymore because zustand already does this job
-              // onSubmit={(event) => handleEditActivity(event, endpoint, mutate)} // Why does that work? CardForm doesn't take this one at this time
               existingActivityData={activities}
-              sourcePage="details" // CardForm doesn't take this one at this time. Do we still need this?
               pageTitle="Join your friend!"
             />
           </Overlay>
