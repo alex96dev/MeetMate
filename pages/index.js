@@ -31,13 +31,7 @@ export default function HomePage() {
   const [authorFilter, setAuthorFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [showFilterWindow, setShowFilterWindow] = useState(false);
-  const {
-    setIsEditMode,
-    isCreateMode,
-    setIsCreateMode,
-    handleCreateClick,
-    handleCloseClick,
-  } = useStore();
+  const { isCreateMode, handleCreateClick, handleCloseClick } = useStore();
 
   useEffect(() => {
     const hasDisplayedToast = sessionStorage.getItem("hasDisplayedToast");
