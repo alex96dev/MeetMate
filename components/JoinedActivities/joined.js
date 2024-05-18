@@ -8,16 +8,10 @@ import { theme } from "@/styles";
 import useStore from "@/store";
 import CardForm from "@/components/CardForm";
 
-export default function JoinedActivities({ onSubmit }) {
+export default function JoinedActivities() {
   const { data: activities, isLoading } = useSWR("/api/activities");
   const { authenticated, loading } = useAuthentication();
-  const {
-    setIsEditMode,
-    isCreateMode,
-    setIsCreateMode,
-    handleCreateClick,
-    handleCloseClick,
-  } = useStore();
+  const { isCreateMode, handleCreateClick, handleCloseClick } = useStore();
 
   if (isLoading) return <div>loading...</div>;
   if (!activities) return <div>failed to load</div>;
@@ -53,10 +47,6 @@ export default function JoinedActivities({ onSubmit }) {
             <CardForm
               pageTitle="Create your activity!"
               onCancel={handleCloseClick}
-              setIsCreateMode={setIsCreateMode}
-              setIsEditMode={setIsEditMode}
-              isEditMode={false}
-              onSubmit={onSubmit}
             />
           </Overlay>
         )}

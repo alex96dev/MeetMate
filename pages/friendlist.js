@@ -14,6 +14,7 @@ import Fuse from "fuse.js";
 import SearchForm from "@/components/SearchForm";
 import handleDeleteClick from "@/utils/pages/friendlist/handleDeleteClick";
 import handleSendFriendRequest from "@/utils/pages/friendlist/handleSendFriendRequest";
+import useStore from "@/store";
 
 const fuseOptions = {
   // isCaseSensitive: false,
@@ -32,21 +33,17 @@ const fuseOptions = {
   keys: ["name"],
 };
 
-export default function FriendList({ onSubmit, setIsEditMode }) {
+export default function FriendList() {
   const { authenticated, loading, session } = useAuthentication();
   const userId = session?.user?.id;
   const [myMates, setMyMates] = useState([]);
   const [friendRequests, setFriendRequests] = useState([]);
-  const [isCreateMode, setIsCreateMode] = useState(false);
   const [showRequestWindow, setShowRequestWindow] = useState(false);
   const [mates, setMates] = useState([]);
   const [fuse, setFuse] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
-  const {
-    data: allUser,
-    error: error2,
-    isLoading: isLoading2,
-  } = useSWR(`/api/users`);
+  const { data: allUser, error: error2, isLoading } = useSWR(`/api/users`);
+  const { isCreateMode, handleCreateClick, handleCloseClick } = useStore();
 
   useEffect(() => {
     if (session) {
@@ -55,14 +52,6 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
       setFuse(new Fuse(allUser, fuseOptions));
     }
   }, [session, allUser]);
-
-  const handleCreateClick = () => {
-    setIsCreateMode(true);
-  };
-
-  const handleCloseClick = () => {
-    setIsCreateMode(false);
-  };
 
   async function handleSearch(event) {
     event.preventDefault();
@@ -90,11 +79,7 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
     setShowRequestWindow(!showRequestWindow);
   };
 
-  if (isLoading2) {
-    return <p>Loading...</p>;
-  }
-
-  if (loading) {
+  if (isLoading || loading) {
     return <p>Loading...</p>;
   }
 
@@ -203,10 +188,6 @@ export default function FriendList({ onSubmit, setIsEditMode }) {
             <CardForm
               pageTitle="Create your activity!"
               onCancel={handleCloseClick}
-              setIsCreateMode={setIsCreateMode}
-              setIsEditMode={setIsEditMode}
-              isEditMode={false}
-              onSubmit={onSubmit}
             />
           </Overlay>
         )}

@@ -34,8 +34,28 @@ export default function CardForm({
   const { setIsEditMode, isEditMode } = useStore();
   const [selectedDate, setSelectedDate] = useState(null);
   const [showDayPicker, setShowDayPicker] = useState(false);
-
+  const [selectedTime, setSelectedTime] = useState(
+    existingActivityData?.time || getCurrentTime()
+  );
+  const [selectedCategory, setSelectedCategory] = useState(
+    existingActivityData?.category || ""
+  );
   const inputRef = useRef(null);
+  const textareaRef = useRef(null);
+
+  useEffect(() => {
+    if (existingActivityData) {
+      inputRef.current.focus();
+
+      const { date, category } = existingActivityData;
+      setSelectedDate(date ? new Date(date) : null);
+      setSelectedCategory(category || "");
+    }
+  }, [existingActivityData]);
+
+  useEffect(() => {
+    handleChange(); // Do we really need another useEffect here?
+  }, []);
 
   const handleDayClick = (day) => {
     setSelectedDate(day);
@@ -53,21 +73,6 @@ export default function CardForm({
 
   const toggleDayPicker = () => setShowDayPicker((prev) => !prev);
 
-  // This useEffect should be further up
-  useEffect(() => {
-    if (existingActivityData) {
-      inputRef.current.focus();
-
-      const { date, category } = existingActivityData;
-      setSelectedDate(date ? new Date(date) : null);
-      setSelectedCategory(category || "");
-    }
-  }, [existingActivityData]);
-
-  const [selectedCategory, setSelectedCategory] = useState(
-    existingActivityData?.category || ""
-  );
-
   const handleCategoryChange = (event) => {
     setSelectedCategory((prevCategory) => {
       const newCategory = event.target.value;
@@ -77,22 +82,12 @@ export default function CardForm({
     });
   };
 
-  const textareaRef = useRef(null);
-
-  useEffect(() => {
-    adjustTextareaHeight(); // We should place this under the other useEffect. Do we really need another useEffect here?
-  }, []);
-
-  const adjustTextareaHeight = () => {
+  const handleChange = () => {
     const textarea = textareaRef.current;
     if (textarea) {
       textarea.style.height = "auto";
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
-  };
-
-  const handleChange = () => {
-    adjustTextareaHeight();
   };
 
   const getCurrentDate = () => {
@@ -109,10 +104,6 @@ export default function CardForm({
     const minutes = String(today.getMinutes()).padStart(2, "0");
     return `${hours}:${minutes}`;
   };
-
-  const [selectedTime, setSelectedTime] = useState(
-    existingActivityData?.time || getCurrentTime()
-  );
 
   return (
     <StyledCardForm

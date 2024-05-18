@@ -17,8 +17,8 @@ export default function DetailsCard() {
   const router = useRouter();
   const { id } = router.query;
   const endpoint = `/api/activities/${id}`;
+  const { data: activities, isLoading, mutate, error } = useSWR(endpoint);
   const { isEditMode, setIsEditMode, handleEditClick } = useStore();
-
   const [joinState, setJoinState] = useState({
     isJoined: false,
     joinButtonText: "Join",
@@ -47,8 +47,6 @@ export default function DetailsCard() {
 
     fetchData();
   }, [id, endpoint]);
-
-  const { data: activities, isLoading, mutate, error } = useSWR(endpoint);
 
   if (isLoading) {
     return <h1>Loading...</h1>;
@@ -121,11 +119,7 @@ export default function DetailsCard() {
           <Overlay>
             <CardForm
               onCancel={() => setIsEditMode(false)}
-              setIsEditMode={setIsEditMode} // Not necessary anymore because zustand already does this job
-              isEditMode={true} // Not necessary anymore because zustand already does this job
-              // onSubmit={(event) => handleEditActivity(event, endpoint, mutate)} // Why does that work? CardForm doesn't take this one at this time
               existingActivityData={activities}
-              sourcePage="details" // CardForm doesn't take this one at this time. Do we still need this?
               pageTitle="Join your friend!"
             />
           </Overlay>

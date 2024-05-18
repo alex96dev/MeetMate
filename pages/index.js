@@ -18,7 +18,7 @@ import useStore from "@/store";
 import NextActivity from "@/components/NextActivity";
 import { toast } from "react-toastify";
 
-export default function HomePage({ onSubmit }) {
+export default function HomePage() {
   const { data: session, status } = useSession();
   const { data: activities, isLoading: activitiesIsLoading } =
     useSWR("/api/activities");
@@ -31,13 +31,7 @@ export default function HomePage({ onSubmit }) {
   const [authorFilter, setAuthorFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [showFilterWindow, setShowFilterWindow] = useState(false);
-  const {
-    setIsEditMode,
-    isCreateMode,
-    setIsCreateMode,
-    handleCreateClick,
-    handleCloseClick,
-  } = useStore();
+  const { isCreateMode, handleCreateClick, handleCloseClick } = useStore();
 
   useEffect(() => {
     const hasDisplayedToast = sessionStorage.getItem("hasDisplayedToast");
@@ -103,37 +97,37 @@ export default function HomePage({ onSubmit }) {
     setCategoryFilter(category);
   };
 
-  function getFilteredActivities() {
+  function getUpcomingActivities() {
     if (activitiesIsLoading || !activities) {
       return [];
     }
 
-    let filteredActivities = activities; // Should probably be renamed because outside of this function there is a const with the same name
+    let upcomingActivities = activities;
 
     if (authorFilter) {
-      filteredActivities = filteredActivities.filter(
+      upcomingActivities = upcomingActivities.filter(
         (activity) =>
           activity.author.toLowerCase() === authorFilter.toLowerCase()
       );
     }
 
     if (categoryFilter) {
-      filteredActivities = filteredActivities.filter(
+      upcomingActivities = upcomingActivities.filter(
         (activity) =>
           activity.category.toLowerCase() === categoryFilter.toLowerCase()
       );
     }
 
-    filteredActivities = filteredActivities.filter((activity) => {
+    upcomingActivities = upcomingActivities.filter((activity) => {
       const activityDate = new Date(`${activity.date}T${activity.time}`);
       const currentDate = new Date();
-      return activityDate >= currentDate; // Recommendation: save the result in an addionional variable one line above and return only the variable for better unterstanding
+      return activityDate >= currentDate;
     });
 
-    return filteredActivities; // Will never be executed
+    return upcomingActivities;
   }
 
-  const filteredActivities = getFilteredActivities();
+  const filteredActivities = getUpcomingActivities();
 
   const displayedActivities = searchTerm
     ? filteredActivities.filter((activity) =>
@@ -214,10 +208,6 @@ export default function HomePage({ onSubmit }) {
           <CardForm
             pageTitle="Create your activity!"
             onCancel={handleCloseClick}
-            setIsCreateMode={setIsCreateMode} // Not necessary anymore because zustand already does this job
-            setIsEditMode={setIsEditMode} // Not necessary anymore because zustand already does this job
-            isEditMode={false} // Not necessary anymore because zustand already does this job
-            onSubmit={onSubmit} // Why does that work? CardForm doesn't take this one at this time
           />
         </Overlay>
       )}
